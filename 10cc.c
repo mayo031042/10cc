@@ -1,5 +1,54 @@
+#include <ctype.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+// tokenの種類を分ける
+typedef enum
+{
+    TK_reserved,
+    TK_NUM,
+    TK_EOF,
+} TokenKind;
+
+typedef struct Token Token;
+
+// 連結リストで持ちたいので　自分のトークン種類、数値?値:記号をもち　次のトークンのアドレスを保持する
+struct Token
+{
+    TokenKind kind;
+    Token *next;
+    int val;
+    char *str;
+};
+
+Token *token;
+
+void error(char *fmt, ...)
+{
+}
+
+bool consume()
+{
+}
+
+void expect()
+{
+}
+
+bool at_eof()
+{
+}
+
+Token *new_token()
+{
+}
+
+Token *tokenize()
+{
+}
 
 int main(int argc, char **argv)
 {
@@ -9,31 +58,30 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    // 各区切りに対して
-    char *p=argv[1];
+    char *p = argv[1];
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
+    printf("    mov rax, %d\n", strtol(p, &p, 10));
 
-    // 今回は　正しい入力の場合空白文字がないものとして考え　以下コメントアウトは正しい入力を前提としている
-    // strtolについて　第一引数のポインタのしめすものについて第三引数を基数としたものに変換する　
-    // この場合数値変換できなかった最初のポインタを第二引数に渡す
-    printf("    mov rax, %d\n", strtol(p,&p,10));
-
-    while(*p){
-        if(*p=='+'){
+    while (*p)
+    {
+        if (*p == '+')
+        {
             // 数値と想定されるものを指すポインタに進む
             p++;
-            printf("    add rax, %d\n", strtol(p,&p,10));
+            printf("    add rax, %d\n", strtol(p, &p, 10));
             continue;
         }
-        else if(*p=='-'){
+        else if (*p == '-')
+        {
             p++;
-            printf("    sub rax, %d\n", strtol(p,&p,10));
+            printf("    sub rax, %d\n", strtol(p, &p, 10));
             continue;
         }
-        else {    
+        else
+        {
             fprintf(stderr, "入力が間違っています\n");
             return 1;
         }
