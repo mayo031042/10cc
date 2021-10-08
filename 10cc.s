@@ -1,5 +1,13 @@
 .intel_syntax noprefix
-.globl main
+.globl plus, main
+
+plus:
+        add rsi, rdi
+        mov rax, rsi
+        ret
+
 main:
-        mov rax, 41
+        mov rdi, 5
+        mov rsi, 4
+        call plus
         ret
