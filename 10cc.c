@@ -26,26 +26,48 @@ struct Token
 
 Token *token;
 
+// printfと同じ引数をとるらしい
 void error(char *fmt, ...)
 {
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(1);
 }
 
-bool consume()
+// consume, expect, expect_numberはtokenの解析に用いられる　
+// 期待されるtokenの種類を決め打つことでerrorの判定が楽である
+
+// 次のトークンが期待している記号のときには、トークンを1つ読み進めて真を返す。
+// それ以外の場合には偽を返す。
+bool consume(char op)
 {
 }
 
-void expect()
+// 次のトークンが期待している記号のときには、トークンを1つ読み進める。
+// それ以外の場合にはエラーを報告する。
+void expect(char op)
+{
+}
+
+// 次のトークンが数値の場合、トークンを1つ読み進めてその数値を返す。
+// それ以外の場合にはエラーを報告する。
+int expect_number()
 {
 }
 
 bool at_eof()
 {
+    return token->kind == TK_EOF;
 }
 
+// 新しいトークンを作成してcurに繋げる
 Token *new_token()
 {
 }
 
+// 入力文字列pをトークナイズしてそれを返す
 Token *tokenize()
 {
 }
