@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// tokenの種類を分ける
+// tokenの種類
 typedef enum
 {
     TK_RESERVED,
@@ -37,12 +37,6 @@ void error(char *fmt, ...)
 }
 
 // consume, expect, expect_numberは出来上がったtokenの利用にmain内で用いられる　
-// 期待されるtokenの種類を決め打つことでerrorの判定が楽である
-// 期待どおりでなかった場合の処理は　別の判定の余地の有無で異なる　間違った入力であると
-// 判断できるタイミングでのみerrorを吐きたいので　expect関数は判定群の最後にだけ用いるのが良さそう
-
-// tokenの種類に対応したアセンブリ出力はmain内で行うので　tokenizeの段階では
-// 切り分けからの　種類決め打ちとそれに伴った適切な抽出データのnew_tokenへの受け渡しである
 
 // 次のトークンが期待している記号のときには、トークンを1つ読み進めて真を返す。
 // それ以外の場合には偽を返す。
@@ -83,9 +77,6 @@ bool at_eof()
 // 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str)
 {
-    // ここでは雛形と連結リストさえ作れれば良い？
-    // 解釈と整理はtokenizeの方で行うのでそのtokenのオブジェクトを 情報を受け取って作れば良さそう
-    // Token*型の新しい変数tokを用意し　curの次として設定し tokを新しいオブジェクトとして返す
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     tok->str = str;
@@ -93,19 +84,12 @@ Token *new_token(TokenKind kind, Token *cur, char *str)
     return tok;
 }
 
-// 入力文字列pをトークナイズしてそれを返す
-// 結果的にtoken列はheadとEOFに囲まれることになり　mainでのreturnはheadの次（実質的に先頭）になる
 Token *tokenize(char *p)
 {
-    // 今見ているpを適切な範囲で切り取って　tokenの情報を整理する
-    // その次に切り分けられるtokenを再帰的にもとめつつ　nextはその返り値が利用できそう
-
     Token head;
     head.next = NULL;
-    // tokenize に便利なためcurというTokenを指すポインタを用意する
     Token *cur = &head;
 
-    // 切り分け　spaceは無視　記号が連続で続いても切り分けのみする
     while (*p)
     {
         if (isspace(*p))
@@ -142,33 +126,26 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    char *p = argv[1];
+    // 正しい入力の時　この段階でtokenは　式の先頭にある記号か数値のどちらかである
+    token = tokenize(argv[1]);
+    // consume,expectを適切に利用できた場合　tokenは自動で次のTokenをさす
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
-    printf("    mov rax, %d\n", strtol(p, &p, 10));
+    printf("    mov rax, %d\n", expect_number());
 
-    while (*p)
+    while (!at_eof())
     {
-        if (*p == '+')
+        // error処理はtoken確認系が行っている　以下は１処理で記号と数値をセットにしている　
+        // これに矛盾する場合は全て確認系のerrorが呼ばれるので　このwhile内にerrorは不要
+        if (consume('+'))
         {
-            // 数値と想定されるものを指すポインタに進む
-            p++;
-            printf("    add rax, %d\n", strtol(p, &p, 10));
+            printf("    add rax, %d\n", expect_number());
             continue;
         }
-        else if (*p == '-')
-        {
-            p++;
-            printf("    sub rax, %d\n", strtol(p, &p, 10));
-            continue;
-        }
-        else
-        {
-            fprintf(stderr, "入力が間違っています\n");
-            return 1;
-        }
+        expect('-');
+        printf("    sub rax, %d\n", expect_number());
     }
 
     printf("    ret\n");
