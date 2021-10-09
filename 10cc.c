@@ -151,6 +151,10 @@ Node *new_node_num(int val)
 
 // とりあえず　整数とその加減算のみ（優先処理もない）を実装する
 // 相変わらずtokenの操作（移動）についてはconsumeやexpect系がやってくれる　→役割分担大事　tokenのことを考えなくて良くなっている
+// つまり　tokenの移動は各計算記号かprimaryでの即値でしか　実行されないということ
+
+// 今回の計算式の範囲を　（）の中、掛け算グループ、足し算グループに分けることができるということを確認する
+// 各オペランド、即値でしかtokenの移動がないことを踏まえると　即値はprimaryのみで操作、それいがいは適宜操作することで　網羅できている気がすれば良さそう？
 Node *primary();
 Node *mul();
 Node *expr();
@@ -178,13 +182,13 @@ Node *mul()
         if (consume('*'))
         {
             // 左辺は元の自分primary　親は乗算　右辺は再帰で求める　以下同様
+            // ちょうど１木単位分の操作がprimary内で行われることによって　再び
             node = new_node(ND_MUL, node, primary());
         }
         else if (consume('/'))
         {
             node = new_node(ND_DIV, node, primary());
         }
-
         else
             return node;
     }
@@ -193,7 +197,7 @@ Node *mul()
 // 加減算を担当　加減は乗除算や（）を対象にする
 Node *expr()
 {
-    Node *node = new_node_num(expect_number());
+    Node *node = mul();
 
     for (;;)
     {
