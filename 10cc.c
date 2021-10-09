@@ -104,7 +104,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p=='*' || *p=='/' || *p=='(' || *p==')')
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             continue;
@@ -158,6 +158,7 @@ Node *new_node_num(int val)
 // 今回の計算式の範囲を　（）の中、掛け算グループ、足し算グループに分けることができるということを確認する
 // 各オペランド、即値でしかtokenの移動がないことを踏まえると　即値はprimaryのみで操作、それいがいは適宜操作することで　網羅できている気がすれば良さそう？
 Node *primary();
+Node *unary();
 Node *mul();
 Node *expr();
 
@@ -174,10 +175,25 @@ Node *primary()
     return new_node_num(expect_number());
 }
 
+// 単項演算子をサポートする　gen()の簡略化のため　それぞれ０を先頭に持つexprと解釈することになる
+Node *unary()
+{
+    if (consume('+'))
+    {
+        return primary();
+    }
+    else if (consume('-'))
+    {
+        return new_node(ND_SUB, new_node_num(0), primary());
+    }
+    else
+        return primary();
+}
+
 // 乗除算を担当　乗除は（）の優先式か即値のみを対象にする
 Node *mul()
 {
-    Node *node = primary();
+    Node *node = unary();
     // mul=primary (('*' | '/' ) primary)* なのでまず初めにprimaryをみる
     for (;;)
     {
@@ -186,11 +202,11 @@ Node *mul()
             // 左辺は元の自分primary　親は乗算　右辺は再帰で求める　以下同様
             // ちょうど１木単位分の操作がprimary内で行われることによって　反対「へ」の字的に進む感じ？　
             // 元のオペランドに　右側にあるオペランドの左足がくっつくいめーじ
-            node = new_node(ND_MUL, node, primary());
+            node = new_node(ND_MUL, node, unary());
         }
         else if (consume('/'))
         {
-            node = new_node(ND_DIV, node, primary());
+            node = new_node(ND_DIV, node, unary());
         }
         else
             return node;
@@ -212,7 +228,8 @@ Node *expr()
         {
             node = new_node(ND_SUB, node, mul());
         }
-        else return node;
+        else
+            return node;
     }
 }
 
