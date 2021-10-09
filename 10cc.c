@@ -11,8 +11,8 @@ typedef enum
     TK_NUM,
     TK_EOF,
 } TokenKind;
-typedef struct Token Token;
 
+typedef struct Token Token;
 struct Token
 {
     TokenKind kind;
@@ -22,6 +22,22 @@ struct Token
 };
 
 Token *token;
+
+typedef enum{
+    ND_ADD,
+    ND_SUB,
+    ND_MUL,
+    ND_DIV,
+    ND_NUM,
+}NodeKind;
+
+typedef struct Node Node;
+struct Node{
+    NodeKind kind;
+    Node *lhs;
+    Node *rhs;
+    int val;
+}; 
 
 void error(char *fmt, ...)
 {
