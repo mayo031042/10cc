@@ -151,6 +151,46 @@ Node *new_node_num(int val)
 
 // とりあえず　整数とその加減算のみ（優先処理もない）を実装する
 // 相変わらずtokenの操作（移動）についてはconsumeやexpect系がやってくれる　→役割分担大事　tokenのことを考えなくて良くなっている
+Node *primary();
+Node *mul();
+Node *expr();
+
+// 即値か（）を担当　即値なら終端　（）なら数式全体に戻る
+Node *primary()
+{
+    if (consume('('))
+    {
+        Node *node = expr();
+        expect(')');
+        return node;
+    }
+    // 即値が入る場合もある　即値用の頂点を作成
+    return new_node_num(expect_number());
+}
+
+// 乗除算を担当　乗除は（）の優先式か即値のみを対象にする
+Node *mul()
+{
+    Node *node = primary();
+    // mul=primary (('*' | '/' ) primary)* なのでまず初めにprimaryをみる
+    for (;;)
+    {
+        if (consume('*'))
+        {
+            // 左辺は元の自分primary　親は乗算　右辺は再帰で求める　以下同様
+            node = new_node(ND_MUL, node, primary());
+        }
+        else if (consume('/'))
+        {
+            node = new_node(ND_DIV, node, primary());
+        }
+
+        else
+            return node;
+    }
+}
+
+// 加減算を担当　加減は乗除算や（）を対象にする
 Node *expr()
 {
     Node *node = new_node_num(expect_number());
@@ -159,14 +199,11 @@ Node *expr()
     {
         if (consume('+'))
         {
-            node = new_node(ND_ADD, node, expr());
-            continue;
+            node = new_node(ND_ADD, node, mul());
         }
-        else
+        else if (consume('-'))
         {
-            expect('-');
-            node = new_node(ND_SUB, node, expr());
-            continue;
+            node = new_node(ND_SUB, node, mul());
         }
         return node;
     }
