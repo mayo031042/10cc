@@ -41,6 +41,8 @@ struct Node
     int val;
 };
 
+char *user_input;
+
 void error(char *fmt, ...)
 {
     va_list ap;
@@ -102,7 +104,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-')
+        if (*p == '+' || *p == '-' || *p=='*' || *p=='/' || *p=='(' || *p==')')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             continue;
@@ -210,7 +212,7 @@ Node *expr()
         {
             node = new_node(ND_SUB, node, mul());
         }
-        return node;
+        else return node;
     }
 }
 
@@ -220,7 +222,7 @@ void gen(Node *node)
     // 終端なら左右を展開しない　スタックに積むだけ
     if (node->kind == ND_NUM)
     {
-        printf("    push, %d\n", node->val);
+        printf("    push %d\n", node->val);
         return;
     }
 
@@ -246,6 +248,7 @@ void gen(Node *node)
     case ND_DIV:
         printf("    cqo\n");
         printf("    idiv rdi\n");
+        break;
     }
 
     printf("    push rax\n");
@@ -259,24 +262,18 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    token = tokenize(argv[1]);
+    user_input = argv[1];
+    token = tokenize(user_input);
+    // このnodeが最親になる
+    Node *node = expr();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
-    printf("    mov rax, %d\n", expect_number());
 
-    while (!at_eof())
-    {
-        if (consume('+'))
-        {
-            printf("    add rax, %d\n", expect_number());
-            continue;
-        }
-        expect('-');
-        printf("    sub rax, %d\n", expect_number());
-    }
+    gen(node);
 
+    printf("    pop rax\n");
     printf("    ret\n");
     return 0;
 }
