@@ -182,7 +182,8 @@ Node *mul()
         if (consume('*'))
         {
             // 左辺は元の自分primary　親は乗算　右辺は再帰で求める　以下同様
-            // ちょうど１木単位分の操作がprimary内で行われることによって　再び
+            // ちょうど１木単位分の操作がprimary内で行われることによって　反対「へ」の字的に進む感じ？　
+            // 元のオペランドに　右側にあるオペランドの左足がくっつくいめーじ
             node = new_node(ND_MUL, node, primary());
         }
         else if (consume('/'))
