@@ -34,5 +34,23 @@ assert 12 "+12"
 assert 6 "12 + 2*(-3)"
 assert 8 "-5+ +13"
 
-assert 1 "10 != 1"
+assert 0 "1<0"
+assert 0 "1<1"
+assert 1 "1<2"
+assert 1 "1>0"
+assert 0 "1>1"
+assert 0 "1>2"
+
+assert 0 "1<=0"
+assert 1 "1<=1"
+assert 1 "1<=2"
+assert 1 "1>=0"
+assert 1 "1>=1"
+assert 0 "1>=2"
+
+assert 1 "1==1"
+assert 0 "1==0"
+assert 0 "1!=1"
+assert 1 "1!=0"
+
 echo OK

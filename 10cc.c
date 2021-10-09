@@ -112,35 +112,14 @@ Token *tokenize(char *p)
         }
 
         // <, >, <=, >=
-        if (*p == '<' || *p == '>')
+        if (!strncmp(p, "==", 2) || !strncmp(p, "!=", 2) || !strncmp(p, "<=", 2) || !strncmp(p, ">=", 2))
         {
-            // <=, >=
-            if (*(p + 1) == '=')
-            {
-                token = new_token(TK_RESERVED, token, p, 2);
-                p += 2;
-                continue;
-            }
-            // <, >
-            else
-            {
-                token = new_token(TK_RESERVED, token, p++, 1);
-                continue;
-            }
+            cur = new_token(TK_RESERVED, cur, p, 2);
+            p += 2;
+            continue;
         }
-
-        // != ,==
-        else if (*p == '=' || *p == '!')
-        {
-            if (*(p + 1) == '=')
-            {
-                token = new_token(TK_RESERVED, token, p, 2);
-                p += 2;
-                continue;
-            }
-        }
-
-        else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')')
+        // <, >
+        else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')' || *p == '<' || *p == '>')
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
@@ -148,7 +127,7 @@ Token *tokenize(char *p)
 
         else if (isdigit(*p))
         {
-            cur = new_token(TK_NUM, cur, p, 1);
+            cur = new_token(TK_NUM, cur, p, 0);
             cur->val = strtol(p, &p, 10);
             continue;
         }
@@ -156,7 +135,7 @@ Token *tokenize(char *p)
         error("tokenizeできません\n");
     }
 
-    new_token(TK_EOF, cur, p, 1);
+    new_token(TK_EOF, cur, p, 0);
     return head.next;
 }
 
@@ -320,7 +299,6 @@ Node *expr()
     Node *node = equality();
 }
 
-
 void gen(Node *node)
 {
     // 終端なら左右を展開しない　スタックに積むだけ
@@ -353,6 +331,7 @@ void gen(Node *node)
         printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
+
     case ND_EQ:
         printf("    cmp rax, rdi\n");
         printf("    sete al\n");
