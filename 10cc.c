@@ -53,17 +53,18 @@ void error(char *fmt, ...)
     exit(1);
 }
 
-bool consume(char op)
+bool consume(char *op)
 {
-    if (token->kind != TK_RESERVED || token->str[0] != op)
+    // 入力されたopに対して　tokenの種類、長さ、文字自体が一つでも違うとだめです
+    if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
         return 0;
     token = token->next;
     return 1;
 }
 
-void expect(char op)
+void expect(char *op)
 {
-    if (token->kind != TK_RESERVED || token->str[0] != op)
+    if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
         error("%cではありません\n", op);
     token = token->next;
 }
@@ -107,7 +108,7 @@ Token *tokenize(char *p)
         }
 
         // <, >, <=, >=
-        else if (*p == '<' || *p == '>')
+        if (*p == '<' || *p == '>')
         {
             // <=, >=
             if (*(p + 1) == '=')
@@ -143,7 +144,7 @@ Token *tokenize(char *p)
 
         else if (isdigit(*p))
         {
-            cur = new_token(TK_NUM, cur, p,1);
+            cur = new_token(TK_NUM, cur, p, 1);
             cur->val = strtol(p, &p, 10);
             continue;
         }
@@ -151,7 +152,7 @@ Token *tokenize(char *p)
         error("tokenizeできません\n");
     }
 
-    new_token(TK_EOF, cur, p,1);
+    new_token(TK_EOF, cur, p, 1);
     return head.next;
 }
 
@@ -177,14 +178,7 @@ Node *new_node_num(int val)
     return node;
 }
 
-// 以下解析関数では　行うのはtokenの頂点化と適切な順序での結合である　したがってアセンブリの出力は別
 
-// exprからはNodeを返すようにする　今回の実装方法では右辺と左辺を備えたNodeを返すがreturnを
-// 繰り返すうちに親に近づいていくことを考えると　最上層のexprの返り値は　構文木全体の最親であることがわかる
-
-// とりあえず　整数とその加減算のみ（優先処理もない）を実装する
-// 相変わらずtokenの操作（移動）についてはconsumeやexpect系がやってくれる　→役割分担大事　tokenのことを考えなくて良くなっている
-// つまり　tokenの移動は各計算記号かprimaryでの即値でしか　実行されないということ
 
 // 今回の計算式の範囲を　（）の中、掛け算グループ、足し算グループに分けることができるということを確認する
 // 各オペランド、即値でしかtokenの移動がないことを踏まえると　即値はprimaryのみで操作、それいがいは適宜操作することで　網羅できている気がすれば良さそう？
@@ -193,27 +187,25 @@ Node *unary();
 Node *mul();
 Node *expr();
 
-// 即値か（）を担当　即値なら終端　（）なら数式全体に戻る
 Node *primary()
 {
-    if (consume('('))
+    if (consume("("))
     {
         Node *node = expr();
-        expect(')');
+        expect(")");
         return node;
     }
     // 即値が入る場合もある　即値用の頂点を作成
     return new_node_num(expect_number());
 }
 
-// 単項演算子をサポートする　gen()の簡略化のため　それぞれ０を先頭に持つexprと解釈することになる
 Node *unary()
 {
-    if (consume('+'))
+    if (consume("+"))
     {
         return primary();
     }
-    else if (consume('-'))
+    else if (consume("-"))
     {
         return new_node(ND_SUB, new_node_num(0), primary());
     }
@@ -221,21 +213,20 @@ Node *unary()
         return primary();
 }
 
-// 乗除算を担当　乗除は（）の優先式か即値のみを対象にする
 Node *mul()
 {
     Node *node = unary();
-    // mul=primary (('*' | '/' ) primary)* なのでまず初めにprimaryをみる
+    
     for (;;)
     {
-        if (consume('*'))
+        if (consume("*"))
         {
             // 左辺は元の自分primary　親は乗算　右辺は再帰で求める　以下同様
             // ちょうど１木単位分の操作がprimary内で行われることによって　反対「へ」の字的に進む感じ？　
             // 元のオペランドに　右側にあるオペランドの左足がくっつくいめーじ
             node = new_node(ND_MUL, node, unary());
         }
-        else if (consume('/'))
+        else if (consume("/"))
         {
             node = new_node(ND_DIV, node, unary());
         }
@@ -244,18 +235,17 @@ Node *mul()
     }
 }
 
-// 加減算を担当　加減は乗除算や（）を対象にする
 Node *expr()
 {
     Node *node = mul();
 
     for (;;)
     {
-        if (consume('+'))
+        if (consume("+"))
         {
             node = new_node(ND_ADD, node, mul());
         }
-        else if (consume('-'))
+        else if (consume("-"))
         {
             node = new_node(ND_SUB, node, mul());
         }
@@ -264,7 +254,6 @@ Node *expr()
     }
 }
 
-// printf("    mov rax, %d\n", expect_number());
 void gen(Node *node)
 {
     // 終端なら左右を展開しない　スタックに積むだけ
