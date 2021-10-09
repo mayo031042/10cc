@@ -31,6 +31,10 @@ typedef enum
     ND_MUL,
     ND_DIV,
     ND_NUM,
+    ND_EQ,
+    ND_NE,
+    ND_LT,
+    ND_LE,
 } NodeKind;
 
 typedef struct Node Node;
@@ -178,13 +182,14 @@ Node *new_node_num(int val)
     return node;
 }
 
-
-
 // 今回の計算式の範囲を　（）の中、掛け算グループ、足し算グループに分けることができるということを確認する
 // 各オペランド、即値でしかtokenの移動がないことを踏まえると　即値はprimaryのみで操作、それいがいは適宜操作することで　網羅できている気がすれば良さそう？
 Node *primary();
 Node *unary();
 Node *mul();
+Node *add();
+Node *relational();
+Node *equality();
 Node *expr();
 
 Node *primary()
@@ -216,7 +221,7 @@ Node *unary()
 Node *mul()
 {
     Node *node = unary();
-    
+
     for (;;)
     {
         if (consume("*"))
@@ -235,7 +240,8 @@ Node *mul()
     }
 }
 
-Node *expr()
+// 従来のexpr
+Node *add()
 {
     Node *node = mul();
 
@@ -252,6 +258,66 @@ Node *expr()
         else
             return node;
     }
+}
+
+// < ,> ,<= ,>=
+Node *relational()
+{
+    Node *node = add();
+
+    // >=,> の２つは<=, <を用いて書き直す　ことでgenを簡略化
+    for (;;)
+    {
+        if (consume("<="))
+        {
+            node = new_node(ND_LE, node, add());
+            continue;
+        }
+        else if (consume(">="))
+        {
+            node = new_node(ND_LE, add(), node);
+            continue;
+        }
+        else if (consume("<"))
+        {
+            node = new_node(ND_LT, node, add());
+            continue;
+        }
+        else if (consume(">"))
+        {
+            node = new_node(ND_LT, add(), node);
+            continue;
+        }
+        else
+            return node;
+    }
+}
+
+// ==, !=
+Node *equality()
+{
+    Node *node = relational();
+
+    for (;;)
+    {
+        if (consume("=="))
+        {
+            node = new_node(ND_EQ, node, relational());
+            continue;
+        }
+        else if (consume("!="))
+        {
+            node = new_node(ND_NE, node, relational());
+            continue;
+        }
+        else
+            return node;
+    }
+}
+
+Node *expr()
+{
+    Node *node = equality();
 }
 
 void gen(Node *node)
@@ -286,6 +352,7 @@ void gen(Node *node)
         printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
+
     }
 
     printf("    push rax\n");
