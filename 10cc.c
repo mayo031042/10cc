@@ -320,6 +320,7 @@ Node *expr()
     Node *node = equality();
 }
 
+
 void gen(Node *node)
 {
     // 終端なら左右を展開しない　スタックに積むだけ
@@ -352,7 +353,26 @@ void gen(Node *node)
         printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
-
+    case ND_EQ:
+        printf("    cmp rax, rdi\n");
+        printf("    sete al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_NE:
+        printf("    cmp rax, rdi\n");
+        printf("    setne al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_LT:
+        printf("    cmp rax, rdi\n");
+        printf("    setl al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_LE:
+        printf("    cmp rax, rdi\n");
+        printf("    setle al\n");
+        printf("    movzb rax, al\n");
+        break;
     }
 
     printf("    push rax\n");
@@ -368,7 +388,7 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // このnodeが最親になる
+
     Node *node = expr();
 
     printf(".intel_syntax noprefix\n");
