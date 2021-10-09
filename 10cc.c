@@ -19,6 +19,7 @@ struct Token
     Token *next;
     int val;
     char *str;
+    int len;
 };
 
 Token *token;
@@ -81,11 +82,12 @@ bool at_eof()
     return token->kind == TK_EOF;
 }
 
-Token *new_token(TokenKind kind, Token *cur, char *str)
+Token *new_token(TokenKind kind, Token *cur, char *str, int len)
 {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     tok->str = str;
+    tok->len = len;
     cur->next = tok;
     return tok;
 }
@@ -104,15 +106,44 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')')
+        // <, >, <=, >=
+        else if (*p == '<' || *p == '>')
         {
-            cur = new_token(TK_RESERVED, cur, p++);
+            // <=, >=
+            if (*(p + 1) == '=')
+            {
+                token = new_token(TK_RESERVED, token, p, 2);
+                p += 2;
+                continue;
+            }
+            // <, >
+            else
+            {
+                token = new_token(TK_RESERVED, token, p++, 1);
+                continue;
+            }
+        }
+
+        // != ,==
+        else if (*p == '=' || *p == '!')
+        {
+            if (*(p + 1) == '=')
+            {
+                token = new_token(TK_RESERVED, token, p, 2);
+                p += 2;
+                continue;
+            }
+        }
+
+        else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')')
+        {
+            cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
         }
 
-        if (isdigit(*p))
+        else if (isdigit(*p))
         {
-            cur = new_token(TK_NUM, cur, p);
+            cur = new_token(TK_NUM, cur, p,1);
             cur->val = strtol(p, &p, 10);
             continue;
         }
@@ -120,7 +151,7 @@ Token *tokenize(char *p)
         error("tokenizeできません\n");
     }
 
-    new_token(TK_EOF, cur, p);
+    new_token(TK_EOF, cur, p,1);
     return head.next;
 }
 
