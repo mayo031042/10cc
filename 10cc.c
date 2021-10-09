@@ -214,6 +214,43 @@ Node *expr()
     }
 }
 
+// printf("    mov rax, %d\n", expect_number());
+void gen(Node *node)
+{
+    // 終端なら左右を展開しない　スタックに積むだけ
+    if (node->kind == ND_NUM)
+    {
+        printf("    push, %d\n", node->val);
+        return;
+    }
+
+    // 記号なので左右に展開　計算結果がスタックに積まれているはずである
+    gen(node->lhs);
+    gen(node->rhs);
+
+    printf("    pop rdi\n");
+    printf("    pop rax\n");
+
+    // 当頂点は　この２つに対してND_KINDな操作をすることを期待されたものである
+    switch (node->kind)
+    {
+    case ND_ADD:
+        printf("    add rax, rdi\n");
+        break;
+    case ND_SUB:
+        printf("    sub rax, rdi\n");
+        break;
+    case ND_MUL:
+        printf("    imul rax, rdi\n");
+        break;
+    case ND_DIV:
+        printf("    cqo\n");
+        printf("    idiv rdi\n");
+    }
+
+    printf("    push rax\n");
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2)
