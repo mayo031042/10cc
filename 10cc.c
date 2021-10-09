@@ -23,21 +23,23 @@ struct Token
 
 Token *token;
 
-typedef enum{
+typedef enum
+{
     ND_ADD,
     ND_SUB,
     ND_MUL,
     ND_DIV,
     ND_NUM,
-}NodeKind;
+} NodeKind;
 
 typedef struct Node Node;
-struct Node{
+struct Node
+{
     NodeKind kind;
     Node *lhs;
     Node *rhs;
     int val;
-}; 
+};
 
 void error(char *fmt, ...)
 {
@@ -118,6 +120,56 @@ Token *tokenize(char *p)
 
     new_token(TK_EOF, cur, p);
     return head.next;
+}
+
+// Node指定してRDPをかけるということは　適切な順番にtokenの処理を並び替えるということに等しいと思われる
+// 具体的には　nodeの最親を得ることができるので　そのまま木構造に従って再帰的に処理をしていくことになる
+// main関数内で行っていたtokenの左端から順番に処理していく方法を外側で行ってみる
+
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = kind;
+    node->lhs = lhs;
+    node->rhs = rhs;
+    return node;
+}
+
+// 即値は終端記号である　そのため左右に別頂点を持たない
+Node *new_node_num(int val)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_NUM;
+    node->val = val;
+    return node;
+}
+
+// 以下解析関数では　行うのはtokenの頂点化と適切な順序での結合である　したがってアセンブリの出力は別
+
+// exprからはNodeを返すようにする　今回の実装方法では右辺と左辺を備えたNodeを返すがreturnを
+// 繰り返すうちに親に近づいていくことを考えると　最上層のexprの返り値は　構文木全体の最親であることがわかる
+
+// とりあえず　整数とその加減算のみ（優先処理もない）を実装する
+// 相変わらずtokenの操作（移動）についてはconsumeやexpect系がやってくれる　→役割分担大事　tokenのことを考えなくて良くなっている
+Node *expr()
+{
+    Node *node = new_node_num(expect_number());
+
+    for (;;)
+    {
+        if (consume('+'))
+        {
+            node = new_node(ND_ADD, node, expr());
+            continue;
+        }
+        else
+        {
+            expect('-');
+            node = new_node(ND_SUB, node, expr());
+            continue;
+        }
+        return node;
+    }
 }
 
 int main(int argc, char **argv)
