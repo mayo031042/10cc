@@ -52,6 +52,7 @@ assert 1 "1==1;"
 assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
+assert 1 "11==5+6;"
 
 # asseer 1 "b"
 # assert 12 "a=3; a+4;"

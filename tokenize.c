@@ -84,7 +84,8 @@ void *tokenize()
             cur = new_token(TK_IDENT, cur, p++, 1);
             continue;
         }
-        else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')' || *p == '<' || *p == '>' || *p == ';')
+        else if(strchr("+-*/()<>;",*p))
+        // else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')' || *p == '<' || *p == '>' || *p == ';')
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
