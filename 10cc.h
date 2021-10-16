@@ -54,3 +54,5 @@ struct Node
 };
 
 Node *expr();
+
+void gen(Node *node);
