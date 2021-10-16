@@ -19,6 +19,7 @@ void error(char *fmt, ...)
 }
 
 char *user_input;
+LVar *locals;
 
 int main(int argc, char **argv)
 {

@@ -31,7 +31,7 @@ extern char *user_input;
 bool consume(char *op);
 void expect(char *op);
 int expect_number();
-int consume_ident();
+Token *consume_ident();
 
 bool at_eof();
 void *tokenize();
@@ -63,5 +63,15 @@ struct Node
 
 Node *program();
 extern Node *code[100];
+
+typedef struct LVar LVar;
+struct LVar{
+    LVar *next;
+    char *name;
+    int len;
+    int offset;
+};
+
+extern LVar *locals;
 
 void gen(Node *node);

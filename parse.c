@@ -58,10 +58,10 @@ Node *primary()
 
     // 変数か数値が残るはず
     // 変数の場合 offset != -1
-    int offset = consume_ident();
-    if (offset != -1)
+    Token *tok = consume_ident();
+    if (tok)
     {
-        return new_node_ident(offset);
+        return new_node_ident((tok->str[0]-'a'+1)*8);
     }
 
     return new_node_num(expect_number());

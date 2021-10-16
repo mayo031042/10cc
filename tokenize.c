@@ -31,15 +31,27 @@ int expect_number()
     return val;
 }
 
+// なかったらNULL あったらLvar
+LVar *find_lvar()
+{
+    for (LVar *var = locals; var; var = var->next)
+    {
+        if (var->len == token->len && !memcmp(var->name, token->str, var->len))
+            return var;
+    }
+    return NULL;
+}
+
 // 今見ているtokenがidentでないならば−１　
 // identならばtokenを読み勧めて　offsetを返す
-int consume_ident()
+Token *consume_ident()
 {
     if (token->kind != TK_IDENT)
-        return -1;
-    int offset = (token->str[0] - 'a' + 1) * 8;
-    token = token->next;
-    return offset;
+        return NULL;
+    
+    Token *tok=token;
+    token=token->next;
+    return tok;
 }
 
 bool at_eof()
@@ -97,7 +109,7 @@ void *tokenize()
             continue;
         }
 
-        error("%s tokenizeできません\n",p);
+        error("%s tokenizeできません\n", p);
     }
 
     new_token(TK_EOF, cur, p, 0);
