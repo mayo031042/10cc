@@ -7,11 +7,40 @@
 
 #include "10cc.h"
 
+// nodeを右辺値とみなせた時　そのアドレスをスタックに積む
+void gen_lval(Node *node)
+{
+    if (node->kind != ND_LVAR)
+        error("右辺値ではありません");
+    // stackに変数の指すアドレスをpush
+    printf("    mov rax rbp\n");
+    printf("    sub rax %d", node->offset);
+    printf("    push rax");
+}
+
 void gen(Node *node)
 {
-    if (node->kind == ND_NUM)
+    switch (node->kind)
     {
+    case ND_NUM:
         printf("    push %d\n", node->val);
+        return;
+    // ストア
+    case ND_ASSIGN:
+        gen_lval(node->lhs);
+        gen(node->rhs);
+        printf("    pop rdi");
+        printf("    pop rax");
+        printf("    mov [rax], rdi");
+        // 代入式自体の評価は　左辺値に同じ
+        printf("    mov rdi");
+        return;
+    // ロード
+    case ND_LVAR:
+        gen_lval(node);
+        printf("    pop rax");
+        printf("    mov rax, [rax]");
+        printf("    push rax");
         return;
     }
 

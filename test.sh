@@ -17,7 +17,6 @@ assert() {
 }
 
 assert 0 "0;"
-
 assert 42 "42;"
 assert 10 "4+6;"
 assert 3 "5-2;"
@@ -53,5 +52,8 @@ assert 1 "1==1;"
 assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
+
+# asseer 1 "b"
+# assert 12 "a=3; a+4;"
 
 echo OK
