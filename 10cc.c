@@ -5,22 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum
-{
-    TK_RESERVED,
-    TK_NUM,
-    TK_EOF,
-} TokenKind;
-
-typedef struct Token Token;
-struct Token
-{
-    TokenKind kind;
-    Token *next;
-    int val;
-    char *str;
-    int len;
-};
+#include "10cc.h"
 
 Token *token;
 
