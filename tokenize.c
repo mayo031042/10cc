@@ -66,6 +66,11 @@ Token *tokenize(char *p)
             p += 2;
             continue;
         }
+        else if ('a' <= *p && *p <= 'z')
+        {
+            cur = new_token(TK_IDENT, cur, p++, 1);
+            continue;
+        }
         else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')' || *p == '<' || *p == '>')
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
