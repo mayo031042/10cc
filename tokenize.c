@@ -57,11 +57,13 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     return tok;
 }
 
-Token *tokenize(char *p)
+void *tokenize()
 {
     Token head;
     head.next = NULL;
     Token *cur = &head;
+
+    char *p = user_input;
 
     while (*p)
     {
@@ -99,5 +101,5 @@ Token *tokenize(char *p)
     }
 
     new_token(TK_EOF, cur, p, 0);
-    return head.next;
+    token = head.next;
 }

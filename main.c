@@ -18,6 +18,8 @@ void error(char *fmt, ...)
     exit(1);
 }
 
+char *user_input;
+
 int main(int argc, char **argv)
 {
     if (argc != 2)
@@ -26,8 +28,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    char *user_input = argv[1];
-    token = tokenize(user_input);
+    user_input = argv[1];
+    tokenize();
 
     // Node *node = program();
     program();

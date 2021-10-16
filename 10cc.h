@@ -26,6 +26,7 @@ struct Token
 };
 
 extern Token *token;
+extern char *user_input;
 
 bool consume(char *op);
 void expect(char *op);
@@ -33,7 +34,7 @@ int expect_number();
 int consume_ident();
 
 bool at_eof();
-Token *tokenize(char *p);
+void *tokenize();
 
 typedef enum
 {
