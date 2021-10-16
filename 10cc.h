@@ -1,10 +1,11 @@
-
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+void error(char *fmt, ...);
 
 typedef enum
 {
@@ -24,3 +25,9 @@ struct Token
 };
 
 extern Token *token;
+
+bool consume(char *op);
+void expect(char *op);
+int expect_number();
+Token *tokenize(char *p);
+
