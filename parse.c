@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "10cc.h"
+Node *code[100];
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -24,15 +25,28 @@ Node *new_node_num(int val)
     return node;
 }
 
+Node *new_node_ident(int offset)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    node->offset = offset;
+    return node;
+}
+
+Node *ident();
+Node *num();
 Node *primary();
 Node *unary();
 Node *mul();
 Node *add();
 Node *relational();
 Node *equality();
-// exprのみmain内から用いるため　Hに移動している
-// Node *expr();
+Node *assign();
+Node *expr();
+Node *stmt();
+// Node *program();
 
+// programの中の最小単位 (expr)か数値か変数しかありえない　
 Node *primary()
 {
     if (consume("("))
@@ -41,6 +55,15 @@ Node *primary()
         expect(")");
         return node;
     }
+
+    // 変数か数値が残るはず
+    // 変数の場合 offset != -1
+    int offset = consume_ident();
+    if (offset != -1)
+    {
+        return new_node_ident(offset);
+    }
+
     return new_node_num(expect_number());
 }
 
@@ -148,7 +171,32 @@ Node *equality()
     }
 }
 
+Node *assign()
+{
+    // == ,!=, < 等はequality()内で優先的に処理されている
+    Node *node = equality();
+    if (consume("="))
+        node = new_node(ND_ASSIGN, node, assign());
+
+    return node;
+}
+
 Node *expr()
 {
-    Node *node = equality();
+    return assign();
+}
+
+Node *stmt()
+{
+    Node *node = expr();
+    // expect(";");
+    return node;
+}
+
+Node *program()
+{
+    int i = 0;
+    while (!at_eof())
+        code[i++] = stmt();
+    code[i] = NULL;
 }

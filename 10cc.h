@@ -30,6 +30,9 @@ extern Token *token;
 bool consume(char *op);
 void expect(char *op);
 int expect_number();
+int consume_ident();
+
+bool at_eof();
 Token *tokenize(char *p);
 
 typedef enum
@@ -38,11 +41,13 @@ typedef enum
     ND_SUB,
     ND_MUL,
     ND_DIV,
-    ND_NUM,
     ND_EQ,
     ND_NE,
     ND_LT,
     ND_LE,
+    ND_ASSIGN,
+    ND_LVAR,
+    ND_NUM,
 } NodeKind;
 
 typedef struct Node Node;
@@ -52,8 +57,10 @@ struct Node
     Node *lhs;
     Node *rhs;
     int val;
+    int offset; // kindがND_LVARのときのみ使う
 };
 
-Node *expr();
+Node *program();
+extern Node *code[100];
 
 void gen(Node *node);

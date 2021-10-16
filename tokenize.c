@@ -31,6 +31,17 @@ int expect_number()
     return val;
 }
 
+// 今見ているtokenがidentでないならば−１　
+// identならばtokenを読み勧めて　offsetを返す
+int consume_ident()
+{
+    if (token->kind != TK_IDENT)
+        return -1;
+    int offset = (token->str[0] - 'a' + 1) * 8;
+    token = token->next;
+    return offset;
+}
+
 bool at_eof()
 {
     return token->kind == TK_EOF;
