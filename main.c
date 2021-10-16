@@ -30,19 +30,26 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     tokenize();
-
-    // Node *node = program();
     program();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
 
-    int i = 0;
-    while (code[i] != NULL)
-        gen(code[i++]);
+    // プロローグ
+    printf("    push rbp\n");
+    printf("    mov rbp, rsp\n");
+    printf("    sub rsp, 208\n");
 
-    printf("    pop rax\n");
+    for (int i = 0; code[i]; i++){
+        gen(code[i]);
+        // 必要なものは変数に保存されているはずである
+        printf("    pop rax\n");
+    }
+
+    // エピローグ
+    printf("    mov rsp, rbp\n");
+    printf("    pop rbp\n");
     printf("    ret\n");
     return 0;
 }

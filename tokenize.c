@@ -84,8 +84,7 @@ void *tokenize()
             cur = new_token(TK_IDENT, cur, p++, 1);
             continue;
         }
-        else if(strchr("+-*/()<>;",*p))
-        // else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')' || *p == '<' || *p == '>' || *p == ';')
+        else if (strchr("+-*/()<>=;", *p))
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
@@ -98,7 +97,7 @@ void *tokenize()
             continue;
         }
 
-        error("tokenizeできません\n");
+        error("%s tokenizeできません\n",p);
     }
 
     new_token(TK_EOF, cur, p, 0);

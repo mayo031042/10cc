@@ -52,9 +52,16 @@ assert 1 "1==1;"
 assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
+
 assert 1 "11==5+6;"
 
-# asseer 1 "b"
-# assert 12 "a=3; a+4;"
+assert 1 "a=1;"
+assert 6 "a=2*3; a;"
+assert 7 "a=3; a+4;"
+assert 2 "a=(3-1);"
+assert 5 "b=20; b=b/4;"
+assert 7 "x=3; y=4; z=x+y;"
+assert 4 "a=3; b=a==3; a=b+a;"
+assert 25 "a=b=5; a=b*b;"
 
 echo OK
