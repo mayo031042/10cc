@@ -65,5 +65,9 @@ assert 4 "a=3; b=a==3; a=b+a;"
 assert 25 "a=b=5; a=b*b;"
 
 assert 1 "nm=1;"
+assert 42 "nagainamae = 42;"
+assert 100 "suuji_100_hairu = 100;"
+assert 5 "num=10; x=12; num=3+x-num;"
+assert 1 "num=10; x=3*3; (num-1)==x;"
 
 echo OK
