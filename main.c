@@ -1,5 +1,6 @@
 #include "10cc.h"
 
+// グローバル変数の宣言
 char *user_input;
 Token *token;
 Node *code[100];

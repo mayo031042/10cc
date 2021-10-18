@@ -1,5 +1,6 @@
 #include "10cc.h"
 
+// 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(char *op)
 {
     if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
@@ -8,6 +9,7 @@ bool consume(char *op)
     return 1;
 }
 
+// consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
 void expect(char *op)
 {
     if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
@@ -15,6 +17,7 @@ void expect(char *op)
     token = token->next;
 }
 
+// expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
     if (token->kind != TK_NUM)
@@ -24,8 +27,7 @@ int expect_number()
     return val;
 }
 
-// 今見ているtokenがidentでないならば−１　
-// identならばtokenを読み勧めて　offsetを返す
+// token が識別子である時　そのtoken のコピーを返し　token を読み進める
 Token *consume_ident()
 {
     if (token->kind != TK_IDENT)
@@ -36,11 +38,13 @@ Token *consume_ident()
     return tok;
 }
 
+// token 列の最後尾の次だったらtrue
 bool at_eof()
 {
     return token->kind == TK_EOF;
 }
 
+// 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 Token *new_token(TokenKind kind, Token *cur, char *str, int len)
 {
     Token *tok = calloc(1, sizeof(Token));
@@ -51,7 +55,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     return tok;
 }
 
-// 変数に使える文字か？
+// 変数に使える文字か否かを返す
 int is_alnum(char c)
 {
     return ('a' <= c && c <= 'z') ||
@@ -60,9 +64,13 @@ int is_alnum(char c)
            (c == '_');
 }
 
+// 入力されたプログラムを先頭からtokenize していく　
+// error がなかった場合は　ｇ変数token をtoken 列の先頭にセットして終了
 void *tokenize()
 {
+    // 先頭を指すためだけの　空のtoken 
     Token head;
+    // 入力を区切る　意味のあるtoken はhead.next から順につながっている
     head.next = NULL;
     Token *cur = &head;
 
@@ -71,7 +79,6 @@ void *tokenize()
     while (*p)
     {
         // returnx と return x　を区別するために　空白処理前に予約語の判定を行う
-
 
         if (isspace(*p))
         {
@@ -101,15 +108,9 @@ void *tokenize()
         else if (is_alnum(*p))
         {
             char *q = p;
-            // p,qはこの時　どちらも変数文字列の先頭である
             for (; is_alnum(*q); q++)
                 ;
-            // while (is_alnum(*++q)); でも可
-
-            // この段階で　qのみが変数の最後尾の次を指している
-            // よって変数の長さは　ちょうどq-p　になる
             cur = new_token(TK_IDENT, cur, p, q - p);
-            // 次に見たいpは　ちょうどqの位置にある
             p = q;
             continue;
         }
