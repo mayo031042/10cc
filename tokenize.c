@@ -77,6 +77,9 @@ void *tokenize()
 
     while (*p)
     {
+        // returnx と return x　を区別するために　空白処理前に予約語の判定を行う
+
+
         if (isspace(*p))
         {
             p++;

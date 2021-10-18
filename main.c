@@ -7,18 +7,9 @@
 
 #include "10cc.h"
 
-Token *token;
-
-void error(char *fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    fprintf(stderr, "\n");
-    exit(1);
-}
-
 char *user_input;
+Token *token;
+Node *code[100];
 LVar *locals;
 
 int main(int argc, char **argv)
@@ -42,7 +33,8 @@ int main(int argc, char **argv)
     printf("    mov rbp, rsp\n");
     printf("    sub rsp, 208\n");
 
-    for (int i = 0; code[i]; i++){
+    for (int i = 0; code[i]; i++)
+    {
         gen(code[i]);
         // 必要なものは変数に保存されているはずである
         printf("    pop rax\n");

@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "10cc.h"
-Node *code[100];
+
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
