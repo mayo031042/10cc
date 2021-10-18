@@ -64,4 +64,6 @@ assert 7 "x=3; y=4; z=x+y;"
 assert 4 "a=3; b=a==3; a=b+a;"
 assert 25 "a=b=5; a=b*b;"
 
+assert 1 "nm=1;"
+
 echo OK

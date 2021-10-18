@@ -72,6 +72,7 @@ struct LVar{
     int offset;
 };
 
+// localsは　変数のリンクドリストの最後尾を常に指している
 extern LVar *locals;
 
 void gen(Node *node);
