@@ -1,5 +1,6 @@
 #include "10cc.h"
 
+// node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -9,6 +10,7 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
     return node;
 }
 
+// 数値を指すnode を作成する　常に葉であるような終端記号になるので左右に辺は持たない
 Node *new_node_num(int val)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -52,6 +54,7 @@ LVar *find_lvar(Token *tok)
     return NULL;
 }
 
+// 構文解析のための関数
 Node *ident();
 Node *num();
 Node *primary();
@@ -148,12 +151,14 @@ Node *add()
     }
 }
 
+// 数式を不等号で繋がれた単位であると見る
 Node *relational()
 {
     Node *node = add();
 
     for (;;)
     {
+        // 2文字の不等号を先に処理する
         if (consume("<="))
         {
             node = new_node(ND_LE, node, add());
@@ -179,6 +184,7 @@ Node *relational()
     }
 }
 
+// 数式を等号で繋がれた式の連続であると解釈する
 Node *equality()
 {
     Node *node = relational();
@@ -200,6 +206,7 @@ Node *equality()
     }
 }
 
+// 数式を代入式の連続であると解釈する
 Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
@@ -214,14 +221,14 @@ Node *expr()
 {
     return assign();
 }
-
+// ;　で区切る
 Node *stmt()
 {
     Node *node = expr();
     expect(";");
     return node;
 }
-
+// ；　で区切られたコード全体を　parseする
 Node *program()
 {
     int i = 0;

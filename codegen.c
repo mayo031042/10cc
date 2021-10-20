@@ -22,22 +22,25 @@ void gen_lval(Node *node)
 
 void gen(Node *node)
 {
+    // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
+    // 代入式　　　変数のアドレスに対して値のコピーをし　その値をstack に保存
     switch (node->kind)
     {
     case ND_NUM:
         printf("    push %d\n", node->val);
         return;
-    // ストア
+    // ストア 代入式
     case ND_ASSIGN:
         gen_lval(node->lhs);
         gen(node->rhs);
         printf("    pop rdi\n");
         printf("    pop rax\n");
+        // 左辺をアドレスとみなして　そのアドレスへと右辺の値を　コピーする
         printf("    mov [rax], rdi\n");
-        // 代入式自体の評価は　左辺値に同じ
+        // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
         printf("    push rdi\n");
         return;
-    // ロード
+    // ロード 
     case ND_LVAR:
         gen_lval(node);
         printf("    pop rax\n");
@@ -49,11 +52,14 @@ void gen(Node *node)
     gen(node->lhs);
     gen(node->rhs);
 
+    // raxが左辺　rdiが右辺
     printf("    pop rdi\n");
     printf("    pop rax\n");
 
+    // 左右辺の展開をした後にstack に積まれた結果について関係を記述する
     switch (node->kind)
     {
+    // 四則演算
     case ND_ADD:
         printf("    add rax, rdi\n");
         break;
@@ -68,6 +74,7 @@ void gen(Node *node)
         printf("    idiv rdi\n");
         break;
 
+    // 等号　不等号
     case ND_EQ:
         printf("    cmp rax, rdi\n");
         printf("    sete al\n");
@@ -90,5 +97,6 @@ void gen(Node *node)
         break;
     }
 
+    // 終端記号
     printf("    push rax\n");
 }

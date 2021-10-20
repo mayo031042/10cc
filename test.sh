@@ -35,7 +35,7 @@ assert 7 "10-(3*3-2)+16/4;"
 assert 12 "+12;"
 assert 6 "12 + 2*(-3);"
 assert 8 "-5+ +13;"
-# 不等号
+# 不等号　全組み合わせ 4(<,>,<=,>=)*3(左:右 -> ==,<,>) =12通り
 assert 0 "1<0;"
 assert 0 "1<1;"
 assert 1 "1<2;"
@@ -55,7 +55,8 @@ assert 0 "1!=1;"
 assert 1 "1!=0;"
 assert 1 "11==5+6;"
 # 単長の変数
-assert 1 "a=1;"
+assert 1 "a=1;" # 代入
+assert 2 "a=b=c=1; a=b+1;" # 連続代入
 assert 6 "a= 2 *(5-2); a;"
 assert 7 "a=3; a+4;"
 assert 2 "a=-2; -a;"
