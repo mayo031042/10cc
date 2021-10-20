@@ -91,23 +91,22 @@ void *tokenize()
             p++;
             continue;
         }
-        // returnx と return x　を区別するために　空白処理前に予約語の判定を行う
-        // → 空白スキップは　空白消去ではないので　スキップを先に行っても問題ない
-        // が変数判定よりも先に行う必要がある
-        // p から６文字分全てreturn に一致して　かつreturn の次の文字がtoken 構成文字出ない時は　return 予約語と判定される
         if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
         {
             cur = new_token(TK_RETURN, cur, p, 6);
             p += 6;
             continue;
         }
-        else if (!strncmp(p, "==", 2) || !strncmp(p, "!=", 2) || !strncmp(p, "<=", 2) || !strncmp(p, ">=", 2))
+        else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
         {
-            cur = new_token(TK_RESERVED, cur, p, 2);
+            if (strchr("!=<>", *p))
+                cur = new_token(TK_RESERVED, cur, p, 2);
+            else
+                cur = new_token(TK_ASSIGN_RESERVED, cur, p, 2);
             p += 2;
             continue;
         }
-        else if (strchr("+-*/()<>=;", *p))
+        else if (strchr("+-*/()=<>;", *p))
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
@@ -119,7 +118,6 @@ void *tokenize()
             cur->val = strtol(p, &p, 10);
             continue;
         }
-        // 変数判定は　数値判定よりも　後に持ってくる必要がある　
         else if (is_alnum(*p))
         {
             char *q = p;

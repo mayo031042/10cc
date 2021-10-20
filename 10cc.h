@@ -11,11 +11,12 @@ void error(char *fmt, ...);
 // token　
 typedef enum
 {
-    TK_RESERVED, // 演算子
-    TK_IDENT,    // 変数
-    TK_NUM,      // 数値
-    TK_RETURN,   // return
-    TK_EOF,      // 入力の最後
+    TK_RESERVED,        // 演算子
+    TK_ASSIGN_RESERVED, // 代入演算子
+    TK_IDENT,           // 変数
+    TK_NUM,             // 数値
+    TK_RETURN,          // return
+    TK_EOF,             // 入力の最後
 } TokenKind;
 
 typedef struct Token Token;

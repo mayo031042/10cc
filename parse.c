@@ -55,8 +55,6 @@ LVar *find_lvar(Token *tok)
 }
 
 // 構文解析のための関数
-Node *ident();
-Node *num();
 Node *primary();
 Node *unary();
 Node *mul();
@@ -184,7 +182,7 @@ Node *relational()
     }
 }
 
-// 数式を等号で繋がれた式の連続であると解釈する
+// 数式を等号か等号否定で繋がれた式の連続であると解釈する
 Node *equality()
 {
     Node *node = relational();
