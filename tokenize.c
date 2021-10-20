@@ -38,7 +38,7 @@ Token *consume_ident()
     return tok;
 }
 
-int consume_return()
+bool consume_return()
 {
     if (token->kind != TK_RETURN)
         return 0;

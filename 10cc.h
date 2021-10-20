@@ -28,15 +28,6 @@ struct Token
     int len;
 };
 
-// tokenize のための関数 -> @ tokenize.c
-bool consume(char *op);
-void expect(char *op);
-int expect_number();
-Token *consume_ident();
-int consume_return();
-bool at_eof();
-void *tokenize();
-
 // node
 typedef enum
 {
@@ -63,6 +54,16 @@ struct Node
     int val;
     int offset; // kindがND_LVARのときのみ使う
 };
+
+// tokenize のための関数 -> @ tokenize.c
+bool consume(char *op);
+// bool consume(int a);
+void expect(char *op);
+int expect_number();
+Token *consume_ident();
+bool consume_return();
+bool at_eof();
+void *tokenize();
 
 // parse のための関数 -> @ parse.c
 Node *program();
