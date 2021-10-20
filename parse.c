@@ -226,9 +226,8 @@ Node *expr()
 Node *stmt()
 {
     Node *node;
-    if (consume_return())
+    if (consume_keyword(TK_RETURN))
     {
-// error("     error!!\n\n");
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();

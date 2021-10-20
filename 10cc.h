@@ -61,7 +61,7 @@ bool consume(char *op);
 void expect(char *op);
 int expect_number();
 Token *consume_ident();
-bool consume_return();
+bool consume_keyword(TokenKind kind);
 bool at_eof();
 void *tokenize();
 

@@ -4,9 +4,9 @@
 bool consume(char *op)
 {
     if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
-        return 0;
+        return false;
     token = token->next;
-    return 1;
+    return true;
 }
 
 // consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
@@ -32,18 +32,17 @@ Token *consume_ident()
 {
     if (token->kind != TK_IDENT)
         return NULL;
-
     Token *tok = token;
     token = token->next;
     return tok;
 }
 
-bool consume_return()
+bool consume_keyword(TokenKind kind)
 {
-    if (token->kind != TK_RETURN)
-        return 0;
-    token=token->next;
-    return 1;
+    if (token->kind != kind)
+        return false;
+    token = token->next;
+    return true;
 }
 
 // token 列の最後尾の次だったらtrue
