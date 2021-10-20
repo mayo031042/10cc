@@ -1,6 +1,10 @@
 CFLAGS=-std=c11 -g -static
 SRCS=$(wildcard *.c)
+SRCS:=$(filter-out experiment.c,$(SRCS))
 OBJS=$(SRCS:.c=.o)
+
+ass: experiment.c
+
 
 10cc: $(OBJS)
 		$(CC) -o 10cc $(OBJS) $(LDFLAGS)
