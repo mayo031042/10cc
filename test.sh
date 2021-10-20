@@ -16,6 +16,7 @@ assert() {
     fi
 }
 
+# << COMMENTOUT
 # 数値
 assert 0 "0;"
 assert 42 "42;"
@@ -69,5 +70,12 @@ assert 42 "nagainamae = 42;"
 assert 100 "suuji_100_hairu = 100;"
 assert 5 "num=10; x=12; num=3+x-num;"
 assert 1 "num=10; x=3*3; (num-1)==x;"
+# COMMENTOUT
+# return 文
+assert 1 "return 1;"
+assert 2 "return 2; return 1;" # 複数のreturn 
+assert 42 "returnx=42; return returnx;" # return に類似した変数
+assert 4 "x=4; return x;" # 変数をreturn 
+assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
 
 echo OK

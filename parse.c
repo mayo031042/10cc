@@ -222,9 +222,19 @@ Node *expr()
     return assign();
 }
 // ;　で区切る
+// return が来たら　return したい式が 左辺==lhsに展開されるような　return node を作成する
 Node *stmt()
 {
-    Node *node = expr();
+    Node *node;
+    if (consume_return())
+    {
+// error("     error!!\n\n");
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->lhs = expr();
+    }
+    else
+        node = expr();
     expect(";");
     return node;
 }

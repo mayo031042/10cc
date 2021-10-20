@@ -40,12 +40,22 @@ void gen(Node *node)
         // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
         printf("    push rdi\n");
         return;
-    // ロード 
+    // ロード
     case ND_LVAR:
         gen_lval(node);
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
+        return;
+    // return 文　これ以降のアセンブリは実行されない
+    case ND_RETURN:
+        gen(node->lhs);
+        // この時　return したい値はstack のトップに存在しているはずである
+        printf("    pop rax\n");
+        //　最初のret 以外　実行されないコードも生成されてしまうが今回はそれを許容する　つまりここでエピローグを書いてよい
+        printf("    mov rsp, rbp\n");
+        printf("    pop rbp\n");
+        printf("    ret\n");
         return;
     }
 
@@ -97,6 +107,6 @@ void gen(Node *node)
         break;
     }
 
-    // 終端記号
+    // 各頂点で結果はstack に保存される
     printf("    push rax\n");
 }

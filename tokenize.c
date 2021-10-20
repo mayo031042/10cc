@@ -38,6 +38,14 @@ Token *consume_ident()
     return tok;
 }
 
+int consume_return()
+{
+    if (token->kind != TK_RETURN)
+        return 0;
+    token=token->next;
+    return 1;
+}
+
 // token 列の最後尾の次だったらtrue
 bool at_eof()
 {
@@ -55,7 +63,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     return tok;
 }
 
-// 変数に使える文字か否かを返す
+// 変数に使える文字か否かを返す -> token 構成文字
 int is_alnum(char c)
 {
     return ('a' <= c && c <= 'z') ||
@@ -68,7 +76,7 @@ int is_alnum(char c)
 // error がなかった場合は　ｇ変数token をtoken 列の先頭にセットして終了
 void *tokenize()
 {
-    // 先頭を指すためだけの　空のtoken 
+    // 先頭を指すためだけの　空のtoken
     Token head;
     // 入力を区切る　意味のあるtoken はhead.next から順につながっている
     head.next = NULL;
@@ -78,15 +86,23 @@ void *tokenize()
 
     while (*p)
     {
-        // returnx と return x　を区別するために　空白処理前に予約語の判定を行う
 
         if (isspace(*p))
         {
             p++;
             continue;
         }
-
-        if (!strncmp(p, "==", 2) || !strncmp(p, "!=", 2) || !strncmp(p, "<=", 2) || !strncmp(p, ">=", 2))
+        // returnx と return x　を区別するために　空白処理前に予約語の判定を行う
+        // → 空白スキップは　空白消去ではないので　スキップを先に行っても問題ない
+        // が変数判定よりも先に行う必要がある
+        // p から６文字分全てreturn に一致して　かつreturn の次の文字がtoken 構成文字出ない時は　return 予約語と判定される
+        if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
+        {
+            cur = new_token(TK_RETURN, cur, p, 6);
+            p += 6;
+            continue;
+        }
+        else if (!strncmp(p, "==", 2) || !strncmp(p, "!=", 2) || !strncmp(p, "<=", 2) || !strncmp(p, ">=", 2))
         {
             cur = new_token(TK_RESERVED, cur, p, 2);
             p += 2;

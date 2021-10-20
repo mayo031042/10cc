@@ -11,10 +11,11 @@ void error(char *fmt, ...);
 // token　
 typedef enum
 {
-    TK_RESERVED,
-    TK_IDENT,
-    TK_NUM,
-    TK_EOF,
+    TK_RESERVED, // 演算子
+    TK_IDENT,    // 変数
+    TK_NUM,      // 数値
+    TK_RETURN,   // return
+    TK_EOF,      // 入力の最後
 } TokenKind;
 
 typedef struct Token Token;
@@ -32,6 +33,7 @@ bool consume(char *op);
 void expect(char *op);
 int expect_number();
 Token *consume_ident();
+int consume_return();
 bool at_eof();
 void *tokenize();
 
@@ -49,6 +51,7 @@ typedef enum
     ND_ASSIGN, // =
     ND_LVAR,   // 変数
     ND_NUM,    // 数値
+    ND_RETURN, // return
 } NodeKind;
 
 typedef struct Node Node;
