@@ -2,21 +2,18 @@
 
 void error(char *fmt, ...)
 {
-    // 可変長引数をそのまま受け取れる型va_list の変数ap を宣言
     va_list ap;
-    // ap に対してfmt の次の引数以降を格納する (初期化(代入？))
     va_start(ap, fmt);
-    // 第一引数に出力したいストリーム　第２にフォーマット　第３に２に対しての置換文字列を指定
-    // 第３引数は配列になっている必要がある　多分vector の意味
     vfprintf(stderr, fmt, ap);
-    // 上記と異なるのが第３引数である　可変長引数として解釈されるので　第２引数内の置換文字分指定すれば良い
     fprintf(stderr, "\n");
-    // exit(1);
+    exit(1);
 }
 
-void err(char *fmt)
+void err(char *fmt, ...)
 {
-    fprintf(stderr, fmt);
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
 }
 

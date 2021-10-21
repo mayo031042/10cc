@@ -7,7 +7,7 @@
 
 // error -> @ codegen.c
 void error(char *fmt, ...);
-void err();
+void err(char *fmt, ...);
 
 // token　
 typedef enum
