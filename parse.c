@@ -72,7 +72,7 @@ Node *primary()
     if (consume(TK_RESERVED, "("))
     {
         Node *node = expr();
-        expect(")");
+        expect(TK_RESERVED, ")");
         return node;
     }
 
@@ -240,7 +240,7 @@ Node *stmt()
     }
     else
         node = expr();
-    expect(";");
+    expect(TK_RESERVED, ";");
     return node;
 }
 // ；　で区切られたコード全体を　parseする

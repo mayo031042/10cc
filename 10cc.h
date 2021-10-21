@@ -59,8 +59,7 @@ struct Node
 
 // tokenize のための関数 -> @ tokenize.c
 bool consume(TokenKind kind, char *op);
-// bool consume(int a);
-void expect(char *op);
+void expect(TokenKind kind, char *op);
 int expect_number();
 Token *consume_ident();
 bool consume_keyword(TokenKind kind);

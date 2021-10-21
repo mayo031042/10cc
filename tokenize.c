@@ -10,9 +10,9 @@ bool consume(TokenKind kind, char *op)
 }
 
 // consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
-void expect(char *op)
+void expect(TokenKind kind, char *op)
 {
-    if (token->kind != TK_RESERVED || token->len != strlen(op) || memcmp(token->str, op, token->len))
+    if (token->kind != kind || token->len != strlen(op) || memcmp(token->str, op, token->len))
         error("%cではありません\n", op);
     token = token->next;
 }
