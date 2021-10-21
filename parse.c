@@ -218,6 +218,10 @@ Node *assign()
             node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
         else if (consume(TK_ASSIGN_RESERVED, "-="))
             node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
+        // else if (consume(TK_ASSIGN_RESERVED, "-="))
+        //     node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
+        // else if (expect(TK_ASSIGN_RESERVED, "-="))
+        //     node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
     }
 
     return node;
