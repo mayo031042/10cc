@@ -3,7 +3,7 @@
 // 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
-    if (token->kind != kind || token->len != strlen(op) || memcmp(token->str, op, token->len))
+    if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
         return false;
     token = token->next;
     pos++;
@@ -21,10 +21,10 @@ bool expect(TokenKind kind, char *op)
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
-    if (token->kind != TK_NUM)
+    if (tokens[pos]->kind != TK_NUM)
         error("数値ではありません\n");
-    int val = token->val;
-    token = token->next;
+    int val = tokens[pos]->val;
+    // token = token->next;
     pos++;
     return val;
 }
@@ -34,15 +34,15 @@ int consume_ident()
 {
     if (tokens[pos]->kind != TK_IDENT)
         return -1;
-    token = token->next;
+    // token = token->next;
     return pos++;
 }
 
 bool consume_keyword(TokenKind kind)
 {
-    if (token->kind != kind)
+    if (tokens[pos]->kind != kind)
         return false;
-    token = token->next;
+    // token = token->next;
     pos++;
     return true;
 }
@@ -50,7 +50,7 @@ bool consume_keyword(TokenKind kind)
 // token 列の最後尾の次だったらtrue
 bool at_eof()
 {
-    return token->kind == TK_EOF;
+    return tokens[pos]->kind == TK_EOF;
 }
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
