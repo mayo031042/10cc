@@ -57,7 +57,7 @@ assert 1 "1!=0;"
 assert 1 "11==5+6;"
 # 単長の変数
 assert 1 "a=1;" # 代入
-assert 2 "a=b=c=1; a=b+1;" # 連続代入
+assert 2 "a=b=c=d=1; a=b+1;" # 連続代入
 assert 6 "a= 2 *(5-2); a;"
 assert 7 "a=3; a+4;"
 assert 2 "a=-2; -a;"
