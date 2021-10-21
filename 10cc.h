@@ -17,6 +17,7 @@ typedef enum
     TK_IDENT,           // 変数
     TK_NUM,             // 数値
     TK_RETURN,          // return
+    TK_IF,
     TK_EOF,             // 入力の最後
 } TokenKind;
 
