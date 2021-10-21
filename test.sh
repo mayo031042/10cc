@@ -87,5 +87,9 @@ assert 1 "a=2; a-=1;" # 代入減算
 assert 1 "a=1;b=3; b-=a=2;" 
 assert 3 "a=6;b=5; a-=b-=2;" # 連続代入減算
 assert 1 "a=xyz=3; a-=6/((xyz-=2)+2);"
+assert 9 "a=b=3; a*=b;" # 代入乗算
+assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
+assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
+assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
 
 echo OK
