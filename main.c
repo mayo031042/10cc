@@ -27,13 +27,11 @@ int main(int argc, char **argv)
     // プロローグ
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
-    // 変数が使用する分の　メモリを確保
     printf("    sub rsp, 208\n");
 
     for (int i = 0; code[i]; i++)
     {
         gen(code[i]);
-        // 全ての部分木に対してstack への保存は１度だけと言える
         printf("    pop rax\n");
     }
 
