@@ -16,7 +16,7 @@ assert() {
     fi
 }
 
-<< COMMENTOUT
+# << COMMENTOUT
 # 数値
 assert 0 "0;"
 assert 42 "42;"
@@ -55,7 +55,7 @@ assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
 assert 1 "11==5+6;"
-COMMENTOUT
+# COMMENTOUT
 # 単長の変数
 assert 1 "a=1;" # 代入
 assert 2 "a=b=c=d=1; a=b+1;" # 連続代入

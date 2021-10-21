@@ -61,7 +61,7 @@ struct Node
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
 int expect_number();
-Token *consume_ident();
+int consume_ident();
 bool consume_keyword(TokenKind kind);
 bool at_eof();
 void *tokenize();

@@ -30,14 +30,12 @@ int expect_number()
 }
 
 // token が識別子である時　そのtoken のコピーを返し　token を読み進める
-Token *consume_ident()
+int consume_ident()
 {
-    if (token->kind != TK_IDENT)
-        return NULL;
-    Token *tok = token;
+    if (tokens[pos]->kind != TK_IDENT)
+        return -1;
     token = token->next;
-    pos++;
-    return tok;
+    return pos++;
 }
 
 bool consume_keyword(TokenKind kind)
@@ -64,7 +62,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     tok->str = str;
     tok->len = len;
     cur->next = tok;
-    tokens[pos]=tok;
+    tokens[pos] = tok;
     tokens[pos]->next = tok;
     pos++;
     return tok;
@@ -148,5 +146,5 @@ void *tokenize()
 
     new_token(TK_EOF, cur, p, 0);
     token = head.next;
-    pos=0;
+    pos = 0;
 }

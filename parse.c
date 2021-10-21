@@ -78,15 +78,15 @@ Node *primary()
 
     // 変数か数値が残るはず
     // 変数の場合 tok != NULL
-    Token *tok = consume_ident();
-    if (tok)
+    int my_pos = consume_ident();
+    if (my_pos != -1)
     {
         // この場合tokは変数である　既出か否か
-        LVar *lvar = find_lvar(tok);
+        LVar *lvar = find_lvar(tokens[my_pos]);
         if (lvar == NULL)
         {
             // 未出である
-            lvar = new_lvar(tok);
+            lvar = new_lvar(tokens[my_pos]);
             // localsは常に最後尾を指すことでoffsetの計算が容易に
             locals = lvar;
         }
