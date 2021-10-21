@@ -215,12 +215,9 @@ Node *assign()
     else if (token->kind == TK_ASSIGN_RESERVED)
     {
         if (consume(TK_ASSIGN_RESERVED, "+="))
-            //   assign
-            //  add    a
-            // 1   a
-
-            // node を同時に複数設定しても　最外のnew_node が値をreturn しないとnode の移動はない なので関数に入る直前のnode を複数回利用したくてもコピーする必要はない
-            node = new_node(ND_ASSIGN, new_node(ND_ADD, assign(), node), node);
+            node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
+        else if (consume(TK_ASSIGN_RESERVED, "-="))
+            node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
     }
 
     return node;
