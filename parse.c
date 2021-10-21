@@ -29,12 +29,12 @@ Node *new_node_ident(LVar *lvar)
 }
 
 // tokを参照して　新しいlvarを作成する つまり未出のlvarに対してのみ行う処理
-LVar *new_lvar(Token *tok)
+LVar *new_lvar(int my_pos)
 {
     LVar *lvar = calloc(1, sizeof(LVar));
     lvar->next = locals;
-    lvar->name = tok->str;
-    lvar->len = tok->len;
+    lvar->name = tokens[my_pos]->str;
+    lvar->len = tokens[my_pos]->len;
     // 一番初めのlocalsはNULLである
     if (locals)
         lvar->offset = locals->offset + 8;
@@ -44,15 +44,25 @@ LVar *new_lvar(Token *tok)
 }
 
 // なかったらNULL あったらLVar を返す
-LVar *find_lvar(Token *tok)
+LVar *find_lvar(int my_pos)
 {
     for (LVar *var = locals; var; var = var->next)
     {
-        if (var->len == tok->len && !memcmp(var->name, tok->str, var->len))
+        if (var->len == tokens[my_pos]->len && !memcmp(var->name, tokens[my_pos]->str, var->len))
             return var;
     }
     return NULL;
 }
+
+// LVar *find_lvar(Token *tok)
+// {
+//     for (LVar *var = locals; var; var = var->next)
+//     {
+//         if (var->len == tok->len && !memcmp(var->name, tok->str, var->len))
+//             return var;
+//     }
+//     return NULL;
+// }
 
 // 構文解析のための関数
 Node *primary();
@@ -76,17 +86,15 @@ Node *primary()
         return node;
     }
 
-    // 変数か数値が残るはず
-    // 変数の場合 tok != NULL
     int my_pos = consume_ident();
     if (my_pos != -1)
     {
         // この場合tokは変数である　既出か否か
-        LVar *lvar = find_lvar(tokens[my_pos]);
+        LVar *lvar = find_lvar(my_pos);
         if (lvar == NULL)
         {
             // 未出である
-            lvar = new_lvar(tokens[my_pos]);
+            lvar = new_lvar(my_pos);
             // localsは常に最後尾を指すことでoffsetの計算が容易に
             locals = lvar;
         }
