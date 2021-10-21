@@ -212,7 +212,7 @@ Node *assign()
     if (consume(TK_RESERVED, "="))
         node = new_node(ND_ASSIGN, assign(), node);
 
-    else if (token->kind == TK_ASSIGN_RESERVED)
+    else if (tokens[pos]->kind == TK_ASSIGN_RESERVED)
     {
         if (consume(TK_ASSIGN_RESERVED, "+="))
             node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);

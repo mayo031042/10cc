@@ -16,6 +16,7 @@ assert() {
     fi
 }
 
+<< COMMENTOUT
 # 数値
 assert 0 "0;"
 assert 42 "42;"
@@ -24,7 +25,6 @@ assert 10 "4+6;"
 assert 3 "5-2;"
 assert 10 "14+6-10;"
 assert 9 "1+2-3+4+5;"
-# << COMMENTOUT
 # 乗除算　優先処理　空白スキップ
 assert 12 "3* 4;"
 assert 4 "24/6;"
@@ -55,6 +55,7 @@ assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
 assert 1 "11==5+6;"
+COMMENTOUT
 # 単長の変数
 assert 1 "a=1;" # 代入
 assert 2 "a=b=c=d=1; a=b+1;" # 連続代入
@@ -90,6 +91,5 @@ assert 9 "a=b=3; a*=b;" # 代入乗算
 assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
 assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
 assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
-# COMMENTOUT
 
 echo OK

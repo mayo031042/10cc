@@ -6,6 +6,7 @@ bool consume(TokenKind kind, char *op)
     if (token->kind != kind || token->len != strlen(op) || memcmp(token->str, op, token->len))
         return false;
     token = token->next;
+    pos++;
     return true;
 }
 
@@ -24,6 +25,7 @@ int expect_number()
         error("数値ではありません\n");
     int val = token->val;
     token = token->next;
+    pos++;
     return val;
 }
 
@@ -34,6 +36,7 @@ Token *consume_ident()
         return NULL;
     Token *tok = token;
     token = token->next;
+    pos++;
     return tok;
 }
 
@@ -42,6 +45,7 @@ bool consume_keyword(TokenKind kind)
     if (token->kind != kind)
         return false;
     token = token->next;
+    pos++;
     return true;
 }
 
@@ -52,6 +56,7 @@ bool at_eof()
 }
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
+// tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 Token *new_token(TokenKind kind, Token *cur, char *str, int len)
 {
     Token *tok = calloc(1, sizeof(Token));
@@ -59,6 +64,9 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     tok->str = str;
     tok->len = len;
     cur->next = tok;
+    tokens[pos]=tok;
+    tokens[pos]->next = tok;
+    pos++;
     return tok;
 }
 
@@ -101,7 +109,6 @@ void *tokenize()
         // 2文字演算子ゾーン
         else if (strchr("+-", *p) && *p == *(p + 1))
         {
-            
         }
         else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
         {
@@ -141,4 +148,5 @@ void *tokenize()
 
     new_token(TK_EOF, cur, p, 0);
     token = head.next;
+    pos=0;
 }
