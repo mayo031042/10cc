@@ -69,7 +69,7 @@ Node *stmt();
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 Node *primary()
 {
-    if (consume("("))
+    if (consume(TK_RESERVED, "("))
     {
         Node *node = expr();
         expect(")");
@@ -99,11 +99,11 @@ Node *primary()
 
 Node *unary()
 {
-    if (consume("+"))
+    if (consume(TK_RESERVED, "+"))
     {
         return primary();
     }
-    else if (consume("-"))
+    else if (consume(TK_RESERVED, "-"))
     {
         return new_node(ND_SUB, new_node_num(0), primary());
     }
@@ -117,11 +117,11 @@ Node *mul()
 
     for (;;)
     {
-        if (consume("*"))
+        if (consume(TK_RESERVED, "*"))
         {
             node = new_node(ND_MUL, node, unary());
         }
-        else if (consume("/"))
+        else if (consume(TK_RESERVED, "/"))
         {
             node = new_node(ND_DIV, node, unary());
         }
@@ -136,11 +136,11 @@ Node *add()
 
     for (;;)
     {
-        if (consume("+"))
+        if (consume(TK_RESERVED, "+"))
         {
             node = new_node(ND_ADD, node, mul());
         }
-        else if (consume("-"))
+        else if (TK_RESERVED, consume(TK_RESERVED, "-"))
         {
             node = new_node(ND_SUB, node, mul());
         }
@@ -157,22 +157,22 @@ Node *relational()
     for (;;)
     {
         // 2文字の不等号を先に処理する
-        if (consume("<="))
+        if (consume(TK_RESERVED, "<="))
         {
             node = new_node(ND_LE, node, add());
             continue;
         }
-        else if (consume(">="))
+        else if (consume(TK_RESERVED, ">="))
         {
             node = new_node(ND_LE, add(), node);
             continue;
         }
-        else if (consume("<"))
+        else if (consume(TK_RESERVED, "<"))
         {
             node = new_node(ND_LT, node, add());
             continue;
         }
-        else if (consume(">"))
+        else if (consume(TK_RESERVED, ">"))
         {
             node = new_node(ND_LT, add(), node);
             continue;
@@ -189,12 +189,12 @@ Node *equality()
 
     for (;;)
     {
-        if (consume("=="))
+        if (consume(TK_RESERVED, "=="))
         {
             node = new_node(ND_EQ, node, relational());
             continue;
         }
-        else if (consume("!="))
+        else if (consume(TK_RESERVED, "!="))
         {
             node = new_node(ND_NE, node, relational());
             continue;
@@ -209,21 +209,18 @@ Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
     Node *node = equality();
-    if (consume("="))
+    if (consume(TK_RESERVED, "="))
         node = new_node(ND_ASSIGN, assign(), node);
 
     else if (token->kind == TK_ASSIGN_RESERVED)
     {
-        token = token->next;
-        // この段階でnode が変数を指していることは確認
-        Node *node_lvar = node;
-        // error("%d",node_lvar->kind);
+        if (consume(TK_ASSIGN_RESERVED, "+="))
+            //   assign
+            //  add    a
+            // 1   a
 
-        //   assign
-        //  add    a
-        // 1   a
-
-        node = new_node(ND_ASSIGN, new_node(ND_ADD, assign(), node_lvar), node_lvar);
+            // node を同時に複数設定しても　最外のnew_node が値をreturn しないとnode の移動はない なので関数に入る直前のnode を複数回利用したくてもコピーする必要はない
+            node = new_node(ND_ASSIGN, new_node(ND_ADD, assign(), node), node);
     }
 
     return node;
