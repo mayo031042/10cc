@@ -102,9 +102,11 @@ void *tokenize()
             p+=2;
             continue;
         }
+        
         // 2文字演算子ゾーン
-        else if (strchr("+-", *p) && *p == *(p + 1))
+        if (strchr("+-", *p) && *p == *(p + 1))
         {
+            // インクリメント　の実装
         }
         else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
         {

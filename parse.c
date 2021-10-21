@@ -227,7 +227,7 @@ Node *assign()
 
     return node;
 }
-
+// expr は予約語以下の全ての１文のコードに対応する
 Node *expr()
 {
     return assign();
@@ -242,6 +242,16 @@ Node *stmt()
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+    }
+    else if (consume_keyword(TK_IF))
+    {
+        expect(TK_RESERVED, "(");
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        node->lhs=stmt();
+        expect(TK_RESERVED, ")");
+        
+
     }
     else
         node = expr();

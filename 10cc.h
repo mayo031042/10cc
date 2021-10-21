@@ -18,7 +18,7 @@ typedef enum
     TK_NUM,             // 数値
     TK_RETURN,          // return
     TK_IF,
-    TK_EOF,             // 入力の最後
+    TK_EOF, // 入力の最後
 } TokenKind;
 
 typedef struct Token Token;
@@ -47,6 +47,8 @@ typedef enum
     ND_LVAR,   // 変数
     ND_NUM,    // 数値
     ND_RETURN, // return
+    ND_IF,     // if
+    ND_JE,     // je
 } NodeKind;
 
 typedef struct Node Node;
@@ -56,7 +58,8 @@ struct Node
     Node *lhs;
     Node *rhs;
     int val;
-    int offset; // kindがND_LVARのときのみ使う
+    int offset; // ND_LVARのときのみ使う
+    int label;  // ND_JMP に類するときのみ使う
 };
 
 // tokenize のための関数 -> @ tokenize.c
