@@ -78,12 +78,12 @@ void *tokenize()
 
     while (*p)
     {
-
         if (isspace(*p))
         {
             p++;
             continue;
         }
+        
         // 予約語ゾーン
         if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
         {
