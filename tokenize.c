@@ -12,10 +12,9 @@ bool consume(TokenKind kind, char *op)
 // consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
 bool expect(TokenKind kind, char *op)
 {
-    if (token->kind != kind || token->len != strlen(op) || memcmp(token->str, op, token->len))
-        error("%cではありません\n", op);
-    token = token->next;
-    return 1;
+    if (consume(kind, op))
+        return 1;
+    error("%cではありません\n", op);
 }
 
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
