@@ -32,7 +32,7 @@ int consume_ident()
 {
     if (tokens[pos]->kind != TK_IDENT)
         return -1;
-    return pos++;
+    return tokens[pos++]->pos;
 }
 
 bool consume_keyword(TokenKind kind)
@@ -51,18 +51,14 @@ bool at_eof()
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
-Token *new_token(TokenKind kind, Token *cur, char *str, int len)
+void new_token(TokenKind kind, char *str, int len)
 {
-    Token *tok = calloc(1, sizeof(Token));
-    tok->kind = kind;
-    tok->str = str;
-    tok->len = len;
-    cur->next = tok;
-    tokens[pos] = tok;
-    tokens[pos]->next = tok;
-    tokens[pos]->pos=pos;
+    tokens[pos] = calloc(1, sizeof(Token));
+    tokens[pos]->kind = kind;
+    tokens[pos]->str = str;
+    tokens[pos]->len = len;
+    tokens[pos]->pos = pos;
     pos++;
-    return tok;
 }
 
 // 変数に使える文字か否かを返す -> token 構成文字
@@ -78,12 +74,6 @@ int is_alnum(char c)
 // error がなかった場合は　ｇ変数token をtoken 列の先頭にセットして終了
 void *tokenize()
 {
-    // 先頭を指すためだけの　空のtoken
-    Token head;
-    // 入力を区切る　意味のあるtoken はhead.next から順につながっている
-    head.next = NULL;
-    Token *cur = &head;
-
     char *p = user_input;
 
     while (*p)
@@ -97,7 +87,7 @@ void *tokenize()
         // 予約語ゾーン
         if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
         {
-            cur = new_token(TK_RETURN, cur, p, 6);
+            new_token(TK_RETURN, p, 6);
             p += 6;
             continue;
         }
@@ -108,23 +98,23 @@ void *tokenize()
         else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
         {
             if (strchr("!=<>", *p))
-                cur = new_token(TK_RESERVED, cur, p, 2);
+                new_token(TK_RESERVED, p, 2);
             else
-                cur = new_token(TK_ASSIGN_RESERVED, cur, p, 2);
+                new_token(TK_ASSIGN_RESERVED, p, 2);
             p += 2;
             continue;
         }
         // 1文字解釈ゾーン
         else if (strchr("+-*/()=<>;", *p))
         {
-            cur = new_token(TK_RESERVED, cur, p++, 1);
+            new_token(TK_RESERVED, p++, 1);
             continue;
         }
 
         else if (isdigit(*p))
         {
-            cur = new_token(TK_NUM, cur, p, 0);
-            cur->val = strtol(p, &p, 10);
+            new_token(TK_NUM, p, 0);
+            tokens[pos - 1]->val = strtol(p, &p, 10);
             continue;
         }
         // 変数解釈ゾーン　変数の１文字目は必ず変数でしか使用できないものがくるので　ここで判定するのがよい
@@ -133,7 +123,7 @@ void *tokenize()
             char *q = p;
             for (; is_alnum(*q); q++)
                 ;
-            cur = new_token(TK_IDENT, cur, p, q - p);
+            new_token(TK_IDENT, p, q - p);
             p = q;
             continue;
         }
@@ -141,7 +131,6 @@ void *tokenize()
         error("%s tokenizeできません\n", p);
     }
 
-    new_token(TK_EOF, cur, p, 0);
-    token = head.next;
+    new_token(TK_EOF, p, 0);
     pos = 0;
 }

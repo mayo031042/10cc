@@ -54,16 +54,6 @@ LVar *find_lvar(int my_pos)
     return NULL;
 }
 
-// LVar *find_lvar(Token *tok)
-// {
-//     for (LVar *var = locals; var; var = var->next)
-//     {
-//         if (var->len == tok->len && !memcmp(var->name, tok->str, var->len))
-//             return var;
-//     }
-//     return NULL;
-// }
-
 // 構文解析のための関数
 Node *primary();
 Node *unary();
