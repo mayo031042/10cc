@@ -25,6 +25,7 @@ struct Token
 {
     TokenKind kind;
     Token *next;
+    int pos; // 自分がtokens　の何番目か
     int val;
     char *str;
     int len;

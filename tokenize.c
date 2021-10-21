@@ -5,7 +5,6 @@ bool consume(TokenKind kind, char *op)
 {
     if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
         return false;
-    token = token->next;
     pos++;
     return true;
 }
@@ -24,7 +23,6 @@ int expect_number()
     if (tokens[pos]->kind != TK_NUM)
         error("数値ではありません\n");
     int val = tokens[pos]->val;
-    // token = token->next;
     pos++;
     return val;
 }
@@ -34,7 +32,6 @@ int consume_ident()
 {
     if (tokens[pos]->kind != TK_IDENT)
         return -1;
-    // token = token->next;
     return pos++;
 }
 
@@ -42,7 +39,6 @@ bool consume_keyword(TokenKind kind)
 {
     if (tokens[pos]->kind != kind)
         return false;
-    // token = token->next;
     pos++;
     return true;
 }
@@ -64,6 +60,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     cur->next = tok;
     tokens[pos] = tok;
     tokens[pos]->next = tok;
+    tokens[pos]->pos=pos;
     pos++;
     return tok;
 }
