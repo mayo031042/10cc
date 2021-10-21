@@ -1,5 +1,7 @@
 #include "10cc.h"
 
+char *p;
+
 // 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
@@ -69,12 +71,16 @@ int is_alnum(char c)
            ('0' <= c && c <= '9') ||
            (c == '_');
 }
+// p とs を比較して　pがkeyword　と判定できたらtrue
+bool is_keyword(char *s,int num){
+    return !strncmp(p,s,num) && !is_alnum(p[num]);
+}
 
 // 入力されたプログラムを先頭からtokenize していく　
 // error がなかった場合は　ｇ変数token をtoken 列の先頭にセットして終了
 void *tokenize()
 {
-    char *p = user_input;
+    p = user_input;
 
     while (*p)
     {
@@ -85,7 +91,7 @@ void *tokenize()
         }
 
         // 予約語ゾーン
-        if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
+        if (is_keyword("return",6))
         {
             new_token(TK_RETURN, p, 6);
             p += 6;
