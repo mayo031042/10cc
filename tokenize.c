@@ -91,11 +91,17 @@ void *tokenize()
             p++;
             continue;
         }
+        // 予約語ゾーン
         if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
         {
             cur = new_token(TK_RETURN, cur, p, 6);
             p += 6;
             continue;
+        }
+        // 2文字演算子ゾーン
+        else if (strchr("+-", *p) && *p == *(p + 1))
+        {
+            
         }
         else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
         {
@@ -106,6 +112,7 @@ void *tokenize()
             p += 2;
             continue;
         }
+        // 1文字解釈ゾーン
         else if (strchr("+-*/()=<>;", *p))
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
@@ -118,6 +125,7 @@ void *tokenize()
             cur->val = strtol(p, &p, 10);
             continue;
         }
+        // 変数解釈ゾーン　変数の１文字目は必ず変数でしか使用できないものがくるので　ここで判定するのがよい
         else if (is_alnum(*p))
         {
             char *q = p;
