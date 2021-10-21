@@ -11,7 +11,7 @@ void error(char *fmt, ...)
     vfprintf(stderr, fmt, ap);
     // 上記と異なるのが第３引数である　可変長引数として解釈されるので　第２引数内の置換文字分指定すれば良い
     fprintf(stderr, "\n");
-    exit(1);
+    // exit(1);
 }
 
 void err(char *fmt)

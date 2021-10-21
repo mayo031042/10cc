@@ -16,7 +16,6 @@ assert() {
     fi
 }
 
-# << COMMENTOUT
 # 数値
 assert 0 "0;"
 assert 42 "42;"
@@ -25,6 +24,7 @@ assert 10 "4+6;"
 assert 3 "5-2;"
 assert 10 "14+6-10;"
 assert 9 "1+2-3+4+5;"
+# << COMMENTOUT
 # 乗除算　優先処理　空白スキップ
 assert 12 "3* 4;"
 assert 4 "24/6;"
@@ -76,7 +76,6 @@ assert 2 "return 2; return 1;" # 複数のreturn
 assert 42 "returnx=42; return returnx;" # return に類似した変数
 assert 4 "x=4; return x;" # 変数をreturn 
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
-# COMMENTOUT
 # 代入演算子
 assert 2 "a = 1; a += 1;" # 代入演算
 assert 4 "a=1; b=2; a+=b=3;" # 代入演算式の右辺で　代入
@@ -91,5 +90,6 @@ assert 9 "a=b=3; a*=b;" # 代入乗算
 assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
 assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
 assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
+# COMMENTOUT
 
 echo OK

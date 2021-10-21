@@ -3,6 +3,8 @@
 // グローバル変数の宣言
 char *user_input;
 Token *token;
+int pos=0;
+Token *tokens[100];
 Node *code[100];
 LVar *locals;
 
