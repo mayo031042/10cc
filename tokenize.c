@@ -83,7 +83,7 @@ void *tokenize()
             p++;
             continue;
         }
-        
+
         // 予約語ゾーン
         if (!strncmp(p, "return", 6) && !is_alnum(p[6]))
         {

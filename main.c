@@ -3,8 +3,8 @@
 // グローバル変数の宣言
 char *user_input;
 int pos=0;
-Token *tokens[100];
-Node *code[100];
+Token *tokens[200];
+Node *code[200];
 LVar *locals;
 
 int main(int argc, char **argv)
