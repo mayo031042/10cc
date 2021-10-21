@@ -210,7 +210,21 @@ Node *assign()
     // == ,!=, < 等はequality()内で優先的に処理されている
     Node *node = equality();
     if (consume("="))
-        node = new_node(ND_ASSIGN, node, assign());
+        node = new_node(ND_ASSIGN, assign(), node);
+
+    else if (token->kind == TK_ASSIGN_RESERVED)
+    {
+        token = token->next;
+        // この段階でnode が変数を指していることは確認
+        Node *node_lvar = node;
+        // error("%d",node_lvar->kind);
+
+        //   assign
+        //  add    a
+        // 1   a
+
+        node = new_node(ND_ASSIGN, new_node(ND_ADD, assign(), node_lvar), node_lvar);
+    }
 
     return node;
 }

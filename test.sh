@@ -70,12 +70,18 @@ assert 42 "nagainamae = 42;"
 assert 100 "suuji_100_hairu = 100;"
 assert 5 "num=10; x=12; num=3+x-num;"
 assert 1 "num=10; x=3*3; (num-1)==x;"
-# COMMENTOUT
 # return 文
 assert 1 "return 1;"
 assert 2 "return 2; return 1;" # 複数のreturn 
 assert 42 "returnx=42; return returnx;" # return に類似した変数
 assert 4 "x=4; return x;" # 変数をreturn 
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
+# COMMENTOUT
+# 代入演算子
+assert 2 "a = 1; a += 1;" # 代入演算
+assert 4 "a=1; b=2; a+=b=3;" # 代入演算式の右辺で　代入
+assert 5 "a=b=1; a+=b+=3;" # 代入演算式の右辺で　代入演算
+assert 10 "a=xyz=2; a+=3+(xyz=5);" # 代入演算の右辺で優先処理
+assert 3 "a=b=2; a+=b==1+1;" # 代入式の右辺で　ブーリアン
 
 echo OK

@@ -9,7 +9,7 @@ void error(char *fmt, ...)
     exit(1);
 }
 
-// nodeを右辺値とみなせた時　そのアドレスをスタックに積む
+// nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
@@ -31,10 +31,10 @@ void gen(Node *node)
         return;
     // ストア 代入式
     case ND_ASSIGN:
-        gen_lval(node->lhs);
-        gen(node->rhs);
-        printf("    pop rdi\n");
+        gen(node->lhs);
+        gen_lval(node->rhs);
         printf("    pop rax\n");
+        printf("    pop rdi\n");
         // 左辺をアドレスとみなして　そのアドレスへと右辺の値を　コピーする
         printf("    mov [rax], rdi\n");
         // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
