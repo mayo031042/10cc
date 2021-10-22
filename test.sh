@@ -91,5 +91,8 @@ assert 9 "a=b=3; a*=b;" # 代入乗算
 assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
 assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
 assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
-
+# 制御構文
+assert 2 "if(1)return 2; 0;" # 数値条件　return 
+assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
+assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
 echo OK

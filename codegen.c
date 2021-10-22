@@ -28,6 +28,20 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+void gen_if(Node *node)
+{
+    gen(node->lhs); // A
+    printf("    pop rax\n");
+    printf("    cmp rax, 0\n");
+    // printf("    je .L%2d%2d\n",node->end_label,node->next_label);
+    printf("    je .L%02d\n", node->end_label);
+
+    gen(node->rhs); // X
+
+    // printf("    jmp .L%2d\n",node->end_label);
+    printf(".L%02d:\n", node->end_label);
+}
+
 void gen(Node *node)
 {
     // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
@@ -64,6 +78,14 @@ void gen(Node *node)
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
         printf("    ret\n");
+        return;
+    }
+
+    switch (node->kind)
+    {
+    case ND_IF:
+        gen_if(node);
+        // ここにend label書いたらよくね？
         return;
     }
 

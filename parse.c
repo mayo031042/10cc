@@ -232,7 +232,7 @@ Node *expr()
 {
     return assign();
 }
-// ;　で区切る
+// ;　で区切られるような１文の全て
 // return が来たら　return したい式が 左辺==lhsに展開されるような　return node を作成する
 Node *stmt()
 {
@@ -242,20 +242,31 @@ Node *stmt()
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+        expect(TK_RESERVED, ";");
     }
     else if (consume_keyword(TK_IF))
     {
-        expect(TK_RESERVED, "(");
-        node = calloc(1, sizeof(Node));
+        node = calloc(1, sizeof(Node)); // ND_IF
         node->kind = ND_IF;
-        node->lhs=stmt();
-        expect(TK_RESERVED, ")");
-        
 
+        // if群の出現回数をカウントするG変数で　後に置き換える
+        node->end_label = 1;
+        // 同一if群の中でのelse ネスト回数を保持する変数で　後に置き換え
+        node->next_label = 1;
+        expect(TK_RESERVED, "(");
+        node->lhs = expr();
+        expect(TK_RESERVED, ")");
+
+        // return とかあるのでstmt 
+        // このstmtの中で；の処理をするので　stmt全体に;の処理をかけない
+        node->rhs = stmt();
     }
     else
+    {
         node = expr();
-    expect(TK_RESERVED, ";");
+        expect(TK_RESERVED, ";");
+    }
+
     return node;
 }
 // ；　で区切られたコード全体を　parseする
