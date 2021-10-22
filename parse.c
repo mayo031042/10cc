@@ -15,11 +15,17 @@ Node *stmt();
 int code_pos;
 int small_if;
 
-// node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
+    return node;
+}
+
+// node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+{
+    Node *node = create_node(kind);
     node->lhs = lhs;
     node->rhs = rhs;
     return node;
@@ -28,8 +34,7 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 // 数値を指すnode を作成する　常に葉であるような終端記号になるので左右に辺は持たない
 Node *new_node_num(int val)
 {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_NUM;
+    Node *node = create_node(ND_NUM);
     node->val = val;
     return node;
 }
@@ -37,8 +42,7 @@ Node *new_node_num(int val)
 // LVarを参照する
 Node *new_node_ident(LVar *lvar)
 {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_LVAR;
+    Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
     return node;
 }
@@ -46,8 +50,7 @@ Node *new_node_ident(LVar *lvar)
 // if node を作る　同一code_pos内で　if node が作られるたびに　small_ifは増加
 Node *new_node_if()
 {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_IF;
+    Node *node = create_node(ND_IF);
     node->next_label = small_if++;
     node->end_label = code_pos;
     return node;
@@ -55,8 +58,7 @@ Node *new_node_if()
 // if node を受け取り　それを参照しつつ左辺に配置したelse node を作成する
 Node *new_node_else(Node *node_if)
 {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_ELSE;
+    Node *node = create_node(ND_ELSE);
     node->end_label = node_if->end_label;
     node->lhs = node_if;
     return node;
@@ -285,8 +287,7 @@ Node *stmt()
     Node *node;
     if (consume_keyword(TK_RETURN))
     {
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_RETURN;
+        node = create_node(ND_RETURN);
         node->lhs = expr();
         expect(TK_RESERVED, ";");
     }
@@ -308,7 +309,7 @@ Node *program()
 {
     while (!at_eof())
     {
-        small_if=0;
+        small_if = 0;
         codes[code_pos++] = stmt();
     }
     codes[code_pos] = NULL;
