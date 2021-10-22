@@ -116,12 +116,10 @@ void gen(Node *node)
         printf(".Lend%02d:\n", node->end_label);
         return;
     case ND_BLOCK:
-        node = node->next;
-        while (node->kind != ND_EOB)
+        for (Node *n = node->next; n; n = n->next)
         {
-            gen(node);
+            gen(n);
             printf("    pop rax\n");
-            node = node->next;
         }
         return;
     }

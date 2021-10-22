@@ -49,7 +49,6 @@ typedef enum
     ND_IF,     // if 条件文とcmp 0 ,je
     ND_ELSE,   // else
     ND_BLOCK,  // ブロックノードの開始を意味する
-    ND_EOB,    // ブロックノードの終了を意味する
 } NodeKind;
 
 typedef struct Node Node;

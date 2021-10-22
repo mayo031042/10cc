@@ -305,7 +305,7 @@ Node *stmt()
             now_node->next = next_node;
             now_node = next_node;
         }
-        now_node->next = create_node(ND_EOB);
+        now_node->next = NULL;
     }
     else
     {
