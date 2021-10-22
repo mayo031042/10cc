@@ -90,19 +90,25 @@ void *tokenize()
         }
 
         // 予約語ゾーン
-        if (is_keyword(p,"return", 6))
+        if (is_keyword(p, "return", 6))
         {
             new_token(TK_RETURN, p, 6);
             p += 6;
             continue;
         }
-        else if (is_keyword(p,"if", 2))
+        else if (is_keyword(p, "if", 2))
         {
             new_token(TK_IF, p, 2);
-            p+=2;
+            p += 2;
             continue;
         }
-        
+        else if (is_keyword(p, "else", 4))
+        {
+            new_token(TK_ELSE, p, 4);
+            p += 4;
+            continue;
+        }
+
         // 2文字演算子ゾーン
         if (strchr("+-", *p) && *p == *(p + 1))
         {

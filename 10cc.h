@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// error -> @ codegen.c
-void error(char *fmt, ...);
-void err(char *fmt, ...);
-
 // token　
 typedef enum
 {
@@ -18,6 +14,7 @@ typedef enum
     TK_NUM,             // 数値
     TK_RETURN,          // return
     TK_IF,              // if
+    TK_ELSE,            // else
     TK_EOF,             // 入力の最後
 } TokenKind;
 
@@ -64,6 +61,20 @@ struct Node
     int next_label; // cmp 0,je  に類するときのみ使う 同一if群の中でのみの通し番号
 };
 
+// LVar
+typedef struct LVar LVar;
+struct LVar
+{
+    LVar *next;
+    char *name;
+    int len;
+    int offset; // RBPからの距離
+};
+
+// error -> @ codegen.c
+void error(char *fmt, ...);
+void err(char *fmt, ...);
+
 // tokenize のための関数 -> @ tokenize.c
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
@@ -75,16 +86,6 @@ void *tokenize();
 
 // parse のための関数 -> @ parse.c
 Node *program();
-
-// LVar
-typedef struct LVar LVar;
-struct LVar
-{
-    LVar *next;
-    char *name;
-    int len;
-    int offset; // RBPからの距離
-};
 
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
