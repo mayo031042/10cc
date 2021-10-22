@@ -4,7 +4,7 @@
 char *user_input;
 int pos=0;
 Token *tokens[200];
-Node *code[200];
+Node *codes[200];
 LVar *locals;
 
 int main(int argc, char **argv)
@@ -28,9 +28,9 @@ int main(int argc, char **argv)
     printf("    mov rbp, rsp\n");
     printf("    sub rsp, 208\n");
 
-    for (int i = 0; code[i]; i++)
+    for (int i = 0; codes[i]; i++)
     {
-        gen(code[i]);
+        gen(codes[i]);
         printf("    pop rax\n");
     }
 

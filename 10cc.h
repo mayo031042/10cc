@@ -94,6 +94,6 @@ void gen(Node *node);
 // グローバル変数 -> 定義はmainにて
 extern char *user_input;
 extern int pos;
-extern Node *code[];
+extern Node *codes[];
 extern Token *tokens[];
 extern LVar *locals;

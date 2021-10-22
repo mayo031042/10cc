@@ -43,7 +43,7 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
-// if node を作る　
+// if node を作る　同一code_pos内で　if node が作られるたびに　small_ifは増加
 Node *new_node_if()
 {
     Node *node = calloc(1, sizeof(Node));
@@ -62,7 +62,7 @@ Node *new_node_else(Node *node_if)
     return node;
 }
 
-Node *new_node_if_else(int small_if)
+Node *new_node_if_else()
 {
     Node *node = new_node_if();
 
@@ -292,7 +292,7 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node = new_node_if_else(0);
+        node = new_node_if_else();
     }
     else
     {
@@ -309,7 +309,7 @@ Node *program()
     while (!at_eof())
     {
         small_if=0;
-        code[code_pos++] = stmt();
+        codes[code_pos++] = stmt();
     }
-    code[code_pos] = NULL;
+    codes[code_pos] = NULL;
 }

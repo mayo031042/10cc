@@ -86,7 +86,7 @@ assert 5 "a=b=1; a+=b+=3;" # 代入演算式の右辺で　代入演算
 assert 10 "a=xyz=2; a+=3+(xyz=5);" # 代入演算の右辺で優先処理
 assert 3 "a=b=2; a+=b==1+1;" # 代入式の右辺で　ブーリアン
 assert 1 "a=2; a-=1;" # 代入減算
-assert 1 "a=1;b=3; b-=a=2;" 
+assert 1 "a=1;b=3; b-=a=2;"
 assert 3 "a=6;b=5; a-=b-=2;" # 連続代入減算
 assert 1 "a=xyz=3; a-=6/((xyz-=2)+2);"
 assert 9 "a=b=3; a*=b;" # 代入乗算
@@ -112,6 +112,7 @@ assert 13 "if(0)return 11; else if(0)return 12; else return 13;" # if, else if, 
 assert 12 "if(0)return 10; else if(0)return 11; else if(1)return 12;" # if, else if, else if
 assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
 assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
+# assert 1 "if(1)if(1)return 1; return 2;" # ifの連続は未対応
 echo "IF ELSE OK"
 
 echo "    You are a god-dammit genius!!    "
