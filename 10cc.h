@@ -46,8 +46,8 @@ typedef enum
     ND_RETURN, // return
     ND_IF,     // if 条件文とcmp 0 ,je
     ND_ELSE,   // else
-    // ND_IF_RIGHT, // if 実行文と　jmp .Lendxxxx
-    ND_JE, // je
+    ND_BLOCK,  // ブロックノードの開始を意味する
+    ND_EOB,    // ブロックノードの終了を意味する
 } NodeKind;
 
 typedef struct Node Node;
@@ -56,6 +56,7 @@ struct Node
     NodeKind kind;
     Node *lhs;
     Node *rhs;
+    Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
     int val;
     int offset;     // ND_LVARのときのみ使う
     int end_label;  // jmp end に類するときのみ使う 全体のif群の通し番号
