@@ -108,4 +108,4 @@ assert 20 "if(0) return 10; else return 20;"
 assert 6 "ret=10; if(ret!=10)return 9;else return ret-=4;" # 変数や代入演算
 echo "IF ELSE OK"
 
-echo "You are a god-dammit genius!!"
+echo "    You are a god-dammit genius!!    "

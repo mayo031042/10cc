@@ -1,5 +1,17 @@
 #include "10cc.h"
 
+// 構文解析のための関数
+Node *primary();
+Node *unary();
+Node *mul();
+Node *add();
+Node *relational();
+Node *equality();
+Node *assign();
+Node *expr();
+Node *stmt();
+// Node *program();
+
 // node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -47,6 +59,25 @@ Node *new_node_else(Node *node_if)
     return node;
 }
 
+Node *new_node_if_else()
+{
+    Node *node = new_node_if(1, 1);
+
+    expect(TK_RESERVED, "(");
+    node->lhs = expr();
+    expect(TK_RESERVED, ")");
+
+    node->rhs = stmt();
+    // ただのifなら　ここでreturn node につながるだけ
+    if (consume_keyword(TK_ELSE))
+    {
+        node = new_node_else(node);
+        // if, else, その他　何が来てもstmtで対処できる
+        node->rhs = stmt();
+    }
+    return node;
+}
+
 // tokを参照して　新しいlvarを作成する つまり未出のlvarに対してのみ行う処理
 LVar *new_lvar(int my_pos)
 {
@@ -72,18 +103,6 @@ LVar *find_lvar(int my_pos)
     }
     return NULL;
 }
-
-// 構文解析のための関数
-Node *primary();
-Node *unary();
-Node *mul();
-Node *add();
-Node *relational();
-Node *equality();
-Node *assign();
-Node *expr();
-Node *stmt();
-// Node *program();
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
@@ -270,19 +289,7 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node = new_node_if(1, 1);
-
-        expect(TK_RESERVED, "(");
-        node->lhs = expr();
-        expect(TK_RESERVED, ")");
-
-        node->rhs = stmt();
-        // ただのifなら　ここでreturn node につながるだけ
-        if (consume_keyword(TK_ELSE))
-        {
-            node=new_node_else(node);
-            node->rhs=stmt();
-        }
+        node = new_node_if_else();
     }
     else
     {

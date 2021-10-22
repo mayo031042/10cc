@@ -71,7 +71,6 @@ void gen(Node *node)
         gen_lval(node->rhs);
         printf("    pop rax\n");
         printf("    pop rdi\n");
-        // 左辺をアドレスとみなして　そのアドレスへと右辺の値を　コピーする
         printf("    mov [rax], rdi\n");
         // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
         printf("    push rdi\n");
@@ -83,12 +82,9 @@ void gen(Node *node)
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
-    // return 文　これ以降のアセンブリは実行されない
     case ND_RETURN:
         gen(node->lhs);
-        // この時　return したい値はstack のトップに存在しているはずである
         printf("    pop rax\n");
-        //　最初のret 以外　実行されないコードも生成されてしまうが今回はそれを許容する　つまりここでエピローグを書いてよい
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
         printf("    ret\n");
@@ -101,7 +97,7 @@ void gen(Node *node)
         gen_else(node);
         printf(".Lend%02d:\n", node->end_label);
         return;
-    // if に入るのは　単純if なときのみ
+    // if に入るのは　単純if なときのみ 
     case ND_IF:
         gen_if(node);
         printf(".Lend%02d:\n", node->end_label);
