@@ -28,12 +28,22 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
-Node *new_node_if(int next_label,int end_label)
+// if node を作る　
+Node *new_node_if(int end_label, int next_label)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_IF;
-    node->next_label=next_label;
-    node->end_label=end_label;
+    node->next_label = next_label;
+    node->end_label = end_label;
+    return node;
+}
+// if node を受け取り　それを参照しつつ左辺に配置したelse node を作成する
+Node *new_node_else(Node *node_if)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_ELSE;
+    node->end_label = node_if->end_label;
+    node->lhs = node_if;
     return node;
 }
 
@@ -260,15 +270,19 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node=new_node_if(1,1);
+        node = new_node_if(1, 1);
 
         expect(TK_RESERVED, "(");
         node->lhs = expr();
         expect(TK_RESERVED, ")");
 
-        // return とかあるのでstmt
-        // このstmtの中で；の処理をするので　stmt全体に;の処理をかけない
         node->rhs = stmt();
+        // ただのifなら　ここでreturn node につながるだけ
+        if (consume_keyword(TK_ELSE))
+        {
+            node=new_node_else(node);
+            node->rhs=stmt();
+        }
     }
     else
     {

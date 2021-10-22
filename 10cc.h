@@ -45,6 +45,7 @@ typedef enum
     ND_NUM,    // 数値
     ND_RETURN, // return
     ND_IF,     // if 条件文とcmp 0 ,je
+    ND_ELSE,   // else
     // ND_IF_RIGHT, // if 実行文と　jmp .Lendxxxx
     ND_JE, // je
 } NodeKind;
@@ -57,8 +58,8 @@ struct Node
     Node *rhs;
     int val;
     int offset;     // ND_LVARのときのみ使う
-    int next_label; // cmp 0,je  に類するときのみ使う 同一if群の中でのみの通し番号
     int end_label;  // jmp end に類するときのみ使う 全体のif群の通し番号
+    int next_label; // cmp 0,je  に類するときのみ使う 同一if群の中でのみの通し番号
 };
 
 // LVar

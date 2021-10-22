@@ -31,15 +31,29 @@ void gen_lval(Node *node)
 void gen_if(Node *node)
 {
     gen(node->lhs); // A
+    // stack top が０であるときのみ偽と判定して goto next_label:
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
-    // printf("    je .L%2d%2d\n",node->end_label,node->next_label);
-    printf("    je .L%02d\n", node->end_label);
+    printf("    je .L%02d\n", node->next_label);
 
+    // 直前でjmpしていたら実行されない部分に　実行式
     gen(node->rhs); // X
+    // 実行式が実行された時は　if ネストを抜ける
+    printf("    jmp .Lend%02d\n", node->end_label);
 
-    // printf("    jmp .L%2d\n",node->end_label);
-    printf(".L%02d:\n", node->end_label);
+    // ちょうど実行文１つだけを挟んで　ラベルを配置
+    printf(".L%02d:\n", node->next_label);
+}
+
+void gen_else(Node *node)
+{
+    if (node->kind != ND_ELSE)
+    {
+        gen(node);
+        return ;
+    }
+    gen_if(node->lhs);
+    gen_else(node->rhs);
 }
 
 void gen(Node *node)
@@ -83,9 +97,14 @@ void gen(Node *node)
 
     switch (node->kind)
     {
+    case ND_ELSE:
+        gen_else(node);
+        printf(".Lend%02d:\n", node->end_label);
+        return;
+    // if に入るのは　単純if なときのみ
     case ND_IF:
         gen_if(node);
-        // ここにend label書いたらよくね？
+        printf(".Lend%02d:\n", node->end_label);
         return;
     }
 

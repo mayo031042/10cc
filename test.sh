@@ -9,7 +9,7 @@ assert() {
     actual="$?"
 
     if [ "$actual" = "$expected" ]; then
-        echo "$input => $actual"
+        echo "  $input => $actual"
     else
         echo "$input => $expected expected, but got $actual"
         exit 1
@@ -77,6 +77,8 @@ assert 2 "return 2; return 1;" # 複数のreturn
 assert 42 "returnx=42; return returnx;" # return に類似した変数
 assert 4 "x=4; return x;" # 変数をreturn 
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
+echo "RETURN OK"
+
 # 代入演算子
 assert 2 "a = 1; a += 1;" # 代入演算
 assert 4 "a=1; b=2; a+=b=3;" # 代入演算式の右辺で　代入
@@ -94,7 +96,16 @@ assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
 # 制御構文
 assert 2 "if(1)return 2; 0;" # 数値条件　return 
 assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
+assert 5 "ret=3; if(ret==3)return ret+2; return 2;"
 assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
-assert 9 "ret=3; if(ret==2)return ret; return 9;" # 条件式が偽
+assert 9 "ret=3; if(ret==2)return 4; return 9;" # 条件式が偽
+echo "IF OK"
 
-echo OK
+assert 10 "if(1) 10; else 20;" # if else 真
+assert 20 "if(0) 10; else 20;" # if else 偽
+assert 10 "if(1) return 10; else return 20;" # 上記　+ return 
+assert 20 "if(0) return 10; else return 20;"
+assert 6 "ret=10; if(ret!=10)return 9;else return ret-=4;" # 変数や代入演算
+echo "IF ELSE OK"
+
+echo "You are a god-dammit genius!!"
