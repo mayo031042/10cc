@@ -28,10 +28,12 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
-Node *new_node_if()
+Node *new_node_if(int next_label,int end_label)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_IF;
+    node->next_label=next_label;
+    node->end_label=end_label;
     return node;
 }
 
@@ -258,12 +260,8 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node=new_node_if();
+        node=new_node_if(1,1);
 
-        // if群の出現回数をカウントするG変数で　後に置き換える
-        node->end_label = 1;
-        // 同一if群の中でのelse ネスト回数を保持する変数で　後に置き換え
-        node->next_label = 1;
         expect(TK_RESERVED, "(");
         node->lhs = expr();
         expect(TK_RESERVED, ")");

@@ -57,8 +57,8 @@ struct Node
     Node *rhs;
     int val;
     int offset;     // ND_LVARのときのみ使う
-    int end_label;  // jmp end に類するときのみ使う 全体のif群の通し番号
     int next_label; // cmp 0,je  に類するときのみ使う 同一if群の中でのみの通し番号
+    int end_label;  // jmp end に類するときのみ使う 全体のif群の通し番号
 };
 
 // LVar
