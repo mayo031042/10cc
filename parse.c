@@ -67,6 +67,7 @@ Node *stmt();
 // Node *program();
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
+// 演算子は処理されているので　残るは数値等　のみである
 Node *primary()
 {
     if (consume(TK_RESERVED, "("))
@@ -95,6 +96,7 @@ Node *primary()
     return new_node_num(expect_number());
 }
 
+// 単項演算子で区切る
 Node *unary()
 {
     if (consume(TK_RESERVED, "+"))
@@ -109,6 +111,7 @@ Node *unary()
         return primary();
 }
 
+// 乗除算で区切る
 Node *mul()
 {
     Node *node = unary();
@@ -128,6 +131,7 @@ Node *mul()
     }
 }
 
+// 加減算で区切る
 Node *add()
 {
     Node *node = mul();
@@ -147,7 +151,7 @@ Node *add()
     }
 }
 
-// 数式を不等号で繋がれた単位であると見る
+// 不等号で区切る
 Node *relational()
 {
     Node *node = add();
@@ -180,7 +184,7 @@ Node *relational()
     }
 }
 
-// 数式を等号か等号否定で繋がれた式の連続であると解釈する
+// 等号　等号否定で区切る　
 Node *equality()
 {
     Node *node = relational();
@@ -202,7 +206,7 @@ Node *equality()
     }
 }
 
-// 数式を代入式の連続であると解釈する
+// 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
 Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
@@ -227,13 +231,14 @@ Node *assign()
 
     return node;
 }
-// expr は予約語以下の全ての１文のコードに対応する
+
+// 予約語のない純粋な計算式として解釈する
 Node *expr()
 {
     return assign();
 }
-// ;　で区切られるような１文の全て
-// return が来たら　return したい式が 左辺==lhsに展開されるような　return node を作成する
+
+// 予約語の解釈を行う
 Node *stmt()
 {
     Node *node;
@@ -257,7 +262,7 @@ Node *stmt()
         node->lhs = expr();
         expect(TK_RESERVED, ")");
 
-        // return とかあるのでstmt 
+        // return とかあるのでstmt
         // このstmtの中で；の処理をするので　stmt全体に;の処理をかけない
         node->rhs = stmt();
     }
@@ -269,7 +274,8 @@ Node *stmt()
 
     return node;
 }
-// ；　で区切られたコード全体を　parseする
+
+// code全体を　;　で区切る
 Node *program()
 {
     int i = 0;

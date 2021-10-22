@@ -95,5 +95,6 @@ assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
 assert 2 "if(1)return 2; 0;" # 数値条件　return 
 assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
 assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
+assert 9 "ret=3; if(ret==2)return ret; return 9;" # 条件式が偽
 
 echo OK
