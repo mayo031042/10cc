@@ -28,6 +28,13 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
+Node *new_node_if()
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_IF;
+    return node;
+}
+
 // tokを参照して　新しいlvarを作成する つまり未出のlvarに対してのみ行う処理
 LVar *new_lvar(int my_pos)
 {
@@ -251,8 +258,7 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node = calloc(1, sizeof(Node)); // ND_IF
-        node->kind = ND_IF;
+        node=new_node_if();
 
         // if群の出現回数をカウントするG変数で　後に置き換える
         node->end_label = 1;
