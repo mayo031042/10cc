@@ -12,6 +12,8 @@ Node *expr();
 Node *stmt();
 // Node *program();
 
+int big_if=0;
+
 // node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -59,9 +61,9 @@ Node *new_node_else(Node *node_if)
     return node;
 }
 
-Node *new_node_if_else()
+Node *new_node_if_else(int small_if)
 {
-    Node *node = new_node_if(1, 1);
+    Node *node = new_node_if(big_if,small_if++);
 
     expect(TK_RESERVED, "(");
     node->lhs = expr();
@@ -73,6 +75,7 @@ Node *new_node_if_else()
     {
         node = new_node_else(node);
         // if, else, その他　何が来てもstmtで対処できる
+        
         node->rhs = stmt();
     }
     return node;
@@ -289,7 +292,7 @@ Node *stmt()
     }
     else if (consume_keyword(TK_IF))
     {
-        node = new_node_if_else();
+        node = new_node_if_else(0);
     }
     else
     {

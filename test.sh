@@ -104,7 +104,7 @@ echo "IF OK"
 assert 10 "if(1) 10; else 20;" # if else 真
 assert 20 "if(0) 10; else 20;" # if else 偽
 assert 10 "if(1) return 10; else return 20;" # 上記　+ return 
-assert 20 "if(0) return 10; else return 20;"
+assert 20 "if((3+1)*2-8) return 10; else return 20;" # 条件式に四則演算
 assert 6 "ret=10; if(ret!=10)return 9;else return ret-=4;" # 変数や代入演算
 echo "IF ELSE OK"
 
