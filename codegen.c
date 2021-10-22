@@ -9,6 +9,21 @@ void error(char *fmt, ...)
     exit(1);
 }
 
+void error_at(char *loc, char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    // tokens[pos]->str[0] はerror箇所の先頭文字を指している
+    // pos は入力の先頭からエラー箇所の先頭までの長さになる
+    int pos = loc - user_input;
+    fprintf(stderr, "%s\n", user_input);
+    fprintf(stderr, "%*s", pos, " "); // pos個の空白を出力
+    fprintf(stderr, "^ ");
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(1);
+}
+
 void err(char *fmt, ...)
 {
     va_list ap;

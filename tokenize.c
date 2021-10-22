@@ -14,14 +14,14 @@ bool expect(TokenKind kind, char *op)
 {
     if (consume(kind, op))
         return 1;
-    error("%cではありません\n", op);
+    error_at(tokens[pos]->str, "%cではありません\n", op);
 }
 
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
     if (tokens[pos]->kind != TK_NUM)
-        error("数値ではありません\n");
+        error_at(tokens[pos]->str, "数値ではありません\n");
     int val = tokens[pos]->val;
     pos++;
     return val;
@@ -158,7 +158,7 @@ void *tokenize()
             continue;
         }
 
-        error("%s tokenizeできません\n", p);
+        error_at(tokens[pos]->str, "%s tokenizeできません\n", p);
     }
 
     new_token(TK_EOF, p, 0);

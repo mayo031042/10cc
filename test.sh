@@ -55,7 +55,6 @@ assert 0 "1==0;"
 assert 0 "1!=1;"
 assert 1 "1!=0;"
 assert 1 "11==5+6;"
-# COMMENTOUT
 # 単長の変数
 assert 1 "a=1;" # 代入
 assert 2 "a=b=c=d=1; a=b+1;" # 連続代入
@@ -114,5 +113,6 @@ assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
 assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
 # assert 1 "if(1)if(1)return 1; return 2;" # ifの連続は未対応
 echo "IF ELSE OK"
+# COMMENTOUT
 
 echo "    You are a god-dammit genius!!    "
