@@ -12,7 +12,8 @@ Node *expr();
 Node *stmt();
 // Node *program();
 
-int big_if=0;
+int code_pos;
+int small_if;
 
 // node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
@@ -43,12 +44,12 @@ Node *new_node_ident(LVar *lvar)
 }
 
 // if node を作る　
-Node *new_node_if(int end_label, int next_label)
+Node *new_node_if()
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_IF;
-    node->next_label = next_label;
-    node->end_label = end_label;
+    node->next_label = small_if++;
+    node->end_label = code_pos;
     return node;
 }
 // if node を受け取り　それを参照しつつ左辺に配置したelse node を作成する
@@ -63,7 +64,7 @@ Node *new_node_else(Node *node_if)
 
 Node *new_node_if_else(int small_if)
 {
-    Node *node = new_node_if(big_if,small_if++);
+    Node *node = new_node_if();
 
     expect(TK_RESERVED, "(");
     node->lhs = expr();
@@ -75,7 +76,6 @@ Node *new_node_if_else(int small_if)
     {
         node = new_node_else(node);
         // if, else, その他　何が来てもstmtで対処できる
-        
         node->rhs = stmt();
     }
     return node;
@@ -306,8 +306,10 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
-    int i = 0;
     while (!at_eof())
-        code[i++] = stmt();
-    code[i] = NULL;
+    {
+        small_if=0;
+        code[code_pos++] = stmt();
+    }
+    code[code_pos] = NULL;
 }

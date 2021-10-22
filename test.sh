@@ -106,6 +106,12 @@ assert 20 "if(0) 10; else 20;" # if else 偽
 assert 10 "if(1) return 10; else return 20;" # 上記　+ return 
 assert 20 "if((3+1)*2-8) return 10; else return 20;" # 条件式に四則演算
 assert 6 "ret=10; if(ret!=10)return 9;else return ret-=4;" # 変数や代入演算
+assert 4 "ret=1; if(1)ret+=1; if(1)ret+=1; if(1)ret+=1; ret;"
+assert 11 "if(0)return 10; else if(1)return 11;" # if, else if
+assert 13 "if(0)return 11; else if(0)return 12; else return 13;" # if, else if, else
+assert 12 "if(0)return 10; else if(0)return 11; else if(1)return 12;" # if, else if, else if
+assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
+assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
 echo "IF ELSE OK"
 
 echo "    You are a god-dammit genius!!    "
