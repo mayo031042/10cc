@@ -109,6 +109,17 @@ void *tokenize()
             continue;
         }
 
+        // { or }
+        if (strchr("{}", *p))
+        {
+            if (*p == '{')
+                new_token(TK_BLOCK_FRONT, p, 1);
+            else
+                new_token(TK_BLOCK_END, p, 1);
+            p++;
+            continue;
+        }
+
         // 2文字演算子ゾーン
         if (strchr("+-", *p) && *p == *(p + 1))
         {

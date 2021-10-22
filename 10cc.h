@@ -15,6 +15,8 @@ typedef enum
     TK_RETURN,          // return
     TK_IF,              // if
     TK_ELSE,            // else
+    TK_BLOCK_FRONT,     // {
+    TK_BLOCK_END,       // }
     TK_EOF,             // 入力の最後
 } TokenKind;
 
