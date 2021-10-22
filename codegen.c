@@ -13,8 +13,6 @@ void error_at(char *loc, char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    // tokens[pos]->str[0] はerror箇所の先頭文字を指している
-    // pos は入力の先頭からエラー箇所の先頭までの長さになる
     int pos = loc - user_input;
     fprintf(stderr, "%s\n", user_input);
     fprintf(stderr, "%*s", pos, " "); // pos個の空白を出力
@@ -97,6 +95,10 @@ void gen(Node *node)
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
+    }
+
+    switch (node->kind)
+    {
     case ND_RETURN:
         gen(node->lhs);
         printf("    pop rax\n");
@@ -104,10 +106,6 @@ void gen(Node *node)
         printf("    pop rbp\n");
         printf("    ret\n");
         return;
-    }
-
-    switch (node->kind)
-    {
     case ND_ELSE:
         gen_else(node);
         printf(".Lend%02d:\n", node->end_label);
@@ -116,6 +114,15 @@ void gen(Node *node)
     case ND_IF:
         gen_if(node);
         printf(".Lend%02d:\n", node->end_label);
+        return;
+    case ND_BLOCK:
+        node = node->next;
+        while (node->kind != ND_EOB)
+        {
+            gen(node);
+            printf("    pop rax\n");
+            node = node->next;
+        }
         return;
     }
 

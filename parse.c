@@ -295,6 +295,18 @@ Node *stmt()
     {
         node = new_node_if_else();
     }
+    else if (consume_keyword(TK_BLOCK_FRONT))
+    {
+        node = create_node(ND_BLOCK);
+        Node *now_node = node;
+        while (!consume_keyword(TK_BLOCK_END))
+        {
+            Node *next_node = stmt();
+            now_node->next = next_node;
+            now_node = next_node;
+        }
+        now_node->next = create_node(ND_EOB);
+    }
     else
     {
         node = expr();

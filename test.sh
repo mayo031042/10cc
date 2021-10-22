@@ -115,4 +115,11 @@ assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; e
 echo "IF ELSE OK"
 # COMMENTOUT
 
-echo "    You are a god-dammit genius!!    "
+assert 3 "{return 1+1+1;}"
+# assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
+assert 4 "ret=1; {ret+=1;} {ret+=1;} {ret+=1;} ret;"
+assert 1 "if(1){return 1;} return 2;"
+assert 6 "ret=3; if(1){ret+=5; ret-=2;} return ret;"
+assert 10 "ret=1; if(0){ret=0;}else if(1){ret=10;}else ret=0; return ret;"
+
+echo -e "\nYou are a god-dammit genius !!\n"
