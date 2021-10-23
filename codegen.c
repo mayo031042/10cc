@@ -46,13 +46,18 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+void cmp_rax(int val)
+{
+    printf("    pop rax\n");
+    printf("    cmp rax, %d\n", val);
+}
+
 void gen_if(Node *node, int end_label)
 {
     gen(node->lhs); // A
 
     int next_label = count();
-    printf("    pop rax\n");
-    printf("    cmp rax, 0\n");
+    cmp_rax(0);
     printf("    je .L%d\n", next_label);
 
     gen(node->rhs); // X
@@ -91,8 +96,7 @@ void gen_for(Node *node)
         printf("    push 1\n");
     else
         gen(node); // B
-    printf("    pop rax\n");
-    printf("    cmp rax, 0\n");
+    cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
 }
 
@@ -112,8 +116,7 @@ void gen_while(Node *node)
         printf("    push 1\n");
     else
         gen(node); // A
-    printf("    pop rax\n");
-    printf("    cmp rax, 0\n");
+    cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
 }
 
