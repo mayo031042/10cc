@@ -47,11 +47,10 @@ Node *new_node_ident(LVar *lvar)
 }
 
 // 完全に独立してif node を完成させる
-Node *new_node_if(int cnt)
+Node *new_node_if()
 {
     Node *node = create_node(ND_IF);
     node->next_label = count();
-    node->end_label = cnt;
     expect(TK_RESERVED, "(");
     node->lhs = expr();
     expect(TK_RESERVED, ")");
@@ -68,7 +67,7 @@ Node *new_node_else(int cnt)
     Node *node = create_node(ND_ELSE);
     // cnt は同一if群において共通
     node->end_label = cnt;
-    node->lhs = new_node_if(cnt);
+    node->lhs = new_node_if();
     // if, else if で終了しないなら
     if (consume_keyword(TK_ELSE))
     {

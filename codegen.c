@@ -15,7 +15,7 @@ void error_at(char *loc, char *fmt, ...)
     va_start(ap, fmt);
     int pos = loc - user_input;
     fprintf(stderr, "%s\n", user_input);
-    fprintf(stderr, "%*s", pos, " "); // pos個の空白を出力
+    fprintf(stderr, "%*s", pos, " ");
     fprintf(stderr, "^ ");
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
@@ -35,13 +35,12 @@ void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
         error("右辺値ではありません\n");
-    // stackに変数の指すアドレスをpush
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
 }
 
-void gen_if(Node *node)
+void gen_if(Node *node, int end_label)
 {
     gen(node->lhs); // A
     // stack top が０であるときのみ偽と判定して goto next_label:
@@ -52,7 +51,7 @@ void gen_if(Node *node)
     // 直前でjmpしていたら実行されない部分に　実行式
     gen(node->rhs); // X
     // 実行式が実行された時は　if ネストを抜ける
-    printf("    jmp .Lend%d\n", node->end_label);
+    printf("    jmp .Lend%d\n", end_label);
 
     // ちょうど実行文１つだけを挟んで　ラベルを配置
     printf(".L%d:\n", node->next_label);
@@ -62,10 +61,11 @@ void gen_else(Node *node)
 {
     if (node->kind != ND_ELSE)
     {
+        // NULL ,stmt()がここに当たる
         gen(node);
         return;
     }
-    gen_if(node->lhs);
+    gen_if(node->lhs, node->end_label);
     gen_else(node->rhs);
 }
 
@@ -131,11 +131,6 @@ void gen(Node *node)
         return;
     case ND_ELSE:
         gen_else(node);
-        printf(".Lend%d:\n", node->end_label);
-        return;
-    // if に入るのは　単純if なときのみ
-    case ND_IF:
-        gen_if(node);
         printf(".Lend%d:\n", node->end_label);
         return;
     case ND_FOR:
