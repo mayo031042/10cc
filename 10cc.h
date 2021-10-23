@@ -99,6 +99,8 @@ Node *program();
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
 
+int count();
+
 // グローバル変数 -> 定義はmainにて
 extern char *user_input;
 extern int pos;

@@ -71,15 +71,15 @@ void gen_else(Node *node)
 
 void gen_for(Node *node)
 {
-    node=node->next;
+    node = node->next;
     gen(node); // A
-    node=node->next;
+    node = node->next;
     printf("    jmp .L222\n");
 
     printf(".L333:\n");
     gen(node->next->next); // X
-    gen(node->next); // C
-    
+    gen(node->next);       // C
+
     printf(".L222:\n");
     gen(node); // B
     printf("    pop rax\n");
@@ -91,6 +91,7 @@ void gen(Node *node)
 {
     if (node->kind == ND_NULL)
         return;
+        
     // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
     // 代入式　　　変数のアドレスに対して値のコピーをし　その値をstack に保存
     switch (node->kind)

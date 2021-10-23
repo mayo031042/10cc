@@ -16,7 +16,7 @@ assert() {
     fi
 }
 
-<< COMMENTOUT
+# << COMMENTOUT
 # 数値
 assert 1 "1;"
 assert 42 " 42  ;   "
@@ -76,7 +76,7 @@ assert 2 "return 2; return 1;" # 複数のreturn
 assert 42 "returnx=42; return returnx;" # return に類似した変数
 assert 4 "x=4; return x;" # 変数をreturn 
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
-echo -e "RETURN OK\n"
+echo -e " RETURN OK\n"
 
 # 代入演算子
 assert 2 "a = 1; a += 1;" # 代入演算
@@ -98,7 +98,7 @@ assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
 assert 5 "ret=3; if(ret==3)return ret+2; return 2;"
 assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
 assert 9 "ret=3; if(ret==2)return 4; return 9;" # 条件式が偽
-echo -e "IF OK\n"
+echo -e " IF OK\n"
 
 assert 10 "if(1) 10; else 20;" # if else 真
 assert 20 "if(0) 10; else 20;" # if else 偽
@@ -112,9 +112,9 @@ assert 12 "if(0)return 10; else if(0)return 11; else if(1)return 12;" # if, else
 assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
 assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
 # assert 1 "if(1)if(1)return 1; return 2;" # ifの連続は未対応
-echo "IF ELSE OK"
+echo -e " IF ELSE OK\n"
 
-COMMENTOUT
+# COMMENTOUT
 # {}
 assert 3 "{return 1+1+1;} "
 # assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
