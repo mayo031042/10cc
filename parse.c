@@ -304,16 +304,30 @@ Node *stmt()
         Node *now_node = node;
 
         expect(TK_RESERVED, "(");
+        // expr()?
         if (tokens[pos]->str[0] != ';')
         {
             now_node->next = expr();
             now_node = now_node->next;
         }
-        // expr() ?
+        expect(TK_RESERVED, ";");
+        // expr()?
         if (tokens[pos]->str[0] != ';')
-            ;
-
+        {
+            now_node->next = expr();
+            now_node = now_node->next;
+        }
+        expect(TK_RESERVED, ";");
+        // expr()?
+        if (tokens[pos]->str[0] != ')')
+        {
+            now_node->next = expr();
+            now_node = now_node->next;
+        }
         expect(TK_RESERVED, ")");
+        now_node->next = stmt();
+        now_node = now_node->next;
+        now_node->next = NULL;
     }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))

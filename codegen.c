@@ -115,6 +115,9 @@ void gen(Node *node)
         gen_if(node);
         printf(".Lend%02d:\n", node->end_label);
         return;
+    case ND_FOR:
+        
+        return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)
         {
