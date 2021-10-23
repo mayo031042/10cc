@@ -104,6 +104,12 @@ LVar *find_lvar(int my_pos)
     return NULL;
 }
 
+void clear_semicolon()
+{
+    while (consume(TK_RESERVED, ";"))
+        ;
+}
+
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
 Node *primary()
@@ -334,8 +340,7 @@ Node *stmt()
         expect(TK_RESERVED, ";");
     }
 
-    while (consume(TK_RESERVED, ";"))
-        ;
+    clear_semicolon();
 
     return node;
 }
@@ -343,8 +348,7 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
-    while (consume(TK_RESERVED, ";"))
-        ;
+    clear_semicolon();
     int i = 0;
     while (!at_eof())
         codes[i++] = stmt();
