@@ -139,4 +139,7 @@ echo -e " FOR OK\n"
 # assert 10 "ret=10; return ret;;;;;; "
 # assert 10 "ret=1; if(1){if(0)ret=2; else ret=3;};;;else ret=4; if(ret)return 10; else return 5;"
 
+assert 2 "ret=3; cnt=5; while(ret){cnt-=1; ret-=1;} return cnt;"
+assert 10 "ret=6; cnt=5; while(ret){if(cnt==2)return 10;  cnt-=1; ret-=1;} return cnt;"
+
 echo -e "\nYou are a god-dammit genius !!\n"

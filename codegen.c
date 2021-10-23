@@ -78,22 +78,43 @@ void gen_for(Node *node)
     node = node->next;
     gen(node); // A
     node = node->next;
-    int jmp_label = count();
-    printf("    jmp .L%d\n", jmp_label);
+    int req_label = count();
+    printf("    jmp .Lreq%d\n", req_label);
 
-    int end_label = count();
-    printf(".Lend%d:\n", end_label);
+    int exe_label = count();
+    printf(".Lexe%d:\n", exe_label);
     gen(node->next->next); // X
     gen(node->next);       // C
 
-    printf(".L%d:\n", jmp_label);
-    if (node->kind != ND_NULL)
-        gen(node); // B
-    else
+    printf(".Lreq%d:\n", req_label);
+    if (node->kind == ND_NULL)
         printf("    push 1\n");
+    else
+        gen(node); // B
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
-    printf("    jne .Lend%d\n", end_label);
+    printf("    jne .Lexe%d\n", exe_label);
+}
+
+void gen_while(Node *node)
+{
+    node = node->next;
+
+    int req_label = count();
+    printf("    jmp .Lreq%d\n", req_label);
+
+    int exe_label = count();
+    printf(".Lexe%d:\n", exe_label);
+    gen(node->next); // X
+
+    printf(".Lreq%d:\n", req_label);
+    if (node->kind == ND_NULL)
+        printf("    push 1\n");
+    else
+        gen(node); // A
+    printf("    pop rax\n");
+    printf("    cmp rax, 0\n");
+    printf("    jne .Lexe%d\n", exe_label);
 }
 
 void gen(Node *node)
@@ -143,6 +164,9 @@ void gen(Node *node)
         return;
     case ND_FOR:
         gen_for(node);
+        return;
+    case ND_WHILE:
+        gen_while(node);
         return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)

@@ -321,6 +321,14 @@ Node *stmt()
 
         now_node->next = stmt();
     }
+    else if (consume_keyword(TK_WHILE))
+    {
+        node = create_node(ND_WHILE);
+        expect(TK_RESERVED, "(");
+        node->next = expr();
+        expect(TK_RESERVED, ")");
+        node->next->next = stmt();
+    }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {
