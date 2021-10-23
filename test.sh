@@ -144,4 +144,4 @@ assert 2 "ret=3; cnt=5; while(ret){cnt-=1; ret-=1;} return cnt;"
 assert 10 "ret=6; cnt=5; while(ret){if(cnt==2)return 10;  cnt-=1; ret-=1;} return cnt;"
 assert 2 "x=3; ret=0; while(x<5){x+=1;ret+=1; } return ret;"
 
-echo -e "\nYou are a god-dammit genius !!\n"
+echo -e "\n         You are a god-dammit genius !!\n"

@@ -295,11 +295,18 @@ Node *stmt()
                 now_node->next = expr();
                 expect(TK_RESERVED, op[i]);
             }
-            
+
             now_node = now_node->next;
         }
 
         now_node->next = stmt();
+
+        now_node = node->next->next;
+        if (now_node->kind == ND_NULL)
+        {
+            now_node->kind = ND_NUM;
+            now_node->val = 1;
+        }
     }
     else if (consume_keyword(TK_WHILE))
     {

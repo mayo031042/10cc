@@ -106,6 +106,10 @@ Node *program();
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
 
+// 分類が半端な関数 @ func_others
+int count();
+// void clear_semicolon();
+
 // グローバル変数 -> 定義はmainにて
 extern int pos;
 extern char *user_input;
