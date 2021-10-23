@@ -134,7 +134,7 @@ echo -e " FOR OK\n"
 # semicolon 連続　を消費
 assert 42 "  42 ;;; ;; ;;; "
 assert 42 "3;;;;;   ; ;  ; ;;42;;;"
-# assert 42 ";;;;3; ;; ;  ;42 ;;;  " # 前方セミコロン連続は未対応
+assert 42 ";;;;3; ;; ;  ;42 ;;;  " # 前方セミコロン連続は未対応
 assert 42 "3;;;;;;;;  ; ;  ;;42 ;;;;;    "
 assert 13 "i=10; for(;0;){return 1;;;} return i+=3;;;;"
 assert 10 "ret=10; return ret;;;;;; "

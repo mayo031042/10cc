@@ -336,13 +336,15 @@ Node *stmt()
 
     while (consume(TK_RESERVED, ";"))
         ;
-        
+
     return node;
 }
 
 // code全体を　;　で区切る
 Node *program()
 {
+    while (consume(TK_RESERVED, ";"))
+        ;
     int i = 0;
     while (!at_eof())
         codes[i++] = stmt();
