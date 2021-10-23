@@ -19,7 +19,7 @@ assert() {
 # << COMMENTOUT
 # 数値
 assert 1 "1;"
-assert 42 " 42  ;   "
+assert 42 " 42  ; "
 # 加減算
 assert 10 "4+6;"
 assert 3 "5-2;"
@@ -129,5 +129,10 @@ assert 42 "for(;;){1;} return 42;"
 assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
 assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;"
+echo -e " FOR OK\n"
+
+# semicolon 連続　を消費
+assert 42 "3;;;;;   ; ;  ; ;;42;"
+assert 42 "3;;;;;;;;  ; ;  ;;42 ;;;;;    "
 
 echo -e "\nYou are a god-dammit genius !!\n"

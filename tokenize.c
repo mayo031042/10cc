@@ -49,6 +49,8 @@ bool at_eof()
     return tokens[pos]->kind == TK_EOF;
 }
 
+
+
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 void new_token(TokenKind kind, char *str, int len)
