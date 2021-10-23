@@ -58,6 +58,18 @@ void gen_for_while(Node *node)
     printf("    jne .Lexe%d\n", exe_label);
 }
 
+void gen_do(Node *node)
+{
+    int exe_label = count();
+
+    printf(".Lexe%d:\n", exe_label);
+    gen(node->lhs);
+    gen(node->rhs);
+
+    cmp_rax(0);
+    printf("    jne .Lexe%d\n", exe_label);
+}
+
 void gen(Node *node)
 {
     if (node->kind == ND_NULL)
@@ -109,6 +121,9 @@ void gen(Node *node)
         return;
     case ND_WHILE:
         gen_for_while(node->next);
+        return;
+    case ND_DO:
+        gen_do(node);
         return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)

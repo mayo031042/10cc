@@ -17,6 +17,7 @@ typedef enum
     TK_ELSE,            // else
     TK_WHILE,           // while
     TK_FOR,             // for
+    TK_DO,              // do while
     TK_BLOCK_FRONT,     // {
     TK_BLOCK_END,       // }
     TK_EOF,             // 入力の最後
@@ -52,6 +53,7 @@ typedef enum
     ND_ELSE,   // else
     ND_WHILE,  // while
     ND_FOR,    // for
+    ND_DO,     // do
     ND_BLOCK,  // ブロックノードの開始を意味する
     ND_NULL,   // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
 } NodeKind;

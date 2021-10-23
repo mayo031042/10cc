@@ -76,7 +76,7 @@ assert 2 "return 2; return 1;" # 複数のreturn
 assert 42 "returnx=42; return returnx;" # return に類似した変数
 assert 4 "x=4; return x;" # 変数をreturn 
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
-echo -e " RETURN OK\n"
+echo -e " return OK\n"
 
 # 代入演算子
 assert 2 "a = 1; a += 1;" # 代入演算
@@ -98,7 +98,7 @@ assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
 assert 5 "ret=3; if(ret==3)return ret+2; return 2;"
 assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
 assert 9 "ret=3; if(ret==2)return 4; return 9;" # 条件式が偽
-echo -e " IF OK\n"
+echo -e " if OK\n"
 
 assert 10 "if(1) 10; else 20;" # if else 真
 assert 20 "if(0) 10; else 20;" # if else 偽
@@ -113,7 +113,7 @@ assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
 assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
 assert 1 "if(1)if(1)return 1; return 2;"
 assert 42 "if(1)if(0)if(1)return 2; return 42;"
-echo -e " IF ELSE OK\n"
+echo -e " if else OK\n"
 
 # COMMENTOUT
 # {}
@@ -130,7 +130,7 @@ assert 42 "for(;0;){1;} return 42;" # Bに何も書かないと恒真式にな�
 assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
 assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;" # 複数のfor
-echo -e " FOR OK\n"
+echo -e " for OK\n"
 
 # semicolon 連続　を消費
 # assert 42 "  42 ;;; ;; ;;; "
@@ -143,5 +143,9 @@ echo -e " FOR OK\n"
 assert 2 "ret=3; cnt=5; while(ret){cnt-=1; ret-=1;} return cnt;"
 assert 10 "ret=6; cnt=5; while(ret){if(cnt==2)return 10;  cnt-=1; ret-=1;} return cnt;"
 assert 2 "x=3; ret=0; while(x<5){x+=1;ret+=1; } return ret;"
+
+assert 15 "ret=10; do{ret+=5;}  while(0); return ret;"
+assert 5 "ret=5; do return ret; while(1); return 10;"
+echo -e "do while OK\n"
 
 echo -e "\n         You are a god-dammit genius !!\n"

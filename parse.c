@@ -320,6 +320,17 @@ Node *stmt()
         node->next->next = create_node(ND_NULL);
         node->next->next->next = stmt();
     }
+    // :do{}while();
+    else if (consume_keyword(TK_DO))
+    {
+        Node *lhs = stmt();
+        expect(TK_WHILE, "while");
+        expect(TK_RESERVED, "(");
+        Node *rhs = expr();
+        expect(TK_RESERVED, ")");
+        expect(TK_RESERVED, ";");
+        node = new_node(ND_DO, lhs, rhs);
+    }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {

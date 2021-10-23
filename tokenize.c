@@ -119,6 +119,12 @@ void *tokenize()
             p += 3;
             continue;
         }
+        else if (is_keyword(p, "do", 2))
+        {
+            new_token(TK_DO, p, 2);
+            p += 2;
+            continue;
+        }
 
         // : { or }
         if (strchr("{}", *p))
