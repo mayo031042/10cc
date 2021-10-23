@@ -120,7 +120,7 @@ void *tokenize()
             continue;
         }
 
-        // { or }
+        // : { or }
         if (strchr("{}", *p))
         {
             if (*p == '{')
@@ -152,13 +152,13 @@ void *tokenize()
             continue;
         }
 
-        else if (isdigit(*p))
+        // 数値、変数解釈ゾーン　
+        if (isdigit(*p))
         {
             new_token(TK_NUM, p, 0);
             tokens[pos - 1]->val = strtol(p, &p, 10);
             continue;
         }
-        // 変数解釈ゾーン　変数の１文字目は必ず変数でしか使用できないものがくるので　ここで判定するのがよい
         else if (is_alnum(*p))
         {
             char *q = p;
