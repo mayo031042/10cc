@@ -117,6 +117,7 @@ void *tokenize()
         else if (is_keyword(p, "for", 3))
         {
             new_token(TK_FOR, p, 3);
+            p+=3;
             continue;
         }
 

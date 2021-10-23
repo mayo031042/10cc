@@ -53,6 +53,7 @@ typedef enum
     ND_WHILE,  //while
     ND_FOR,    // for
     ND_BLOCK,  // ブロックノードの開始を意味する
+    ND_NULL,   // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
 } NodeKind;
 
 typedef struct Node Node;

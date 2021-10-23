@@ -9,14 +9,14 @@ assert() {
     actual="$?"
 
     if [ "$actual" = "$expected" ]; then
-        echo "  $input => $actual"
+        echo "   $input => $actual"
     else
         echo "$input => $expected expected, but got $actual"
         exit 1
     fi
 }
 
-# << COMMENTOUT
+<< COMMENTOUT
 # 数値
 assert 1 "1;"
 assert 42 " 42  ;   "
@@ -114,7 +114,7 @@ assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; e
 # assert 1 "if(1)if(1)return 1; return 2;" # ifの連続は未対応
 echo "IF ELSE OK"
 
-# COMMENTOUT
+COMMENTOUT
 # {}
 assert 3 "{return 1+1+1;} "
 # assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
@@ -122,5 +122,10 @@ assert 4 "ret=1; {ret+=1;} {ret+=1;} {ret+=1;} ret;"
 assert 1 "if(1){return 1;} return 2;"
 assert 6 "ret=3; if(1){ret+=5; ret-=2;} return ret;"
 assert 10 "ret=1; if(0){ret=0;}else if(1){ret=10;}else ret=0; return ret;"
+
+# for(;;){}
+assert 42 "for(;;){1;} return 42;"
+assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
+assert 6 "ret=1; i=10; for(;i;i-=2)ret+=1; return ret;"
 
 echo -e "\nYou are a god-dammit genius !!\n"
