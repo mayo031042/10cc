@@ -348,8 +348,9 @@ Node *stmt()
         node = expr();
         expect(TK_RESERVED, ";");
     }
-        while (consume(TK_RESERVED, ";"))
-            ;
+
+    while (consume(TK_RESERVED, ";"))
+        ;
 
     return node;
 }
