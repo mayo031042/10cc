@@ -301,6 +301,7 @@ Node *stmt()
 
         now_node->next = stmt();
 
+        // 条件式が空欄な時は恒真式とみなすので　１が入っているとしてparseする
         now_node = node->next->next;
         if (now_node->kind == ND_NULL)
         {
