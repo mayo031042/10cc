@@ -102,8 +102,8 @@ void gen(Node *node);
 int count();
 
 // グローバル変数 -> 定義はmainにて
-extern char *user_input;
 extern int pos;
+extern char *user_input;
 extern Node *codes[];
 extern Token *tokens[];
 extern LVar *locals;

@@ -5,13 +5,14 @@
 
 // グローバル変数の宣言
 char *user_input;
-int pos=0;
+int pos = 0;
 Token *tokens[tokens_size];
 Node *codes[codes_size];
 LVar *locals;
 
-int count(){
-    static int cnt=2;
+int count()
+{
+    static int cnt = 2;
     return cnt++;
 }
 

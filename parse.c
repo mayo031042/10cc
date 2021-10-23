@@ -12,8 +12,6 @@ Node *expr();
 Node *stmt();
 // Node *program();
 
-int code_pos;
-
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -359,9 +357,9 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
+    int i = 0;
     while (!at_eof())
-    {
-        codes[code_pos++] = stmt();
-    }
-    codes[code_pos] = NULL;
+        codes[i++] = stmt();
+
+    codes[i] = NULL;
 }
