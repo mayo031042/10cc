@@ -137,4 +137,6 @@ assert 42 "3;;;;;;;;  ; ;  ;;42 ;;;;;    "
 assert 13 "i=10; for(;0;){return 1;;;} return i+=3;;;;"
 assert 10 "ret=10; return ret;;;;;; "
 
+assert 10 "ret=1; if(1){if(0)ret=2; else ret=3;}else ret=4; if(ret)return 10; else return 5;"
+
 echo -e "\nYou are a god-dammit genius !!\n"

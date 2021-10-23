@@ -50,7 +50,7 @@ typedef enum
     ND_RETURN, // return
     ND_IF,     // if 条件文とcmp 0 ,je
     ND_ELSE,   // else
-    ND_WHILE,  //while
+    ND_WHILE,  // while
     ND_FOR,    // for
     ND_BLOCK,  // ブロックノードの開始を意味する
     ND_NULL,   // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
