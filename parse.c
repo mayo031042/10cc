@@ -295,7 +295,7 @@ Node *stmt()
                 now_node->next = expr();
                 expect(TK_RESERVED, op[i]);
             }
-
+            
             now_node = now_node->next;
         }
 
@@ -307,7 +307,10 @@ Node *stmt()
         expect(TK_RESERVED, "(");
         node->next = expr();
         expect(TK_RESERVED, ")");
-        node->next->next = stmt();
+
+        // ダミー変化式を挟む
+        node->next->next = create_node(ND_NULL);
+        node->next->next->next = stmt();
     }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))

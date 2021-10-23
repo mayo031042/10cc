@@ -77,44 +77,22 @@ void gen_else(Node *node, int end_label)
     gen_else(node->rhs, end_label);
 }
 
-void gen_for(Node *node)
+void gen_for_while(Node *node)
 {
-    node = node->next;
-    gen(node); // A
-    node = node->next;
     int req_label = count();
     printf("    jmp .Lreq%d\n", req_label);
 
     int exe_label = count();
     printf(".Lexe%d:\n", exe_label);
+
     gen(node->next->next); // X
-    gen(node->next);       // C
+    gen(node->next);       // C whileの場合はND_NULLなので何も出力されない
 
     printf(".Lreq%d:\n", req_label);
     if (node->kind == ND_NULL)
         printf("    push 1\n");
     else
         gen(node); // B
-    cmp_rax(0);
-    printf("    jne .Lexe%d\n", exe_label);
-}
-
-void gen_while(Node *node)
-{
-    node = node->next;
-
-    int req_label = count();
-    printf("    jmp .Lreq%d\n", req_label);
-
-    int exe_label = count();
-    printf(".Lexe%d:\n", exe_label);
-    gen(node->next); // X
-
-    printf(".Lreq%d:\n", req_label);
-    if (node->kind == ND_NULL)
-        printf("    push 1\n");
-    else
-        gen(node); // A
     cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
 }
@@ -165,10 +143,11 @@ void gen(Node *node)
         printf(".Lend%d:\n", end_label);
         return;
     case ND_FOR:
-        gen_for(node);
+        gen(node->next); // A
+        gen_for_while(node->next->next);
         return;
     case ND_WHILE:
-        gen_while(node);
+        gen_for_while(node->next);
         return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)
