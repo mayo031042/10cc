@@ -302,31 +302,34 @@ Node *stmt()
         expect(TK_RESERVED, "(");
 
         // expr()?
-        if (tokens[pos]->str[0] != ';')
-            now_node->next = expr();
-        else
+        if (consume(TK_RESERVED, ";"))
             now_node->next = create_node(ND_NULL);
-
+        else
+        {
+            now_node->next = expr();
+            expect(TK_RESERVED, ";");
+        }
         now_node = now_node->next;
-        expect(TK_RESERVED, ";");
 
         // expr()?
-        if (tokens[pos]->str[0] != ';')
-            now_node->next = expr();
-        else
+        if (consume(TK_RESERVED, ";"))
             now_node->next = create_node(ND_NULL);
-
+        else
+        {
+            now_node->next = expr();
+            expect(TK_RESERVED, ";");
+        }
         now_node = now_node->next;
-        expect(TK_RESERVED, ";");
 
         // expr()?
-        if (tokens[pos]->str[0] != ')')
-            now_node->next = expr();
-        else
+        if (consume(TK_RESERVED, ")"))
             now_node->next = create_node(ND_NULL);
-
+        else
+        {
+            now_node->next = expr();
+            expect(TK_RESERVED, ")");
+        }
         now_node = now_node->next;
-        expect(TK_RESERVED, ")");
 
         now_node->next = stmt();
     }
