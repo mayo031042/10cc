@@ -125,6 +125,18 @@ void *tokenize()
             p += 2;
             continue;
         }
+        else if (is_keyword(p, "continue", 8))
+        {
+            new_token(TK_CONTINUE, p, 8);
+            p += 8;
+            continue;
+        }
+        else if (is_keyword(p, "break", 5))
+        {
+            new_token(TK_BREAK, p, 5);
+            p += 5;
+            continue;
+        }
 
         // : { or }
         if (strchr("{}", *p))
