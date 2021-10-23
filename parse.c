@@ -64,6 +64,40 @@ Node *new_node_else(Node *node_if)
     return node;
 }
 
+// 完全に独立してif node を完成させる
+Node *new_node_if_2(int cnt)
+{
+    Node *node = create_node(ND_IF);
+    node->next_label = count();
+    node->end_label = cnt;
+    expect(TK_RESERVED, "(");
+    node->lhs = expr();
+    expect(TK_RESERVED, ")");
+    node->rhs = stmt();
+    return node;
+}
+
+// if の時点で else を作る　else node　の左辺にif を配置
+// 単if, else if, else, の３種類の終了があり得る
+// 右辺には　最後者のみstmt() で前２つはND_NULLがくる
+Node *new_node_if_else_2(int cnt)
+{
+    // 既にif があることがわかっていて消費されている
+    Node *node = create_node(ND_ELSE);
+    node->end_label = cnt;
+    node->lhs = new_node_if_2(cnt);
+    if (consume_keyword(TK_ELSE))
+    {
+        if (consume_keyword(TK_IF))
+            node->rhs = new_node_if_else_2(cnt);
+        else
+            node->rhs = stmt();
+    }
+    else
+        node->rhs = create_node(ND_NULL);
+    return node;
+}
+
 Node *new_node_if_else()
 {
     Node *node = new_node_if();
@@ -296,7 +330,7 @@ Node *stmt()
     else if (consume_keyword(TK_IF))
     {
         // : if else
-        node = new_node_if_else();
+        node = new_node_if_else_2(count());
     }
     else if (consume_keyword(TK_FOR))
     {
