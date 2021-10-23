@@ -47,15 +47,15 @@ void gen_if(Node *node)
     // stack top が０であるときのみ偽と判定して goto next_label:
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
-    printf("    je .L%02d%02d\n", node->end_label, node->next_label);
+    printf("    je .L%d\n", node->next_label);
 
     // 直前でjmpしていたら実行されない部分に　実行式
     gen(node->rhs); // X
     // 実行式が実行された時は　if ネストを抜ける
-    printf("    jmp .Lend%02d\n", node->end_label);
+    printf("    jmp .Lend%d\n", node->end_label);
 
     // ちょうど実行文１つだけを挟んで　ラベルを配置
-    printf(".L%02d%02d:\n", node->end_label, node->next_label);
+    printf(".L%d:\n", node->next_label);
 }
 
 void gen_else(Node *node)
@@ -74,24 +74,26 @@ void gen_for(Node *node)
     node = node->next;
     gen(node); // A
     node = node->next;
-    printf("    jmp .L222\n");
+    int jmp_label = count();
+    printf("    jmp .L%d\n", jmp_label);
 
-    printf(".L333:\n");
+    int end_label = count();
+    printf(".Lend%d:\n", end_label);
     gen(node->next->next); // X
     gen(node->next);       // C
 
-    printf(".L222:\n");
+    printf(".L%d:\n", jmp_label);
     gen(node); // B
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
-    printf("    jne .L333\n");
+    printf("    jne .Lend%d\n", end_label);
 }
 
 void gen(Node *node)
 {
     if (node->kind == ND_NULL)
         return;
-        
+
     // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
     // 代入式　　　変数のアドレスに対して値のコピーをし　その値をstack に保存
     switch (node->kind)
@@ -129,12 +131,12 @@ void gen(Node *node)
         return;
     case ND_ELSE:
         gen_else(node);
-        printf(".Lend%02d:\n", node->end_label);
+        printf(".Lend%d:\n", node->end_label);
         return;
     // if に入るのは　単純if なときのみ
     case ND_IF:
         gen_if(node);
-        printf(".Lend%02d:\n", node->end_label);
+        printf(".Lend%d:\n", node->end_label);
         return;
     case ND_FOR:
         gen_for(node);

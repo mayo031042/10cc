@@ -13,7 +13,6 @@ Node *stmt();
 // Node *program();
 
 int code_pos;
-int small_if;
 
 Node *create_node(NodeKind kind)
 {
@@ -51,7 +50,8 @@ Node *new_node_ident(LVar *lvar)
 Node *new_node_if()
 {
     Node *node = create_node(ND_IF);
-    node->next_label = small_if++;
+    // node->next_label = small_if++;
+    node->next_label = count();
     node->end_label = code_pos;
     return node;
 }
@@ -361,7 +361,6 @@ Node *program()
 {
     while (!at_eof())
     {
-        small_if = 0;
         codes[code_pos++] = stmt();
     }
     codes[code_pos] = NULL;
