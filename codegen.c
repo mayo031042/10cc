@@ -80,9 +80,9 @@ void gen_else(Node *node, int end_label)
 void gen_for_while(Node *node)
 {
     int req_label = count();
-    printf("    jmp .Lreq%d\n", req_label);
-
     int exe_label = count();
+
+    printf("    jmp .Lreq%d\n", req_label);
     printf(".Lexe%d:\n", exe_label);
 
     gen(node->next->next); // X
@@ -93,6 +93,7 @@ void gen_for_while(Node *node)
         printf("    push 1\n");
     else
         gen(node); // B
+
     cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
 }
