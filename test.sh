@@ -18,8 +18,8 @@ assert() {
 
 # << COMMENTOUT
 # 数値
-assert 0 "0;"
-assert 42 "42;"
+assert 1 "1;"
+assert 42 " 42  ;    "
 # 加減算
 assert 10 "4+6;"
 assert 3 "5-2;"
@@ -116,7 +116,7 @@ echo "IF ELSE OK"
 
 # COMMENTOUT
 # {}
-assert 3 "{return 1+1+1;}"
+assert 3 "{return 1+1+1;} "
 # assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
 assert 4 "ret=1; {ret+=1;} {ret+=1;} {ret+=1;} ret;"
 assert 1 "if(1){return 1;} return 2;"

@@ -281,24 +281,29 @@ Node *expr()
     return assign();
 }
 
-// 予約語の解釈を行う
+// 予約語,{} の解釈を行う
 Node *stmt()
 {
     Node *node;
+    // return
     if (consume_keyword(TK_RETURN))
     {
         node = create_node(ND_RETURN);
         node->lhs = expr();
         expect(TK_RESERVED, ";");
     }
+    // if
     else if (consume_keyword(TK_IF))
     {
+        // if else
         node = new_node_if_else();
     }
+    // {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {
         node = create_node(ND_BLOCK);
         Node *now_node = node;
+        // }
         while (!consume_keyword(TK_BLOCK_END))
         {
             Node *next_node = stmt();

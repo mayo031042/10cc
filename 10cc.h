@@ -8,13 +8,15 @@
 // token　
 typedef enum
 {
-    TK_RESERVED,        // 演算子
-    TK_ASSIGN_RESERVED, // 代入演算子
+    TK_RESERVED,        // 演算子 +-*/, ==, !=, <, <=
+    TK_ASSIGN_RESERVED, // 代入演算子 +=,,,
     TK_IDENT,           // 変数
     TK_NUM,             // 数値
     TK_RETURN,          // return
     TK_IF,              // if
     TK_ELSE,            // else
+    TK_WHILE,           // while
+    TK_FOR,             // for
     TK_BLOCK_FRONT,     // {
     TK_BLOCK_END,       // }
     TK_EOF,             // 入力の最後
@@ -48,6 +50,8 @@ typedef enum
     ND_RETURN, // return
     ND_IF,     // if 条件文とcmp 0 ,je
     ND_ELSE,   // else
+    ND_WHILE,  //while
+    ND_FOR,    // for
     ND_BLOCK,  // ブロックノードの開始を意味する
 } NodeKind;
 

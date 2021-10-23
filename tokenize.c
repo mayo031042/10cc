@@ -108,6 +108,17 @@ void *tokenize()
             p += 4;
             continue;
         }
+        else if (is_keyword(p, "while", 5))
+        {
+            new_token(TK_WHILE, p, 5);
+            p += 5;
+            continue;
+        }
+        else if (is_keyword(p, "for", 3))
+        {
+            new_token(TK_FOR, p, 3);
+            continue;
+        }
 
         // { or }
         if (strchr("{}", *p))
@@ -125,7 +136,7 @@ void *tokenize()
         {
             // インクリメント　の実装
         }
-        else if (*(p + 1) == '=' && strchr("+-*/!=<>", *p))
+        else if (strchr("+-*/!=<>", *p) && *(p + 1) == '=')
         {
             if (strchr("!=<>", *p))
                 new_token(TK_RESERVED, p, 2);
