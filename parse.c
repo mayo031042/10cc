@@ -260,11 +260,10 @@ Node *assign()
             node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
         else if (consume(TK_ASSIGN_RESERVED, "*="))
             node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
-        else
-        {
-            expect(TK_ASSIGN_RESERVED, "/=");
+        else if (consume(TK_ASSIGN_RESERVED, "/="))
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
-        }
+        else
+            error_at(tokens[pos]->str, "代入演算子ではありません\n");
     }
 
     return node;
@@ -280,6 +279,7 @@ Node *expr()
 Node *stmt()
 {
     Node *node;
+
     // : return,
     if (consume_keyword(TK_RETURN))
     {
@@ -290,7 +290,6 @@ Node *stmt()
     // : if
     else if (consume_keyword(TK_IF))
     {
-        // if群の同一の定義とは　ここでまとめて処理されたものである
         // : if else
         node = new_node_else();
     }
@@ -313,7 +312,7 @@ Node *stmt()
 
             now_node = now_node->next;
         }
-        
+
         now_node->next = stmt();
     }
     // : {
@@ -337,7 +336,7 @@ Node *stmt()
 
     while (consume(TK_RESERVED, ";"))
         ;
-
+        
     return node;
 }
 
