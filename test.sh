@@ -132,13 +132,11 @@ assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;
 echo -e " FOR OK\n"
 
 # semicolon 連続　を消費
-assert 42 "  42 ;;; ;; ;;; "
-assert 42 "3;;;;;   ; ;  ; ;;42;;;"
-assert 42 ";;;;3; ;; ;  ;42 ;;;  " # 前方セミコロン連続は未対応
-assert 42 "3;;;;;;;;  ; ;  ;;42 ;;;;;    "
-assert 13 "i=10; for(;0;){return 1;;;} return i+=3;;;;"
-assert 10 "ret=10; return ret;;;;;; "
-
-assert 10 "ret=1; if(1){if(0)ret=2; else ret=3;}else ret=4; if(ret)return 10; else return 5;"
+# assert 42 "  42 ;;; ;; ;;; "
+# assert 42 "3;;;;;   ; ;  ; ;;42;;;"
+# assert 42 ";;;;3; ;; ;  ;42 ;;;  " # 前方セミコロン連続は未対応
+# # assert 13 ";; i=10;  ;;for(;0;){;;;return 1;;;} ;;return i+=3;;;;"
+# assert 10 "ret=10; return ret;;;;;; "
+# assert 10 "ret=1; if(1){if(0)ret=2; else ret=3;};;;else ret=4; if(ret)return 10; else return 5;"
 
 echo -e "\nYou are a god-dammit genius !!\n"

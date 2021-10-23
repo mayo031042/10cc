@@ -340,15 +340,12 @@ Node *stmt()
         expect(TK_RESERVED, ";");
     }
 
-    clear_semicolon();
-
     return node;
 }
 
 // code全体を　;　で区切る
 Node *program()
 {
-    clear_semicolon();
     int i = 0;
     while (!at_eof())
         codes[i++] = stmt();
