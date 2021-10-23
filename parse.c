@@ -275,7 +275,7 @@ Node *assign()
     return node;
 }
 
-// 予約語のない純粋な計算式として解釈する
+// 予約語のない純粋な計算式として解釈する 三項間演算子もここ？
 Node *expr()
 {
     return assign();
@@ -298,6 +298,23 @@ Node *stmt()
         // : if else
         node = new_node_if_else();
     }
+    else if (consume_keyword(TK_FOR))
+    {
+        node = create_node(ND_FOR);
+        Node *now_node = node;
+
+        expect(TK_RESERVED, "(");
+        if (tokens[pos]->str[0] != ';')
+        {
+            now_node->next = expr();
+            now_node = now_node->next;
+        }
+        // expr() ?
+        if (tokens[pos]->str[0] != ';')
+            ;
+
+        expect(TK_RESERVED, ")");
+    }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {
@@ -306,9 +323,8 @@ Node *stmt()
         // : }
         while (!consume_keyword(TK_BLOCK_END))
         {
-            Node *next_node = stmt();
-            now_node->next = next_node;
-            now_node = next_node;
+            now_node->next = stmt();
+            now_node = now_node->next;
         }
         now_node->next = NULL;
     }

@@ -19,7 +19,7 @@ assert() {
 # << COMMENTOUT
 # 数値
 assert 1 "1;"
-assert 42 " 42  ;    "
+assert 42 " 42  ;   "
 # 加減算
 assert 10 "4+6;"
 assert 3 "5-2;"
