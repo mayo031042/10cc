@@ -46,26 +46,8 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
-// if node を作る　同一code_pos内で　if node が作られるたびに　small_ifは増加
-Node *new_node_if()
-{
-    Node *node = create_node(ND_IF);
-    // node->next_label = small_if++;
-    node->next_label = count();
-    node->end_label = code_pos;
-    return node;
-}
-// if node を受け取り　それを参照しつつ左辺に配置したelse node を作成する
-Node *new_node_else(Node *node_if)
-{
-    Node *node = create_node(ND_ELSE);
-    node->end_label = node_if->end_label;
-    node->lhs = node_if;
-    return node;
-}
-
 // 完全に独立してif node を完成させる
-Node *new_node_if_2(int cnt)
+Node *new_node_if(int cnt)
 {
     Node *node = create_node(ND_IF);
     node->next_label = count();
@@ -80,40 +62,24 @@ Node *new_node_if_2(int cnt)
 // if の時点で else を作る　else node　の左辺にif を配置
 // 単if, else if, else, の３種類の終了があり得る
 // 右辺には　最後者のみstmt() で前２つはND_NULLがくる
-Node *new_node_if_else_2(int cnt)
+Node *new_node_else(int cnt)
 {
     // 既にif があることがわかっていて消費されている
     Node *node = create_node(ND_ELSE);
+    // cnt は同一if群において共通
     node->end_label = cnt;
-    node->lhs = new_node_if_2(cnt);
+    node->lhs = new_node_if(cnt);
+    // if, else if で終了しないなら
     if (consume_keyword(TK_ELSE))
     {
+        // else if なら
         if (consume_keyword(TK_IF))
-            node->rhs = new_node_if_else_2(cnt);
+            node->rhs = new_node_else(cnt);
         else
             node->rhs = stmt();
     }
     else
         node->rhs = create_node(ND_NULL);
-    return node;
-}
-
-Node *new_node_if_else()
-{
-    Node *node = new_node_if();
-
-    expect(TK_RESERVED, "(");
-    node->lhs = expr();
-    expect(TK_RESERVED, ")");
-
-    node->rhs = stmt();
-    // ただのifなら　ここでreturn node につながるだけ
-    if (consume_keyword(TK_ELSE))
-    {
-        node = new_node_else(node);
-        // if, else, その他　何が来てもstmtで対処できる
-        node->rhs = stmt();
-    }
     return node;
 }
 
@@ -329,8 +295,9 @@ Node *stmt()
     // : if
     else if (consume_keyword(TK_IF))
     {
+        // if群の同一の定義とは　ここでまとめて処理されたものである
         // : if else
-        node = new_node_if_else_2(count());
+        node = new_node_else(count());
     }
     else if (consume_keyword(TK_FOR))
     {
