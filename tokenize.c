@@ -49,8 +49,6 @@ bool at_eof()
     return tokens[pos]->kind == TK_EOF;
 }
 
-
-
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 void new_token(TokenKind kind, char *str, int len)
@@ -71,14 +69,13 @@ int is_alnum(char c)
            ('0' <= c && c <= '9') ||
            (c == '_');
 }
+
 // p とs を比較して　pがkeyword　と判定できたらtrue
 bool is_keyword(char *p, char *str, int num)
 {
     return !strncmp(p, str, num) && !is_alnum(p[num]);
 }
 
-// 入力されたプログラムを先頭からtokenize していく　
-// error がなかった場合は　ｇ変数token をtoken 列の先頭にセットして終了
 void *tokenize()
 {
     char *p = user_input;

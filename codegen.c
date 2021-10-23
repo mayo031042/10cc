@@ -70,7 +70,6 @@ void gen_else(Node *node, int end_label)
 {
     if (node->kind != ND_ELSE)
     {
-        // NULL ,stmt()がここに当たる
         gen(node);
         return;
     }

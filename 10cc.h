@@ -92,6 +92,15 @@ bool at_eof();
 void *tokenize();
 
 // parse のための関数 -> @ parse.c
+Node *primary();
+Node *unary();
+Node *mul();
+Node *add();
+Node *relational();
+Node *equality();
+Node *assign();
+Node *expr();
+Node *stmt();
 Node *program();
 
 // codegen のための関数　-> @ codegen.c

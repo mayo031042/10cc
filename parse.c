@@ -1,17 +1,5 @@
 #include "10cc.h"
 
-// 構文解析のための関数
-Node *primary();
-Node *unary();
-Node *mul();
-Node *add();
-Node *relational();
-Node *equality();
-Node *assign();
-Node *expr();
-Node *stmt();
-// Node *program();
-
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -55,9 +43,7 @@ Node *new_node_if()
     return node;
 }
 
-// if の時点で else を作る　else node　の左辺にif を配置
-// 単if, else if, else, の３種類の終了があり得る
-// 右辺には　最後者のみstmt() で前２つはND_NULLがくる
+// if の時点で else を作る　else node　の左辺にif を配置 右辺にはNULLかstmt()
 Node *new_node_else()
 {
     // 既にif があることがわかっていて消費されている
@@ -102,12 +88,6 @@ LVar *find_lvar(int my_pos)
             return var;
     }
     return NULL;
-}
-
-void clear_semicolon()
-{
-    while (consume(TK_RESERVED, ";"))
-        ;
 }
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
