@@ -346,11 +346,10 @@ Node *stmt()
     else
     {
         node = expr();
-        // 最低１つは必要である
         expect(TK_RESERVED, ";");
+    }
         while (consume(TK_RESERVED, ";"))
             ;
-    }
 
     return node;
 }

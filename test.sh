@@ -125,7 +125,7 @@ assert 6 "ret=3; if(1){ret+=5; ret-=2;} return ret;"
 assert 10 "ret=1; if(0){ret=0;}else if(1){ret=10;}else ret=0; return ret;"
 
 # for(;;){}
-assert 42 "for(;;){1;} return 42;"
+assert 42 "for(;0;){1;} return 42;" # Bに何も書かないと恒真式になってしまう
 assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
 assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;"
@@ -134,5 +134,7 @@ echo -e " FOR OK\n"
 # semicolon 連続　を消費
 assert 42 "3;;;;;   ; ;  ; ;;42;"
 assert 42 "3;;;;;;;;  ; ;  ;;42 ;;;;;    "
+assert 13 "i=10; for(;0;){return 1;;;} return i+=3;;;;"
+assert 10 "ret=10; return ret;;;;;; "
 
 echo -e "\nYou are a god-dammit genius !!\n"

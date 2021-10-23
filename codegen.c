@@ -87,7 +87,10 @@ void gen_for(Node *node)
     gen(node->next);       // C
 
     printf(".L%d:\n", jmp_label);
-    gen(node); // B
+    if (node->kind != ND_NULL)
+        gen(node); // B
+    else
+        printf("    push 1\n");
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
     printf("    jne .Lend%d\n", end_label);
