@@ -64,9 +64,7 @@ struct Node
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
     int val;
-    int offset;     // ND_LVARのときのみ使う
-    int end_label;  // jmp end に類するときのみ使う 全体のif群の通し番号
-    int next_label; // cmp 0,je  に類するときのみ使う 同一if群の中でのみの通し番号
+    int offset; // ND_LVARのときのみ使う
 };
 
 // LVar
@@ -98,8 +96,6 @@ Node *program();
 
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
-
-int count();
 
 // グローバル変数 -> 定義はmainにて
 extern int pos;

@@ -10,12 +10,6 @@ Token *tokens[tokens_size];
 Node *codes[codes_size];
 LVar *locals;
 
-int count()
-{
-    static int cnt = 2;
-    return cnt++;
-}
-
 int main(int argc, char **argv)
 {
     if (argc != 2)

@@ -30,6 +30,12 @@ void err(char *fmt, ...)
     fprintf(stderr, "\n");
 }
 
+int count()
+{
+    static int cnt = 2;
+    return cnt++;
+}
+
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_lval(Node *node)
 {
@@ -43,21 +49,16 @@ void gen_lval(Node *node)
 void gen_if(Node *node, int end_label)
 {
     gen(node->lhs); // A
-    // stack top が０であるときのみ偽と判定して goto next_label:
+
+    int next_label = count();
     printf("    pop rax\n");
     printf("    cmp rax, 0\n");
-    int cnt = count();
-    printf("    je .L%d\n", cnt);
-    // printf("    je .L%d\n", node->next_label);
+    printf("    je .L%d\n", next_label);
 
-    // 直前でjmpしていたら実行されない部分に　実行式
     gen(node->rhs); // X
-    // 実行式が実行された時は　if ネストを抜ける
     printf("    jmp .Lend%d\n", end_label);
 
-    // ちょうど実行文１つだけを挟んで　ラベルを配置
-    printf(".L%d:\n", cnt);
-    // printf(".L%d:\n", node->next_label);
+    printf(".L%d:\n", next_label);
 }
 
 void gen_else(Node *node, int end_label)
@@ -133,7 +134,7 @@ void gen(Node *node)
         printf("    ret\n");
         return;
     case ND_ELSE:
-        int end_label=count();
+        int end_label = count();
         gen_else(node, end_label);
         printf(".Lend%d:\n", end_label);
         return;

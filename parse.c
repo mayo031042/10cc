@@ -48,7 +48,6 @@ Node *new_node_ident(LVar *lvar)
 Node *new_node_if()
 {
     Node *node = create_node(ND_IF);
-    node->next_label = count();
     expect(TK_RESERVED, "(");
     node->lhs = expr();
     expect(TK_RESERVED, ")");
@@ -59,19 +58,18 @@ Node *new_node_if()
 // if の時点で else を作る　else node　の左辺にif を配置
 // 単if, else if, else, の３種類の終了があり得る
 // 右辺には　最後者のみstmt() で前２つはND_NULLがくる
-Node *new_node_else(int cnt)
+Node *new_node_else()
 {
     // 既にif があることがわかっていて消費されている
     Node *node = create_node(ND_ELSE);
     // cnt は同一if群において共通
-    node->end_label = cnt;
     node->lhs = new_node_if();
     // if, else if で終了しないなら
     if (consume_keyword(TK_ELSE))
     {
         // else if なら
         if (consume_keyword(TK_IF))
-            node->rhs = new_node_else(cnt);
+            node->rhs = new_node_else();
         else
             node->rhs = stmt();
     }
@@ -294,7 +292,7 @@ Node *stmt()
     {
         // if群の同一の定義とは　ここでまとめて処理されたものである
         // : if else
-        node = new_node_else(count());
+        node = new_node_else();
     }
     else if (consume_keyword(TK_FOR))
     {
