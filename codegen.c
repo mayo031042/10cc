@@ -63,9 +63,9 @@ void gen_do(Node *node)
     int exe_label = count();
 
     printf(".Lexe%d:\n", exe_label);
-    gen(node->lhs);
-    gen(node->rhs);
+    gen(node->lhs); // X
 
+    gen(node->rhs); // B
     cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
 }
