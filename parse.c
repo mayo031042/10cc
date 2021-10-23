@@ -298,39 +298,22 @@ Node *stmt()
     {
         node = create_node(ND_FOR);
         Node *now_node = node;
-
         expect(TK_RESERVED, "(");
 
-        // expr()?
-        if (consume(TK_RESERVED, ";"))
-            now_node->next = create_node(ND_NULL);
-        else
+        char *op[] = {";", ";", ")"};
+        for (int i = 0; i < 3; i++)
         {
-            now_node->next = expr();
-            expect(TK_RESERVED, ";");
-        }
-        now_node = now_node->next;
+            if (consume(TK_RESERVED, op[i]))
+                now_node->next = create_node(ND_NULL);
+            else
+            {
+                now_node->next = expr();
+                expect(TK_RESERVED, op[i]);
+            }
 
-        // expr()?
-        if (consume(TK_RESERVED, ";"))
-            now_node->next = create_node(ND_NULL);
-        else
-        {
-            now_node->next = expr();
-            expect(TK_RESERVED, ";");
+            now_node = now_node->next;
         }
-        now_node = now_node->next;
-
-        // expr()?
-        if (consume(TK_RESERVED, ")"))
-            now_node->next = create_node(ND_NULL);
-        else
-        {
-            now_node->next = expr();
-            expect(TK_RESERVED, ")");
-        }
-        now_node = now_node->next;
-
+        
         now_node->next = stmt();
     }
     // : {
