@@ -276,9 +276,9 @@ Node *stmt()
     // : if
     else if (consume_keyword(TK_IF))
     {
-        // : if else
         node = new_node_else();
     }
+    // : for
     else if (consume_keyword(TK_FOR))
     {
         node = create_node(ND_FOR);
@@ -309,6 +309,7 @@ Node *stmt()
             now_node->val = 1;
         }
     }
+    // : while
     else if (consume_keyword(TK_WHILE))
     {
         node = create_node(ND_WHILE);
@@ -320,7 +321,7 @@ Node *stmt()
         node->next->next = create_node(ND_NULL);
         node->next->next->next = stmt();
     }
-    // :do{}while();
+    // : do{} while();
     else if (consume_keyword(TK_DO))
     {
         Node *lhs = stmt();
@@ -348,7 +349,7 @@ Node *stmt()
     {
         node = create_node(ND_BLOCK);
         Node *now_node = node;
-        // : }
+
         while (!consume_keyword(TK_BLOCK_END))
         {
             now_node->next = stmt();
