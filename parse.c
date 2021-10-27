@@ -281,45 +281,41 @@ Node *stmt()
     // : for
     else if (consume_keyword(TK_FOR))
     {
-        node = create_node(ND_FOR);
-        Node *now_node = node;
+        Node *nodes[3];
         expect(TK_RESERVED, "(");
 
         char *op[] = {";", ";", ")"};
         for (int i = 0; i < 3; i++)
         {
             if (consume(TK_RESERVED, op[i]))
-                now_node->next = create_node(ND_NULL);
+                nodes[i] = create_node(ND_NULL);
             else
             {
-                now_node->next = expr();
+                nodes[i] = expr();
                 expect(TK_RESERVED, op[i]);
             }
-
-            now_node = now_node->next;
         }
-
-        now_node->next = stmt();
 
         // 条件式が空欄な時は恒真式とみなすので　１が入っているとしてparseする
-        now_node = node->next->next;
-        if (now_node->kind == ND_NULL)
+        if (nodes[1]->kind == ND_NULL)
         {
-            now_node->kind = ND_NUM;
-            now_node->val = 1;
+            nodes[1]->kind = ND_NUM;
+            nodes[1]->val = 1;
         }
+
+        Node *node_right = new_node(ND_NULL, stmt(), nodes[1]);
+        Node *node_left = new_node(ND_NULL, nodes[0], nodes[2]);
+        node = new_node(ND_FOR_WHILE, node_left, node_right);
     }
     // : while
     else if (consume_keyword(TK_WHILE))
     {
-        node = create_node(ND_WHILE);
         expect(TK_RESERVED, "(");
-        node->next = expr();
+        Node *node_B = expr();
         expect(TK_RESERVED, ")");
-
-        // ダミー変化式を挟む
-        node->next->next = create_node(ND_NULL);
-        node->next->next->next = stmt();
+        Node *node_right = new_node(ND_NULL, stmt(), node_B);
+        Node *node_left = new_node(ND_NULL, create_node(ND_NULL), create_node(ND_NULL));
+        node = new_node(ND_FOR_WHILE, node_left, node_right);
     }
     // : do{} while();
     else if (consume_keyword(TK_DO))

@@ -39,27 +39,26 @@ struct Token
 // node
 typedef enum
 {
-    ND_ADD,      // +
-    ND_SUB,      // -
-    ND_MUL,      // *
-    ND_DIV,      // /
-    ND_EQ,       // ==
-    ND_NE,       // !=
-    ND_LT,       // <
-    ND_LE,       // <=
-    ND_ASSIGN,   // =
-    ND_LVAR,     // 変数
-    ND_NUM,      // 数値
-    ND_RETURN,   // return
-    ND_IF,       // if 条件文とcmp 0 ,je
-    ND_ELSE,     // else
-    ND_WHILE,    // while
-    ND_FOR,      // for
-    ND_DO,       // do
-    ND_CONTINUE, // continue
-    ND_BREAK,    // break
-    ND_BLOCK,    // ブロックノードの開始を意味する
-    ND_NULL,     // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
+    ND_ADD,       // +
+    ND_SUB,       // -
+    ND_MUL,       // *
+    ND_DIV,       // /
+    ND_EQ,        // ==
+    ND_NE,        // !=
+    ND_LT,        // <
+    ND_LE,        // <=
+    ND_ASSIGN,    // =
+    ND_LVAR,      // 変数
+    ND_NUM,       // 数値
+    ND_RETURN,    // return
+    ND_IF,        // if 条件文とcmp 0 ,je
+    ND_ELSE,      // else
+    ND_FOR_WHILE, // for, while
+    ND_DO,        // do
+    ND_CONTINUE,  // continue
+    ND_BREAK,     // break
+    ND_BLOCK,     // ブロックノードの開始を意味する
+    ND_NULL,      // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
 } NodeKind;
 
 typedef struct Node Node;
