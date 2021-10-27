@@ -43,37 +43,36 @@ void gen_else(Node *node, int end_label)
 
 void gen_for_while(Node *node)
 {
-    int req_label = count();
-    int exe_label = count();
-
-    printf("    jmp .Lreq%d\n", req_label);
-    printf(".Lexe%d:\n", exe_label);
-
     qpush(count());
+
+    printf("    jmp .Lreq%d\n", qfront());
+    printf(".Lexe%d:\n", qfront());
+
     gen(node->next->next);           // X
     printf(".Lcont%d:\n", qfront()); // continue先
-    qpop();
 
     gen(node->next); // C :whileの場合はND_NULLなので何も出力されない
 
-    printf(".Lreq%d:\n", req_label);
+    printf(".Lreq%d:\n", qfront());
     gen(node); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", exe_label);
+    printf("    jne .Lexe%d\n", qfront());
+
+    qpop();
 }
 
 void gen_do(Node *node)
 {
-    int exe_label = count();
-
-    printf(".Lexe%d:\n", exe_label);
     qpush(count());
+
+    printf(".Lexe%d:\n", qfront());
     gen(node->lhs);                  // X
     printf(".Lcont%d:\n", qfront()); // continue 先
-    qpop();
-    gen(node->rhs); // B
+    gen(node->rhs);                  // B
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", exe_label);
+    printf("    jne .Lexe%d\n", qfront());
+
+    qpop();
 }
 
 void gen(Node *node)
