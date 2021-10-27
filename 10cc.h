@@ -71,6 +71,7 @@ struct Node
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
     int val;
     int offset; // ND_LVARのときのみ使う
+    int label;  // ND_CONTINUEのときのみ使う
 };
 
 // LVar
@@ -114,6 +115,9 @@ void gen(Node *node);
 
 // 分類が半端な関数 @ func_others
 int count();
+int qfront();
+void qpush(int val);
+void qpop();
 // void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて
@@ -122,3 +126,4 @@ extern char *user_input;
 extern Node *codes[];
 extern Token *tokens[];
 extern LVar *locals;
+extern int Queue[];

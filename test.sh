@@ -148,4 +148,7 @@ assert 15 "ret=10; do{ret+=5;}  while(0); return ret;"
 assert 5 "ret=5; do return ret; while(1); return 10;"
 echo -e "do while OK\n"
 
+assert 5 "acc=0; for(x=0; x<10; x+=1){if(x<5)continue; acc+=1;} return acc;"
+assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)continue; acc+=1;} return acc;"
+assert 4 "acc=0; x=0; do{x+=1; if(acc==4)continue; acc+=1;} while(x!=4); return acc;"
 echo -e "\n         You are a god-dammit genius !!\n"

@@ -331,6 +331,16 @@ Node *stmt()
         expect(TK_RESERVED, ";");
         node = new_node(ND_DO, lhs, rhs);
     }
+    // : continue
+    else if (consume_keyword(TK_CONTINUE))
+    {
+        node = create_node(ND_CONTINUE);
+        expect(TK_RESERVED, ";");
+    }
+    // : break;
+    else if (consume_keyword(TK_BREAK))
+    {
+    }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {

@@ -1,4 +1,9 @@
-#include"10cc.h"
+#include "10cc.h"
+
+#define Queue_size 100
+
+int Queue[Queue_size];
+int Queue_front = 0;
 
 void error(char *fmt, ...)
 {
@@ -40,4 +45,25 @@ void clear_semicolon()
 {
     while (consume(TK_RESERVED, ";"))
         ;
+}
+
+int qfront()
+{
+    if (!Queue_front)
+        error("ループ構文内ではありません");
+    return Queue[Queue_front];
+}
+
+void qpush(int val)
+{
+    Queue_front++;
+    if (Queue_size <= Queue_front)
+        error("Queue size overflowed.");
+    Queue[Queue_front] = val;
+}
+void qpop()
+{
+    if (!Queue_front)
+        error("Queue size underflowed.");
+    Queue_front--;
 }

@@ -49,8 +49,12 @@ void gen_for_while(Node *node)
     printf("    jmp .Lreq%d\n", req_label);
     printf(".Lexe%d:\n", exe_label);
 
-    gen(node->next->next); // X
-    gen(node->next);       // C :whileの場合はND_NULLなので何も出力されない
+    qpush(count());
+    gen(node->next->next);           // X
+    printf(".Lcont%d:\n", qfront()); // continue先
+    qpop();
+
+    gen(node->next); // C :whileの場合はND_NULLなので何も出力されない
 
     printf(".Lreq%d:\n", req_label);
     gen(node); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
@@ -63,8 +67,10 @@ void gen_do(Node *node)
     int exe_label = count();
 
     printf(".Lexe%d:\n", exe_label);
-    gen(node->lhs); // X
-
+    qpush(count());
+    gen(node->lhs);                  // X
+    printf(".Lcont%d:\n", qfront()); // continue 先
+    qpop();
     gen(node->rhs); // B
     cmp_rax(0);
     printf("    jne .Lexe%d\n", exe_label);
@@ -124,6 +130,9 @@ void gen(Node *node)
         return;
     case ND_DO:
         gen_do(node);
+        return;
+    case ND_CONTINUE:
+        printf("    jmp .Lcont%d\n", qfront());
         return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)
