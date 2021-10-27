@@ -340,6 +340,8 @@ Node *stmt()
     // : break;
     else if (consume_keyword(TK_BREAK))
     {
+        node = create_node(ND_BREAK);
+        expect(TK_RESERVED, ";");
     }
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))

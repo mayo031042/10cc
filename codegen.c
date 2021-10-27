@@ -58,6 +58,7 @@ void gen_for_while(Node *node)
     cmp_rax(0);
     printf("    jne .Lexe%d\n", qfront());
 
+    printf(".Lbrk%d:\n", qfront());
     qpop();
 }
 
@@ -72,6 +73,7 @@ void gen_do(Node *node)
     cmp_rax(0);
     printf("    jne .Lexe%d\n", qfront());
 
+    printf(".Lbrk%d:\n", qfront());
     qpop();
 }
 
@@ -132,6 +134,9 @@ void gen(Node *node)
         return;
     case ND_CONTINUE:
         printf("    jmp .Lcont%d\n", qfront());
+        return;
+    case ND_BREAK:
+        printf("    jmp .Lbrk%d\n", qfront());
         return;
     case ND_BLOCK:
         for (Node *n = node->next; n; n = n->next)
