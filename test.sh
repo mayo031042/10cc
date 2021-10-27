@@ -156,6 +156,10 @@ echo -e "continue ok\n"
 assert 2 "acc=0; for(; acc<10; acc+=1){if(acc==2)break; } return acc;"
 assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)break; acc+=1;} return acc;"
 assert 4 "acc=0; x=0; do{x+=1; if(acc==4)break; acc+=1;} while(x!=4); return acc;"
-# assert 1 "{return 1;}"
+echo -e "break ok\n"
+
+assert 1 "{{return 1;}} {}{{{}}}"
+assert 3 "ret=0; while(1){ while(1){if(ret==3)break;{} ret+=1;} break;} return ret;"
+echo -e "block ネスト ok\n"
 
 echo -e "\n         You are a god-dammit genius !!\n"

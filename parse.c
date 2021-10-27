@@ -343,15 +343,18 @@ Node *stmt()
     // : {
     else if (consume_keyword(TK_BLOCK_FRONT))
     {
-        node = create_node(ND_BLOCK);
-        Node *now_node = node;
-
-        while (!consume_keyword(TK_BLOCK_END))
+        Node *now_node=create_node(ND_NULL);
+        node = new_node(ND_BLOCK, now_node, NULL);
+        while (1)
         {
+            if (consume_keyword(TK_BLOCK_END))
+            {
+                now_node->next = NULL;
+                break;
+            }
             now_node->next = stmt();
             now_node = now_node->next;
         }
-        now_node->next = NULL;
     }
     else
     {
