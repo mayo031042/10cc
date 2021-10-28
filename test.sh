@@ -23,14 +23,12 @@ assert 42 " 42  ; "
 # 加減算
 assert 10 "4+6;"
 assert 3 "5-2;"
-assert 10 "14+6-10;"
-assert 9 "1+2-3+4+5;"
+assert 7 "1+2-3+4+15-12;"
 # 乗除算　優先処理　空白スキップ
 assert 12 "3* 4;"
 assert 4 "24/6;"
 assert 1 "5 /3;"
 assert 16 "4 *5/2 +2*3;"
-assert 16 "2*(3+5);"
 assert 7 "10-(3*3-2)+16/4;"
 # 単項演算子
 assert 12 "+12;"
@@ -64,17 +62,13 @@ assert 2 "a=-2; -a;"
 assert 5 "b=20; b=b/4;"
 assert 7 "x=3; y=4; z=x+y;"
 assert 4 "a=3; b=a==3; a=b+a;"
-assert 25 "a=b=5; a=b*b;"
 # 複長の変数
 assert 42 "nagainamae = 42;"
 assert 100 "suuji_100_hairu = 100;"
 assert 5 "num=10; x=12; num=3+x-num;"
-assert 1 "num=10; x=3*3; (num-1)==x;"
 # return 文
 assert 1 "return 1;"
-assert 2 "return 2; return 1;" # 複数のreturn 
-assert 42 "returnx=42; return returnx;" # return に類似した変数
-assert 4 "x=4; return x;" # 変数をreturn 
+assert 42 "returnx=42; return returnx; return 5;" # return に類似した変数
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
 echo -e " return OK\n"
 
@@ -161,5 +155,30 @@ echo -e "break ok\n"
 assert 1 "{{return 1;}} {}{{{}}}"
 assert 3 "ret=0; while(1){ while(1){if(ret==3)break;{} ret+=1;} break;} return ret;"
 echo -e "block ネスト ok\n"
+# x=6以下でセグメンテーションフォールト？
+assert 10 "
+x=7; acc=0;
+while(x){
+    for(i=0;i<5;i+=1){
+        if(i==1)continue;
+
+        if(x==1)acc+=5;
+        else if(x==2)acc+=3;
+        else acc+=1;
+
+        if(i==1){
+            if(x==3){
+                if(acc==10)acc-=2;
+                else {
+                    acc+=2;
+                }
+            }
+        }
+    }
+    x+=1;
+    if(x==10) break;
+}
+return x;
+"
 
 echo -e "\n         You are a god-dammit genius !!\n"

@@ -1,7 +1,5 @@
 #include "10cc.h"
 
-#define Queue_size 100
-
 int Queue[Queue_size];
 int Queue_front = 0;
 

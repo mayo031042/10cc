@@ -1,8 +1,5 @@
 #include "10cc.h"
 
-#define tokens_size 200
-#define codes_size 200
-
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
