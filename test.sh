@@ -16,6 +16,15 @@ assert() {
     fi
 }
 
+assemble(){
+    expected="$1"
+    input="$2"
+
+    ./10cc "$input" > tmp.s
+    echo " compiled"
+    exit 0
+}
+
 # << COMMENTOUT
 # 数値
 assert 1 "1;"
