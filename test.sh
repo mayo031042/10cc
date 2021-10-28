@@ -21,7 +21,9 @@ assemble(){
     input="$2"
 
     ./10cc "$input" > tmp.s
-    echo " compiled"
+    echo "compiled"
+
+    ./optimize
     exit 0
 }
 
@@ -118,7 +120,6 @@ assert 1 "if(1)if(1)return 1; return 2;"
 assert 42 "if(1)if(0)if(1)return 2; return 42;"
 echo -e " if else OK\n"
 
-# COMMENTOUT
 # {}
 assert 3 "{return 1+1+1;} "
 # assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
@@ -135,6 +136,7 @@ assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;" # 複数のfor
 echo -e " for OK\n"
 
+# COMMENTOUT
 # semicolon 連続　を消費
 # assert 42 "  42 ;;; ;; ;;; "
 # assert 42 "3;;;;;   ; ;  ; ;;42;;;"
@@ -156,7 +158,7 @@ assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)continue; acc+=1;} return acc;
 assert 4 "acc=0; x=0; do{x+=1; if(acc==4)continue; acc+=1;} while(x!=4); return acc;"
 echo -e "continue ok\n"
 
-assert 2 "acc=0; for(; acc<10; acc+=1){if(acc==2)break; } return acc;"
+assert 2 "acc=0; for(; acc<10; acc+=1){ if(acc==2)break; } return acc;"
 assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)break; acc+=1;} return acc;"
 assert 4 "acc=0; x=0; do{x+=1; if(acc==4)break; acc+=1;} while(x!=4); return acc;"
 echo -e "break ok\n"
@@ -189,5 +191,26 @@ while(x){
 }
 return x;
 "
+
+assemble 2 "return 2;"
+
+# assert 10 "
+# x=6; acc=0;
+# while(x){
+#     for(i=0;i<5;i+=1){
+#         acc=1;
+#         if(acc==1){
+#             x+=100;
+#             x-=100;
+#         }
+#     }
+    
+#     x+=1;
+#     if(x==10) break;
+# }
+# return x;
+# "
+
+# assert 100 "for(i=0;i<100;i+=1){} return i;"
 
 echo -e "\n         You are a god-dammit genius !!\n"
