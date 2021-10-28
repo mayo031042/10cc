@@ -18,8 +18,8 @@ void cmp_rax(int val)
 
 void gen_if(Node *node, int end_label)
 {
-    gen(node->lhs); // A
-
+    gen(node->lhs); // B
+    
     int next_label = count();
     cmp_rax(0);
     printf("    je .L%d\n", next_label);
