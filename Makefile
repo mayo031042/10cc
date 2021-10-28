@@ -9,7 +9,7 @@ OBJS=$(SRCS:.c=.o)
 
 $(OBJS): 10cc.h
 
-test: 10cc
+test: 10cc optimize
 	./test.sh
 
 clean:
