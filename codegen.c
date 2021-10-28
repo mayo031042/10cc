@@ -19,15 +19,15 @@ void cmp_rax(int val)
 void gen_if(Node *node, int end_label)
 {
     gen(node->lhs); // B
-    
+
     int next_label = count();
     cmp_rax(0);
-    printf("    je .L%d\n", next_label);
+    printf("    je .Lifnext%d\n", next_label);
 
     gen(node->rhs); // X
-    printf("    jmp .Lend%d\n", end_label);
+    printf("    jmp .Lifend%d\n", end_label);
 
-    printf(".L%d:\n", next_label);
+    printf(".Lifnext%d:\n", next_label);
 }
 
 void gen_else(Node *node, int end_label)
@@ -124,7 +124,7 @@ void gen(Node *node)
     case ND_ELSE:
         int end_label = count();
         gen_else(node, end_label);
-        printf(".Lend%d:\n", end_label);
+        printf(".Lifend%d:\n", end_label);
         return;
     case ND_FOR_WHILE:
         gen_for_while(node);
