@@ -13,6 +13,6 @@ test: 10cc
 	./test.sh
 
 clean:
-	rm -f 10cc *.o *~ tmp*
+	rm -f 10cc *.o *~ tmp* optimize
 
 .PHONY: test clean
