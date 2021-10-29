@@ -73,60 +73,61 @@ Node *new_node_block()
     return node;
 }
 
-// tokを参照して　新しいlvarを作成する つまり未出のlvarに対してのみ行う処理
-LVar *new_lvar(int my_pos)
+// lvar name,len
+LVar *create_lvar(int now_pos)
 {
     LVar *lvar = calloc(1, sizeof(LVar));
-    lvar->next = locals;
-    lvar->name = tokens[my_pos]->str;
-    lvar->len = tokens[my_pos]->len;
-    // 一番初めのlocalsはNULLである
-    if (locals)
-        lvar->offset = locals->offset + 8;
-    else
-        lvar->offset = 0;
+    lvar->name = tokens[now_pos]->str;
+    lvar->len = tokens[now_pos]->len;
     return lvar;
 }
 
 // なかったらNULL あったらLVar を返す
-LVar *find_lvar(int my_pos)
+LVar *find_lvar()
 {
-    for (LVar *var = locals; var; var = var->next)
+    int now_pos = pos - 1;
+
+    if (locals == NULL)
     {
-        if (var->len == tokens[my_pos]->len && !memcmp(var->name, tokens[my_pos]->str, var->len))
-            return var;
+        locals = create_lvar(now_pos);
+        locals->offset = 0;
+        return locals;
     }
-    return NULL;
+
+    LVar *lvar;
+
+    for (lvar = locals; lvar; lvar = lvar->next)
+    {
+        if (lvar->len == tokens[now_pos]->len && !memcmp(lvar->name, tokens[now_pos]->str, lvar->len))
+            return lvar;
+    }
+
+    lvar = create_lvar(now_pos);
+    lvar->next = locals;
+    lvar->offset = locals->offset + 8;
+    locals = lvar;
+    return lvar;
 }
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
 Node *primary()
 {
+    Node *node;
+    // : ()
     if (consume(TK_RESERVED, "("))
     {
-        Node *node = expr();
+        node = expr();
         expect(TK_RESERVED, ")");
-        return node;
     }
+    // 変数
+    else if (consume_keyword(TK_IDENT))
+        node = new_node_ident(find_lvar());
+    // 数値
+    else
+        node = new_node_num(expect_number());
 
-    int my_pos = consume_ident();
-    if (my_pos != -1)
-    {
-        // この場合tokは変数である　既出か否か
-        LVar *lvar = find_lvar(my_pos);
-        if (lvar == NULL)
-        {
-            // 未出である
-            lvar = new_lvar(my_pos);
-            // localsは常に最後尾を指すことでoffsetの計算が容易に
-            locals = lvar;
-        }
-        // この段階でlvarは適切なLVarのオブジェクトを指しているので　nodeに反映する
-        return new_node_ident(lvar);
-    }
-
-    return new_node_num(expect_number());
+    return node;
 }
 
 // 単項演算子で区切る
