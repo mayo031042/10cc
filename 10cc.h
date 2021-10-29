@@ -48,7 +48,8 @@ typedef enum
     ND_LT,        // <
     ND_LE,        // <=
     ND_ASSIGN,    // =
-    ND_FUNC,      // 関数
+    ND_FUNC_DEF,  // 関数定義
+    ND_FUNC_CALL, // 関数呼び出し
     ND_LVAR,      // 変数
     ND_NUM,       // 数値
     ND_RETURN,    // return
@@ -69,6 +70,7 @@ struct Node
     Node *lhs;
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
+    char *name; // func のラベル作成に使用
     int val;
     int offset; // ND_LVARのときのみ使う
     int label;  // ND_CONTINUEのときのみ使う
@@ -82,17 +84,6 @@ struct LVar
     char *name;
     int len;
     int offset; // RBPからの距離
-};
-
-// Func
-typedef struct Func Func;
-struct Func
-{
-    Func *next;
-    char *label; // name を先頭からlen 分区切ったもの
-    char *name;
-    int len;
-    bool is_defined; // 定義はちょうど一度だけ行われるはずである
 };
 
 // error -> @ codegen.c
