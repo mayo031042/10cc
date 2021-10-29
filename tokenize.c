@@ -42,16 +42,6 @@ int expect_number()
     return val;
 }
 
-// token が識別子である時　そのtoken のコピーを返し　token を読み進める
-int consume_ident()
-{
-    if (tokens[pos]->kind != TK_IDENT)
-    {
-        return -1;
-    }
-    return tokens[pos++]->pos;
-}
-
 bool consume_keyword(TokenKind kind)
 {
     if (tokens[pos]->kind != kind)

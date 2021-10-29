@@ -93,7 +93,6 @@ bool is_expected_token(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
 int expect_number();
-int consume_ident();
 bool consume_keyword(TokenKind kind);
 bool at_eof();
 void *tokenize();
