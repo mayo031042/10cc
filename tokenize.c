@@ -1,5 +1,9 @@
 #include "10cc.h"
 
+#define MAX_TOKEN_SIZE 200
+
+Token *tokens[MAX_TOKEN_SIZE];
+
 bool is_expected_token(TokenKind kind, char *op)
 {
     if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
