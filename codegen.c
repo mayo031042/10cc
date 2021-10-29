@@ -1,5 +1,11 @@
 #include "10cc.h"
 
+void cmp_rax(int val)
+{
+    printf("    pop rax\n");
+    printf("    cmp rax, %d\n", val);
+}
+
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_lval(Node *node)
 {
@@ -8,12 +14,6 @@ void gen_lval(Node *node)
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
-}
-
-void cmp_rax(int val)
-{
-    printf("    pop rax\n");
-    printf("    cmp rax, %d\n", val);
 }
 
 void gen_if(Node *node, int end_label)
