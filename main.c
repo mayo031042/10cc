@@ -3,7 +3,7 @@
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
-LVar *locals=NULL;
+LVar *locals = NULL;
 
 int main(int argc, char **argv)
 {
@@ -33,6 +33,7 @@ int main(int argc, char **argv)
     }
 
     // エピローグ
+    // printf("    mov rax, 0\n");
     printf("    mov rsp, rbp\n");
     printf("    pop rbp\n");
     printf("    ret\n");
