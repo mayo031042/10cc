@@ -127,6 +127,8 @@ LVar *find_lvar()
     return lvar;
 }
 
+
+
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
 Node *primary()
@@ -145,8 +147,15 @@ Node *primary()
         // 関数かチェック
         if (consume(TK_RESERVED, "("))
         {
+            
+
             // 引数
             expect(TK_RESERVED, ")");
+
+            if(consume_keyword(TK_BLOCK_FRONT))
+            {
+                // 定義
+            }
         }
         else
         {
