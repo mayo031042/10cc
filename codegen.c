@@ -6,6 +6,20 @@ void cmp_rax(int val)
     printf("    cmp rax, %d\n", val);
 }
 
+void gen_prologue(int sz)
+{
+    printf("    push rbp\n");
+    printf("    mov rbp, rsp\n");
+    printf("    sub rsp, %d\n", sz);
+}
+
+void gen_epilogue()
+{
+    printf("    mov rsp, rbp\n");
+    printf("    pop rbp\n");
+    printf("    ret\n");
+}
+
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_lval(Node *node)
 {
@@ -81,10 +95,6 @@ void gen_do(Node *node)
     printf(".Lbrk%d:\n", stack_front());
 
     stack_pop();
-}
-
-void gen_func(Node *node)
-{
 }
 
 void gen(Node *node)

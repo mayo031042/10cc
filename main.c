@@ -21,10 +21,7 @@ int main(int argc, char **argv)
     printf(".globl main\n");
     printf("main:\n");
 
-    // プロローグ
-    printf("    push rbp\n");
-    printf("    mov rbp, rsp\n");
-    printf("    sub rsp, 208\n");
+    gen_prologue(208);
 
     for (int i = 0; codes[i]; i++)
     {
@@ -32,10 +29,8 @@ int main(int argc, char **argv)
         printf("    pop rax\n");
     }
 
-    // エピローグ
     // printf("    mov rax, 0\n");
-    printf("    mov rsp, rbp\n");
-    printf("    pop rbp\n");
-    printf("    ret\n");
+    gen_epilogue();
+    
     return 0;
 }

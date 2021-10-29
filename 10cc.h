@@ -114,6 +114,8 @@ Node *program();
 
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
+void gen_prologue(int sz);
+void gen_epilogue();
 
 // 分類が半端な関数 @ utils
 int count();
