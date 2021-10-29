@@ -139,10 +139,19 @@ Node *primary()
         node = expr();
         expect(TK_RESERVED, ")");
     }
-    // 変数
+    // 変数,関数
     else if (consume_keyword(TK_IDENT))
     {
-        node = new_node_ident(find_lvar());
+        // 関数かチェック
+        if (consume(TK_RESERVED, "("))
+        {
+            // 引数
+            expect(TK_RESERVED, ")");
+        }
+        else
+        {
+            node = new_node_ident(find_lvar());
+        }
     }
     // 数値
     else
