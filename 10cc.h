@@ -89,6 +89,7 @@ void error_at(char *loc, char *fmt, ...);
 void err(char *fmt, ...);
 
 // tokenize のための関数 -> @ tokenize.c
+bool is_expected_token(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
 int expect_number();
@@ -112,7 +113,7 @@ Node *program();
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
 
-// 分類が半端な関数 @ func_others
+// 分類が半端な関数 @ utils
 int count();
 int stack_front();
 void stack_push(int val);
