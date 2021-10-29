@@ -1,12 +1,9 @@
 #include "10cc.h"
 
-#define MAX_CODE_SIZE 200
-
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
-Node *codes[MAX_CODE_SIZE];
-LVar *locals;
+LVar *locals=NULL;
 
 int main(int argc, char **argv)
 {

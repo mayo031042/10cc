@@ -1,5 +1,9 @@
 #include "10cc.h"
 
+#define MAX_CODE_SIZE 200
+
+Node *codes[MAX_CODE_SIZE];
+
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
