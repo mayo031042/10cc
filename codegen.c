@@ -43,42 +43,42 @@ void gen_else(Node *node, int end_label)
 
 void gen_for_while(Node *node)
 {
-    qpush(count());
+    stack_push(count());
 
     gen(node->lhs->lhs); // A
-    printf("    jmp .Lreq%d\n", qfront());
+    printf("    jmp .Lreq%d\n", stack_front());
 
-    printf(".Lexe%d:\n", qfront());
+    printf(".Lexe%d:\n", stack_front());
     gen(node->rhs->lhs); // X
 
-    printf(".Lcont%d:\n", qfront()); // continue先
+    printf(".Lcont%d:\n", stack_front()); // continue先
     gen(node->lhs->rhs);             // C :whileの場合はND_NULLなので何も出力されない
 
-    printf(".Lreq%d:\n", qfront());
+    printf(".Lreq%d:\n", stack_front());
     gen(node->rhs->rhs); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
 
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", qfront());
-    printf(".Lbrk%d:\n", qfront());
+    printf("    jne .Lexe%d\n", stack_front());
+    printf(".Lbrk%d:\n", stack_front());
 
-    qpop();
+    stack_pop();
 }
 
 void gen_do(Node *node)
 {
-    qpush(count());
+    stack_push(count());
 
-    printf(".Lexe%d:\n", qfront());
+    printf(".Lexe%d:\n", stack_front());
     gen(node->lhs); // X
 
-    printf(".Lcont%d:\n", qfront()); // continue 先
+    printf(".Lcont%d:\n", stack_front()); // continue 先
     gen(node->rhs);                  // B
 
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", qfront());
-    printf(".Lbrk%d:\n", qfront());
+    printf("    jne .Lexe%d\n", stack_front());
+    printf(".Lbrk%d:\n", stack_front());
 
-    qpop();
+    stack_pop();
 }
 
 void gen(Node *node)
@@ -133,10 +133,10 @@ void gen(Node *node)
         gen_do(node);
         return;
     case ND_CONTINUE:
-        printf("    jmp .Lcont%d\n", qfront());
+        printf("    jmp .Lcont%d\n", stack_front());
         return;
     case ND_BREAK:
-        printf("    jmp .Lbrk%d\n", qfront());
+        printf("    jmp .Lbrk%d\n", stack_front());
         return;
     case ND_BLOCK:
         for (Node *n = node->lhs; n; n = n->next)

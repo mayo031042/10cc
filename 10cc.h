@@ -114,9 +114,9 @@ void gen(Node *node);
 
 // 分類が半端な関数 @ func_others
 int count();
-int qfront();
-void qpush(int val);
-void qpop();
+int stack_front();
+void stack_push(int val);
+void stack_pop();
 // void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて

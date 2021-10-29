@@ -47,21 +47,21 @@ void clear_semicolon()
         ;
 }
 
-int qfront()
+int stack_front()
 {
     if (!StackTop)
         error("ループ構文内ではありません");
     return Stack[StackTop];
 }
 
-void qpush(int val)
+void stack_push(int val)
 {
     StackTop++;
     if (MAX_STACK_SIZE <= StackTop)
         error("Stack size overflowed.");
     Stack[StackTop] = val;
 }
-void qpop()
+void stack_pop()
 {
     if (!StackTop)
         error("Stack size underflowed.");
