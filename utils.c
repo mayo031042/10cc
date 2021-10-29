@@ -1,7 +1,9 @@
 #include "10cc.h"
 
-int Queue[Queue_size];
-int Queue_front = 0;
+#define MAX_STACK_SIZE 100
+
+int Stack[MAX_STACK_SIZE];
+int StackTop = 0;
 
 void error(char *fmt, ...)
 {
@@ -47,21 +49,21 @@ void clear_semicolon()
 
 int qfront()
 {
-    if (!Queue_front)
+    if (!StackTop)
         error("ループ構文内ではありません");
-    return Queue[Queue_front];
+    return Stack[StackTop];
 }
 
 void qpush(int val)
 {
-    Queue_front++;
-    if (Queue_size <= Queue_front)
-        error("Queue size overflowed.");
-    Queue[Queue_front] = val;
+    StackTop++;
+    if (MAX_STACK_SIZE <= StackTop)
+        error("Stack size overflowed.");
+    Stack[StackTop] = val;
 }
 void qpop()
 {
-    if (!Queue_front)
-        error("Queue size underflowed.");
-    Queue_front--;
+    if (!StackTop)
+        error("Stack size underflowed.");
+    StackTop--;
 }

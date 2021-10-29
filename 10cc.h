@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define tokens_size 200
-#define codes_size 200
-#define Queue_size 100
-
 // token　
 typedef enum
 {
