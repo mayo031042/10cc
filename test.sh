@@ -136,7 +136,6 @@ assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;" # 複数のfor
 echo -e " for OK\n"
 
-# COMMENTOUT
 # semicolon 連続　を消費
 # assert 42 "  42 ;;; ;; ;;; "
 # assert 42 "3;;;;;   ; ;  ; ;;42;;;"
@@ -166,9 +165,49 @@ echo -e "break ok\n"
 assert 1 "{{return 1;}} {}{{{}}}"
 assert 3 "ret=0; while(1){ while(1){if(ret==3)break;{} ret+=1;} break;} return ret;"
 echo -e "block ネスト ok\n"
+
+assert 6 "
+x=0;
+for( i=0; i<6; i+=1 ){
+        {
+           x+=1;
+        }
+}
+return x;
+"
+
 # x=6以下でセグメンテーションフォールト？
+assert 56 "
+x=0;
+for(i=0;i<7;i+=1){
+    for(j=0;j<8;j+=1){
+        {
+            x+=1;
+        }
+    }
+}
+return x;
+"
+
+    # COMMENTOUT
+
 assert 10 "
-x=7; acc=0;
+x=6; acc=0;
+while(x){
+    for(i=0;i<5;i+=1){
+        acc=1;
+        if(acc==1){
+        }
+    }
+
+    x+=1;
+    if(x==10) break;
+}
+return x;
+"
+
+
+assert 5 " x=1; acc=0;
 while(x){
     for(i=0;i<5;i+=1){
         if(i==1)continue;
@@ -179,7 +218,7 @@ while(x){
 
         if(i==1){
             if(x==3){
-                if(acc==10)acc-=2;
+                if(acc==10)return 1;
                 else {
                     acc+=2;
                 }
@@ -187,30 +226,8 @@ while(x){
         }
     }
     x+=1;
-    if(x==10) break;
+    if(x==5)break;
 }
-return x;
-"
-
-assemble 2 "return 2;"
-
-# assert 10 "
-# x=6; acc=0;
-# while(x){
-#     for(i=0;i<5;i+=1){
-#         acc=1;
-#         if(acc==1){
-#             x+=100;
-#             x-=100;
-#         }
-#     }
-    
-#     x+=1;
-#     if(x==10) break;
-# }
-# return x;
-# "
-
-# assert 100 "for(i=0;i<100;i+=1){} return i;"
+return x;"
 
 echo -e "\n         You are a god-dammit genius !!\n"
