@@ -12,6 +12,9 @@ $(OBJS): 10cc.h
 test: 10cc optimize
 	./test.sh
 
+tmp2.s: 
+	touch tmp2.s
+
 # 編集されたtmp.s をtmp2.s において実行
 s: tmp2.s
 	gcc -o tmp2 tmp2.s
