@@ -12,6 +12,11 @@ $(OBJS): 10cc.h
 test: 10cc optimize
 	./test.sh
 
+# 編集されたtmp.s をtmp2.s において実行
+s: tmp2.s
+	gcc -o tmp2 tmp2.s
+	./tmp2
+
 clean:
 	rm -f 10cc *.o *~ tmp* optimize
 
