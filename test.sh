@@ -77,11 +77,12 @@ assert 4 "a=3; b=a==3; a=b+a;"
 assert 42 "nagainamae = 42;"
 assert 100 "suuji_100_hairu = 100;"
 assert 5 "num=10; x=12; num=3+x-num;"
+
 # return 文
+echo "TEST return"
 assert 1 "return 1;"
 assert 42 "returnx=42; return returnx; return 5;" # return に類似した変数
 assert 2 "return x= -20 /(-3* 3 - 1); return 100;" # 代入と数式のreturn
-echo -e " return OK\n"
 
 # 代入演算子
 assert 2 "a = 1; a += 1;" # 代入演算
@@ -97,14 +98,16 @@ assert 9 "a=b=3; a*=b;" # 代入乗算
 assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
 assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
 assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
+
 # 制御構文
+echo "TEST if"
 assert 2 "if(1)return 2; 0;" # 数値条件　return 
 assert 2 "ret=1; if(ret==1)ret=2 ; ret;"
 assert 5 "ret=3; if(ret==3)return ret+2; return 2;"
 assert 4 "ret=2; if(ret=1)return 2*2; return 10; " # 条件式の中で代入
 assert 9 "ret=3; if(ret==2)return 4; return 9;" # 条件式が偽
-echo -e " if OK\n"
 
+echo "TEST if else"
 assert 10 "if(1) 10; else 20;" # if else 真
 assert 20 "if(0) 10; else 20;" # if else 偽
 assert 10 "if(1) return 10; else return 20;" # 上記　+ return 
@@ -118,23 +121,22 @@ assert 25 "ret=11; if(0)ret=1; else if(1)ret=22; if(1)ret+=3;"
 assert 30 "ret=11; if(1)ret+=4; else if(1)ret+=40; if(0)return 3; if(0)ret-=2; else if(1)ret=30; else ret=100; return ret;" # 多重ネストを多重ネスト
 assert 1 "if(1)if(1)return 1; return 2;"
 assert 42 "if(1)if(0)if(1)return 2; return 42;"
-echo -e " if else OK\n"
 
 # {}
+echo "TEST block"
 assert 3 "{return 1+1+1;} "
 # assert 3 "{ 1+1+1;}" # {}を抜けるときにpop するのでrax に不正な値が戻ってしまう
 assert 4 "ret=1; {ret+=1;} {ret+=1;} {ret+=1;} ret;"
 assert 1 "if(1){return 1;} return 2;"
 assert 6 "ret=3; if(1){ret+=5; ret-=2;} return ret;"
 assert 10 "ret=1; if(0){ret=0;}else if(1){ret=10;}else ret=0; return ret;"
-echo -e " BLOCK OK\n"
 
 # for(;;){}
+echo "TEST for"
 assert 42 "for(;0;){return 2;} return 42;" # Bに何も書かないと恒真式になってしまう
 assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
 assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;" # 複数のfor
-echo -e " for OK\n"
 
 # semicolon 連続　を消費
 # assert 42 "  42 ;;; ;; ;;; "
@@ -144,27 +146,28 @@ echo -e " for OK\n"
 # assert 10 "ret=10; return ret;;;;;; "
 # assert 10 "ret=1; if(1){if(0)ret=2; else ret=3;};;;else ret=4; if(ret)return 10; else return 5;"
 
+echo "TEST while"
 assert 2 "ret=3; cnt=5; while(ret){cnt-=1; ret-=1;} return cnt;"
 assert 10 "ret=6; cnt=5; while(ret){if(cnt==2)return 10;  cnt-=1; ret-=1;} return cnt;"
 assert 2 "x=3; ret=0; while(x<5){x+=1;ret+=1; } return ret;"
 
+echo "TEST do while"
 assert 15 "ret=10; do{ret+=5;}  while(0); return ret;"
 assert 5 "ret=5; do return ret; while(1); return 10;"
-echo -e "do while OK\n"
 
+echo "TEST continue"
 assert 2 "acc=0; for(x=0; x<10; x+=1){if(x<8)continue; acc+=1;} return acc;"
 assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)continue; acc+=1;} return acc;"
 assert 4 "acc=0; x=0; do{x+=1; if(acc==4)continue; acc+=1;} while(x!=4); return acc;"
-echo -e "continue ok\n"
 
+echo "TEST break"
 assert 2 "acc=0; for(; acc<10; acc+=1){ if(acc==2)break; } return acc;"
 assert 3 "acc=0; x=0; while(x<10){x+=1; if(acc==3)break; acc+=1;} return acc;"
 assert 4 "acc=0; x=0; do{x+=1; if(acc==4)break; acc+=1;} while(x!=4); return acc;"
-echo -e "break ok\n"
 
+echo "TEST block ネスト"
 assert 1 "{{return 1;}} {}{{{}}}"
 assert 3 "ret=0; while(1){ while(1){if(ret==3)break;{} ret+=1;} break;} return ret;"
-echo -e "block ネスト ok\n"
 
 assert 6 "
 x=0;
@@ -173,10 +176,8 @@ for( i=0; i<6; i+=1 ){
            x+=1;
         }
 }
-return x;
-"
+return x;"
 
-# x=6以下でセグメンテーションフォールト？
 assert 56 "
 x=0;
 for(i=0;i<7;i+=1){
@@ -186,8 +187,7 @@ for(i=0;i<7;i+=1){
         }
     }
 }
-return x;
-"
+return x;"
 
     # COMMENTOUT
 
@@ -203,11 +203,11 @@ while(x){
     x+=1;
     if(x==10) break;
 }
-return x;
-"
+return x;"
 
 
-assert 5 " x=1; acc=0;
+assert 5 "
+x=1; acc=0;
 while(x){
     for(i=0;i<5;i+=1){
         if(i==1)continue;

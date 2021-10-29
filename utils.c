@@ -27,14 +27,6 @@ void error_at(char *loc, char *fmt, ...)
     exit(1);
 }
 
-void err(char *fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    fprintf(stderr, "\n");
-}
-
 int count()
 {
     static int cnt = 2;
