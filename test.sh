@@ -130,7 +130,7 @@ assert 10 "ret=1; if(0){ret=0;}else if(1){ret=10;}else ret=0; return ret;"
 echo -e " BLOCK OK\n"
 
 # for(;;){}
-assert 42 "for(;0;){1;} return 42;" # Bに何も書かないと恒真式になってしまう
+assert 42 "for(;0;){return 2;} return 42;" # Bに何も書かないと恒真式になってしまう
 assert 5 "ret=0; for(i=0; i<5; i+=1)ret+=1; return ret;"
 assert 6 "ret=1; i=10; for(;i;i-=2){ret+=1; 12;} return ret;"
 assert 20 "ret=0; for(i=0;i<5;i+=1)ret+=1; for(j=5;j<20;j+=1)ret+=1; return ret;" # 複数のfor
