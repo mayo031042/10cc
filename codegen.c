@@ -52,7 +52,7 @@ void gen_for_while(Node *node)
     gen(node->rhs->lhs); // X
 
     printf(".Lcont%d:\n", stack_front()); // continue先
-    gen(node->lhs->rhs);             // C :whileの場合はND_NULLなので何も出力されない
+    gen(node->lhs->rhs);                  // C :whileの場合はND_NULLなので何も出力されない
 
     printf(".Lreq%d:\n", stack_front());
     gen(node->rhs->rhs); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
@@ -72,7 +72,7 @@ void gen_do(Node *node)
     gen(node->lhs); // X
 
     printf(".Lcont%d:\n", stack_front()); // continue 先
-    gen(node->rhs);                  // B
+    gen(node->rhs);                       // B
 
     cmp_rax(0);
     printf("    jne .Lexe%d\n", stack_front());
