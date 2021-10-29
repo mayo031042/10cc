@@ -84,6 +84,17 @@ struct LVar
     int offset; // RBPからの距離
 };
 
+// Func
+typedef struct Func Func;
+struct Func
+{
+    Func *next;
+    char *label; // name を先頭からlen 分区切ったもの
+    char *name;
+    int len;
+    bool is_defined; // 定義はちょうど一度だけ行われるはずである
+};
+
 // error -> @ codegen.c
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
