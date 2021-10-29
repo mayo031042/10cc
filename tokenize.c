@@ -6,16 +6,16 @@ Token *tokens[MAX_TOKEN_SIZE];
 
 bool is_expected_token(TokenKind kind, char *op)
 {
-    if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
-        return false;
-    return true;
+    return (tokens[pos]->kind == kind && tokens[pos]->len == strlen(op) && !memcmp(tokens[pos]->str, op, tokens[pos]->len));
 }
 
 // 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
     if (!is_expected_token(kind, op))
+    {
         return false;
+    }
     pos++;
     return true;
 }
@@ -24,7 +24,9 @@ bool consume(TokenKind kind, char *op)
 bool expect(TokenKind kind, char *op)
 {
     if (consume(kind, op))
+    {
         return true;
+    }
     error_at(tokens[pos]->str, "%cではありません\n", op);
 }
 
@@ -32,7 +34,9 @@ bool expect(TokenKind kind, char *op)
 int expect_number()
 {
     if (tokens[pos]->kind != TK_NUM)
+    {
         error_at(tokens[pos]->str, "数値ではありません\n");
+    }
     int val = tokens[pos]->val;
     pos++;
     return val;
@@ -42,7 +46,9 @@ int expect_number()
 int consume_ident()
 {
     if (tokens[pos]->kind != TK_IDENT)
+    {
         return -1;
+    }
     return tokens[pos++]->pos;
 }
 
@@ -57,7 +63,7 @@ bool consume_keyword(TokenKind kind)
 // token 列の最後尾の次だったらtrue
 bool at_eof()
 {
-    return tokens[pos]->kind == TK_EOF;
+    return (tokens[pos]->kind == TK_EOF);
 }
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
@@ -84,7 +90,7 @@ int is_alnum(char c)
 // p とs を比較して　pがkeyword　と判定できたらtrue
 bool is_keyword(char *p, char *str, int num)
 {
-    return !strncmp(p, str, num) && !is_alnum(p[num]);
+    return (!strncmp(p, str, num) && !is_alnum(p[num]));
 }
 
 void *tokenize()
@@ -153,9 +159,13 @@ void *tokenize()
         if (strchr("{}", *p))
         {
             if (*p == '{')
+            {
                 new_token(TK_BLOCK_FRONT, p, 1);
+            }
             else
+            {
                 new_token(TK_BLOCK_END, p, 1);
+            }
             p++;
             continue;
         }
@@ -168,9 +178,13 @@ void *tokenize()
         else if (strchr("+-*/!=<>", *p) && *(p + 1) == '=')
         {
             if (strchr("!=<>", *p))
+            {
                 new_token(TK_RESERVED, p, 2);
+            }
             else
+            {
                 new_token(TK_ASSIGN_RESERVED, p, 2);
+            }
             p += 2;
             continue;
         }
@@ -181,7 +195,7 @@ void *tokenize()
             continue;
         }
 
-        // 数値、変数解釈ゾーン　
+        // 数値、変数、関数名 解釈ゾーン　
         if (isdigit(*p))
         {
             new_token(TK_NUM, p, 0);
@@ -190,8 +204,8 @@ void *tokenize()
         }
         else if (is_alnum(*p))
         {
-            char *q = p;
-            for (; is_alnum(*q); q++)
+            char *q;
+            for (q = p; is_alnum(*q); q++)
                 ;
             new_token(TK_IDENT, p, q - p);
             p = q;
