@@ -48,7 +48,6 @@ Node *new_node_else()
 {
     // 既にif があることがわかっていて消費されている
     Node *node = create_node(ND_ELSE);
-    // cnt は同一if群において共通
     node->lhs = new_node_if();
     // if, else if で終了しないなら
     if (consume_keyword(TK_ELSE))
@@ -86,14 +85,6 @@ LVar *create_lvar(int now_pos)
 LVar *find_lvar()
 {
     int now_pos = pos - 1;
-
-    if (locals == NULL)
-    {
-        locals = create_lvar(now_pos);
-        locals->offset = 0;
-        return locals;
-    }
-
     LVar *lvar;
 
     for (lvar = locals; lvar; lvar = lvar->next)
@@ -103,9 +94,21 @@ LVar *find_lvar()
     }
 
     lvar = create_lvar(now_pos);
+
+    // 変数がまだ何も登録されていない時　offsetを初期化する
+    if (locals == NULL)
+    {
+        lvar->offset = 0;
+    }
+    // localsは既出変数配列の末尾変数を指しているのでlvar はlocals を参照すれば良い
+    else
+    {
+        lvar->offset = locals->offset + 8;
+    }
+
     lvar->next = locals;
-    lvar->offset = locals->offset + 8;
     locals = lvar;
+
     return lvar;
 }
 
