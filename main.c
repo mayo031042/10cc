@@ -1,12 +1,10 @@
 #include "10cc.h"
 
-#define MAX_TOKEN_SIZE 200
 #define MAX_CODE_SIZE 200
 
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
-Token *tokens[MAX_TOKEN_SIZE];
 Node *codes[MAX_CODE_SIZE];
 LVar *locals;
 
