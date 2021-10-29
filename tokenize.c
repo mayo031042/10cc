@@ -3,6 +3,7 @@
 #define MAX_TOKEN_SIZE 200
 
 Token *tokens[MAX_TOKEN_SIZE];
+int ident_pos;
 
 bool is_expected_token(TokenKind kind, char *op)
 {
@@ -45,7 +46,13 @@ int expect_number()
 bool consume_keyword(TokenKind kind)
 {
     if (tokens[pos]->kind != kind)
+    {
         return false;
+    }
+    if (kind == TK_IDENT)
+    {
+        ident_pos = pos;
+    }
     pos++;
     return true;
 }

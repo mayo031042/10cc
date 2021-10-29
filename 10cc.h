@@ -129,6 +129,7 @@ int count();
 int stack_front();
 void stack_push(int val);
 void stack_pop();
+int val_of_ident_pos();
 // void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて
@@ -138,3 +139,4 @@ extern Node *codes[];
 extern Token *tokens[];
 extern LVar *locals;
 extern int Queue[];
+extern int ident_pos;

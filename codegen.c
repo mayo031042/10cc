@@ -83,6 +83,10 @@ void gen_do(Node *node)
     stack_pop();
 }
 
+void gen_func(Node *node)
+{
+}
+
 void gen(Node *node)
 {
     if (node->kind == ND_NULL)

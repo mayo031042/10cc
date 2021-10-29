@@ -86,29 +86,28 @@ Node *new_node_block()
 }
 
 // lvar name,len
-LVar *create_lvar(int now_pos)
+LVar *create_lvar()
 {
     LVar *lvar = calloc(1, sizeof(LVar));
-    lvar->name = tokens[now_pos]->str;
-    lvar->len = tokens[now_pos]->len;
+    lvar->name = tokens[val_of_ident_pos()]->str;
+    lvar->len = tokens[val_of_ident_pos()]->len;
     return lvar;
 }
 
 // なかったらNULL あったらLVar を返す
 LVar *find_lvar()
 {
-    int now_pos = pos - 1;
     LVar *lvar;
 
     for (lvar = locals; lvar; lvar = lvar->next)
     {
-        if (lvar->len == tokens[now_pos]->len && !memcmp(lvar->name, tokens[now_pos]->str, lvar->len))
+        if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
         {
             return lvar;
         }
     }
 
-    lvar = create_lvar(now_pos);
+    lvar = create_lvar();
 
     // 変数がまだ何も登録されていない時　offsetを初期化する
     if (locals == NULL)
@@ -126,8 +125,6 @@ LVar *find_lvar()
 
     return lvar;
 }
-
-
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
@@ -147,12 +144,11 @@ Node *primary()
         // 関数かチェック
         if (consume(TK_RESERVED, "("))
         {
-            
 
             // 引数
             expect(TK_RESERVED, ")");
 
-            if(consume_keyword(TK_BLOCK_FRONT))
+            if (consume_keyword(TK_BLOCK_FRONT))
             {
                 // 定義
             }

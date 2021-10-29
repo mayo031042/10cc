@@ -59,3 +59,8 @@ void stack_pop()
         error("Stack size underflowed.");
     StackTop--;
 }
+
+int val_of_ident_pos()
+{
+    return ident_pos;
+}
