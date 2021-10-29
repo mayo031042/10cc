@@ -139,7 +139,7 @@ void gen(Node *node)
         printf("    jmp .Lbrk%d\n", stack_front());
         return;
     case ND_BLOCK:
-        for (Node *n = node->lhs->next; n; n = n->next)
+        for (Node *n = node->lhs; n; n = n->next)
         {
             gen(n);
             printf("    pop rax\n");

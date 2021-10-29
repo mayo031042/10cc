@@ -6,7 +6,7 @@
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
-Token *tokens[MAX_TOKEN_SIZE  ];
+Token *tokens[MAX_TOKEN_SIZE];
 Node *codes[MAX_CODE_SIZE];
 LVar *locals;
 

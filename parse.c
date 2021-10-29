@@ -64,6 +64,15 @@ Node *new_node_else()
     return node;
 }
 
+Node *new_node_block()
+{
+    if (consume_keyword(TK_BLOCK_END))
+        return NULL;
+    Node *node = stmt();
+    node->next = new_node_block();
+    return node;
+}
+
 // tokを参照して　新しいlvarを作成する つまり未出のlvarに対してのみ行う処理
 LVar *new_lvar(int my_pos)
 {
@@ -343,18 +352,7 @@ Node *stmt()
     // : {}
     else if (consume_keyword(TK_BLOCK_FRONT))
     {
-        Node *now_node = create_node(ND_NULL);
-        node = new_node(ND_BLOCK, now_node, NULL);
-        while (1)
-        {
-            if (consume_keyword(TK_BLOCK_END))
-            {
-                now_node->next = NULL;
-                break;
-            }
-            now_node->next = stmt();
-            now_node = now_node->next;
-        }
+        node = new_node(ND_BLOCK, new_node_block(), NULL);
     }
     else
     {
