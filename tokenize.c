@@ -1,9 +1,16 @@
 #include "10cc.h"
 
+bool is_expected_token(TokenKind kind, char *op)
+{
+    if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
+        return false;
+    return true;
+}
+
 // 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
-    if (tokens[pos]->kind != kind || tokens[pos]->len != strlen(op) || memcmp(tokens[pos]->str, op, tokens[pos]->len))
+    if (!is_expected_token(kind, op))
         return false;
     pos++;
     return true;
@@ -13,7 +20,7 @@ bool consume(TokenKind kind, char *op)
 bool expect(TokenKind kind, char *op)
 {
     if (consume(kind, op))
-        return 1;
+        return true;
     error_at(tokens[pos]->str, "%cではありません\n", op);
 }
 
