@@ -230,4 +230,18 @@ while(x){
 }
 return x;"
 
+echo "TEST func"
+assert 0 "
+foo()
+{
+    return 42;
+}
+
+main()
+{
+    x=foo();
+    return x;
+}
+"
+
 echo -e "\n         You are a god-dammit genius !!\n"
