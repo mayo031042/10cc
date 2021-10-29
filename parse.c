@@ -58,19 +58,28 @@ Node *new_node_else()
     {
         // else if なら
         if (consume_keyword(TK_IF))
+        {
             node->rhs = new_node_else();
+        }
         else
+        {
             node->rhs = stmt();
+        }
     }
     else
+    {
         node->rhs = create_node(ND_NULL);
+    }
+
     return node;
 }
 
 Node *new_node_block()
 {
     if (consume_keyword(TK_BLOCK_END))
+    {
         return NULL;
+    }
     Node *node = stmt();
     node->next = new_node_block();
     return node;
@@ -94,7 +103,9 @@ LVar *find_lvar()
     for (lvar = locals; lvar; lvar = lvar->next)
     {
         if (lvar->len == tokens[now_pos]->len && !memcmp(lvar->name, tokens[now_pos]->str, lvar->len))
+        {
             return lvar;
+        }
     }
 
     lvar = create_lvar(now_pos);
@@ -121,6 +132,7 @@ LVar *find_lvar()
 Node *primary()
 {
     Node *node;
+
     // : ()
     if (consume(TK_RESERVED, "("))
     {
@@ -129,10 +141,14 @@ Node *primary()
     }
     // 変数
     else if (consume_keyword(TK_IDENT))
+    {
         node = new_node_ident(find_lvar());
+    }
     // 数値
     else
+    {
         node = new_node_num(expect_number());
+    }
 
     return node;
 }
@@ -140,16 +156,24 @@ Node *primary()
 // 単項演算子で区切る
 Node *unary()
 {
+    Node *node;
+
+    // : +a
     if (consume(TK_RESERVED, "+"))
     {
-        return primary();
+        node = primary();
     }
+    // : -a
     else if (consume(TK_RESERVED, "-"))
     {
-        return new_node(ND_SUB, new_node_num(0), primary());
+        node = new_node(ND_SUB, new_node_num(0), primary());
     }
     else
-        return primary();
+    {
+        node = primary();
+    }
+
+    return node;
 }
 
 // 乗除算で区切る
@@ -159,17 +183,24 @@ Node *mul()
 
     for (;;)
     {
+        // : *
         if (consume(TK_RESERVED, "*"))
         {
             node = new_node(ND_MUL, node, unary());
         }
+        // ; /
         else if (consume(TK_RESERVED, "/"))
         {
             node = new_node(ND_DIV, node, unary());
         }
+        // : break
         else
-            return node;
+        {
+            break;
+        }
     }
+
+    return node;
 }
 
 // 加減算で区切る
@@ -179,17 +210,24 @@ Node *add()
 
     for (;;)
     {
+        // : a+b
         if (consume(TK_RESERVED, "+"))
         {
             node = new_node(ND_ADD, node, mul());
         }
+        // : a-b
         else if (TK_RESERVED, consume(TK_RESERVED, "-"))
         {
             node = new_node(ND_SUB, node, mul());
         }
+        // : break
         else
-            return node;
+        {
+            break;
+        }
     }
+
+    return node;
 }
 
 // 不等号で区切る
@@ -203,26 +241,28 @@ Node *relational()
         if (consume(TK_RESERVED, "<="))
         {
             node = new_node(ND_LE, node, add());
-            continue;
         }
         else if (consume(TK_RESERVED, ">="))
         {
             node = new_node(ND_LE, add(), node);
-            continue;
         }
+        // 次に１文字の不等号を処理
         else if (consume(TK_RESERVED, "<"))
         {
             node = new_node(ND_LT, node, add());
-            continue;
         }
         else if (consume(TK_RESERVED, ">"))
         {
             node = new_node(ND_LT, add(), node);
-            continue;
         }
+        // : break
         else
-            return node;
+        {
+            break;
+        }
     }
+
+    return node;
 }
 
 // 等号　等号否定で区切る　
@@ -242,9 +282,14 @@ Node *equality()
             node = new_node(ND_NE, node, relational());
             continue;
         }
+        // : break
         else
-            return node;
+        {
+            break;
+        }
     }
+
+    return node;
 }
 
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
@@ -252,19 +297,30 @@ Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
     Node *node = equality();
+
     if (consume(TK_RESERVED, "="))
+    {
         node = new_node(ND_ASSIGN, assign(), node);
+    }
 
     else if (tokens[pos]->kind == TK_ASSIGN_RESERVED)
     {
         if (consume(TK_ASSIGN_RESERVED, "+="))
+        {
             node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
+        }
         else if (consume(TK_ASSIGN_RESERVED, "-="))
+        {
             node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
+        }
         else if (consume(TK_ASSIGN_RESERVED, "*="))
+        {
             node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
+        }
         else if (consume(TK_ASSIGN_RESERVED, "/="))
+        {
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
+        }
         else
             error_at(tokens[pos]->str, "代入演算子ではありません\n");
     }
@@ -376,7 +432,9 @@ Node *program()
 {
     int i = 0;
     while (!at_eof())
+    {
         codes[i++] = stmt();
+    }
 
     codes[i] = NULL;
 }
