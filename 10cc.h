@@ -48,6 +48,7 @@ typedef enum
     ND_LT,        // <
     ND_LE,        // <=
     ND_ASSIGN,    // =
+    ND_FUNC,      // 関数
     ND_LVAR,      // 変数
     ND_NUM,       // 数値
     ND_RETURN,    // return
