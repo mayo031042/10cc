@@ -10,7 +10,9 @@ void cmp_rax(int val)
 void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
+    {
         error("右辺値ではありません\n");
+    }
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
@@ -84,7 +86,9 @@ void gen_do(Node *node)
 void gen(Node *node)
 {
     if (node->kind == ND_NULL)
+    {
         return;
+    }
 
     // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
     // 代入式　　　変数のアドレスに対して値のコピーをし　その値をstack に保存
