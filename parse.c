@@ -4,6 +4,7 @@
 
 Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
+
 LVar *locals = NULL;
 
 Node *create_node(NodeKind kind)
@@ -468,7 +469,7 @@ Node *stmt()
 Node *program()
 {
     expect(TK_BLOCK_FRONT, "{");
-    return new_node_block();
+    return new_node(ND_BLOCK, new_node_block(), NULL);
 }
 
 // name, len, definedを設定

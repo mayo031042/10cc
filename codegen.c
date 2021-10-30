@@ -246,7 +246,7 @@ void code_gen()
 
         gen_prologue(208);
 
-        gen_block(funcs[func_pos]->def);
+        gen(funcs[func_pos]->def);
 
         // printf("    mov rax, 0\n");
         gen_epilogue();
