@@ -113,7 +113,7 @@ LVar *find_lvar()
     // 変数がまだ何も登録されていない時　offsetを初期化する
     if (locals == NULL)
     {
-        lvar->offset = 0;
+        lvar->offset = 8;
     }
     // localsは既出変数配列の末尾変数を指しているのでlvar はlocals を参照すれば良い
     else
