@@ -3,6 +3,7 @@
 #define MAX_FUNC_SIZE 100
 
 Func *funcs[MAX_FUNC_SIZE];
+int func_pos = 0;
 LVar *locals = NULL;
 
 Node *create_node(NodeKind kind)
@@ -494,7 +495,7 @@ Func *function()
 
         expect(TK_RESERVED, "(");
 
-        int func_pos = find_func(true);
+        func_pos = find_func(true);
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 

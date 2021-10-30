@@ -238,15 +238,15 @@ void code_gen()
 {
     printf(".intel_syntax noprefix\n");
 
-    for (int i = 0; funcs[i]; i++)
+    for (func_pos = 0; funcs[func_pos]; func_pos++)
     {
 
-        printf("    .globl %s\n", funcs[i]->name);
-        printf("%s:\n", funcs[i]->name);
+        printf("    .globl %s\n", funcs[func_pos]->name);
+        printf("%s:\n", funcs[func_pos]->name);
 
         gen_prologue(208);
 
-        gen_loop(funcs[i]->def);
+        gen_loop(funcs[func_pos]->def);
 
         // printf("    mov rax, 0\n");
         gen_epilogue();
