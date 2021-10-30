@@ -138,7 +138,6 @@ void aaa();
 // グローバル変数 -> 定義はmainにて
 extern int pos;
 extern char *user_input;
-extern Node *codes[];
 extern Token *tokens[];
 extern Func *funcs[];
 extern int Queue[];

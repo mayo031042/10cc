@@ -1,9 +1,7 @@
 #include "10cc.h"
 
-#define MAX_CODE_SIZE 200
 #define MAX_FUNC_SIZE 100
 
-Node *codes[MAX_CODE_SIZE];
 Func *funcs[MAX_FUNC_SIZE];
 LVar *locals = NULL;
 
