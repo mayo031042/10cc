@@ -89,10 +89,9 @@ struct LVar
 typedef struct Func Func;
 struct Func
 {
-    Func *next; // 次の関数
-    Node *lhs; // 引数
-    Node *rhs; // 定義
-    char *name; // 関数名
+    // Node *args[6]; // 引数→とりあえず無視
+    Node *f_codes[200]; // 定義
+    char name[100]; // 関数名
     int len; // 名前の長さ
 };
 
@@ -121,6 +120,7 @@ Node *assign();
 Node *expr();
 Node *stmt();
 Node *program();
+Func *function();
 
 // codegen のための関数　-> @ codegen.c
 void gen(Node *node);
