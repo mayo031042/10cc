@@ -338,7 +338,7 @@ Node *assign()
         node = new_node(ND_ASSIGN, assign(), node);
     }
 
-    else if (tokens[pos]->kind == TK_ASSIGN_RESERVED)
+    else if (tokens[token_pos]->kind == TK_ASSIGN_RESERVED)
     {
         if (consume(TK_ASSIGN_RESERVED, "+="))
         {
@@ -358,7 +358,7 @@ Node *assign()
         }
         else
         {
-            error_at(tokens[pos]->str, "代入演算子ではありません\n");
+            error_at(tokens[token_pos]->str, "代入演算子ではありません\n");
         }
     }
 
@@ -489,7 +489,7 @@ Func *function()
     {
         if (!consume_keyword(TK_IDENT))
         {
-            error_at(tokens[pos]->str, "関数名ではありません");
+            error_at(tokens[token_pos]->str, "関数名ではありません");
         }
 
         expect(TK_RESERVED, "(");

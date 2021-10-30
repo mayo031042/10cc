@@ -9,12 +9,12 @@ int ident_pos;
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 void new_token(TokenKind kind, char *str, int len)
 {
-    tokens[pos] = calloc(1, sizeof(Token));
-    tokens[pos]->kind = kind;
-    tokens[pos]->str = str;
-    tokens[pos]->len = len;
-    tokens[pos]->pos = pos;
-    pos++;
+    tokens[token_pos] = calloc(1, sizeof(Token));
+    tokens[token_pos]->kind = kind;
+    tokens[token_pos]->str = str;
+    tokens[token_pos]->len = len;
+    tokens[token_pos]->pos = token_pos;
+    token_pos++;
 }
 
 // 変数に使える文字か否かを返す -> token 構成文字
@@ -138,7 +138,7 @@ void *tokenize()
         if (isdigit(*p))
         {
             new_token(TK_NUM, p, 0);
-            tokens[pos - 1]->val = strtol(p, &p, 10);
+            tokens[token_pos - 1]->val = strtol(p, &p, 10);
             continue;
         }
         else if (is_alnum(*p))
@@ -151,9 +151,9 @@ void *tokenize()
             continue;
         }
 
-        error_at(tokens[pos]->str, "%s tokenizeできません\n", p);
+        error_at(tokens[token_pos]->str, "%s tokenizeできません\n", p);
     }
 
     new_token(TK_EOF, p, 0);
-    pos = 0;
+    token_pos = 0;
 }

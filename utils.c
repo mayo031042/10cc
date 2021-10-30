@@ -67,5 +67,5 @@ int val_of_ident_pos()
 
 void aaa()
 {
-    fprintf(stderr, "\n\tnow-> %s\n", tokens[pos]->str);
+    fprintf(stderr, "\n\tnow-> %s\n", tokens[token_pos]->str);
 }

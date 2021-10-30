@@ -136,7 +136,7 @@ int val_of_ident_pos();
 void aaa();
 
 // グローバル変数 -> 定義はmainにて
-extern int pos;
+extern int token_pos;
 extern char *user_input;
 extern Token *tokens[];
 extern Func *funcs[];
