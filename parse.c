@@ -93,7 +93,6 @@ Node *new_node_block()
 Node *build_block()
 {
     block_nest++;
-    expect(TK_BLOCK_FRONT, "{");
 
     Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
 
@@ -101,14 +100,24 @@ Node *build_block()
     return node;
 }
 
+// 引数に渡された値から更に自分の必要とするメモリサイズ下げたoffset を登録する
+// さらに該当関数のmax_offset も更新する
 LVar *new_lvar(int max_offset)
 {
+    int my_offset = max_offset + 8;
+    if (funcs[func_pos]->max_offset < my_offset)
+    {
+        funcs[func_pos]->max_offset = my_offset;
+    }
+
     LVar *lvar = calloc(1, sizeof(LVar));
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
+
     // 最大のoffset よりも１変数分だけ下げる
-    lvar->offset = max_offset + 8;
+    lvar->offset = my_offset;
     lvar->next = funcs[func_pos]->locals[block_nest];
+
     funcs[func_pos]->locals[block_nest] = lvar;
     return lvar;
 }
@@ -458,7 +467,7 @@ Node *stmt()
         expect(TK_RESERVED, ";");
     }
     // : {}
-    else if (is_expected_token(TK_BLOCK_FRONT, "{"))
+    else if (consume_keyword(TK_BLOCK_FRONT))
     {
         node = build_block();
     }
@@ -474,9 +483,8 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
+    expect(TK_BLOCK_FRONT, "{");
     return build_block();
-    //    expect(TK_BLOCK_FRONT, "{");
-    // return new_node(ND_BLOCK, new_node_block(), NULL);
 }
 
 // name, len, definedを設定
@@ -485,6 +493,7 @@ Func *new_func(Token *tok)
     Func *func = calloc(1, sizeof(Func));
     func->len = tok->len;
     strncpy(func->name, tok->str, tok->len);
+    func->max_offset = 0;
     func->defined = false;
     return func;
 }
