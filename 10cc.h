@@ -123,6 +123,7 @@ Node *program();
 Func *function();
 
 // codegen のための関数　-> @ codegen.c
+void code_gen();
 void gen(Node *node);
 void gen_prologue(int sz);
 void gen_epilogue();

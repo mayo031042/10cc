@@ -196,7 +196,7 @@ void gen(Node *node)
         printf("    idiv rdi\n");
         break;
 
-    // 等号　不等号
+    // 不等号
     case ND_EQ:
         printf("    cmp rax, rdi\n");
         printf("    sete al\n");
@@ -219,6 +219,28 @@ void gen(Node *node)
         break;
     }
 
-    // 各頂点で結果はstack に保存される
     printf("    push rax\n");
+}
+
+void code_gen()
+{
+    printf(".intel_syntax noprefix\n");
+
+    for (int i = 0; funcs[i]; i++)
+    {
+
+        printf("    .globl %s\n", funcs[i]->name);
+        printf("%s:\n", funcs[i]->name);
+
+        gen_prologue(208);
+
+        for (Node *n = funcs[i]->def; n; n = n->next)
+        {
+            gen(n);
+            printf("    pop rax\n");
+        }
+
+        // printf("    mov rax, 0\n");
+        gen_epilogue();
+    }
 }
