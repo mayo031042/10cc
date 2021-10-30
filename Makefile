@@ -15,13 +15,13 @@ testculc: 10cc optimize
 testfunc: 10cc optimize
 	./testFunc.sh
 
-tmp2.s: 
-	touch tmp2.s
+tmp.s: 
+	touch tmp.s
 
 # 編集されたtmp.s をtmp2.s において実行
-s: tmp2.s
-	gcc -o tmp2 tmp2.s
-	./tmp2
+s: tmp.s
+	gcc -o tmp tmp.s
+	./tmp
 
 clean:
 	rm -f 10cc *.o *~ tmp* optimize
