@@ -3,6 +3,7 @@
 assert() {
     expected="$1"
     input="$2"
+    # input="main(){ $2 };"
 
     ./10cc "$input" > tmp.s
     gcc -o tmp tmp.s
