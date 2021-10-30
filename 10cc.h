@@ -72,8 +72,8 @@ struct Node
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
     // char *name; // func のラベル作成に使用
     int val;
-    int offset; // ND_LVARのときのみ使う
-    int func_pos;  // ND_CONTINUEのときのみ使う
+    int offset;   // ND_LVARのときのみ使う
+    int func_pos; // ND_CONTINUEのときのみ使う
 };
 
 // LVar
@@ -90,9 +90,9 @@ typedef struct Func Func;
 struct Func
 {
     // Node *args[6]; // 引数→とりあえず無視
-    Node *def; // 定義
+    Node *def;      // 定義
     char name[100]; // 関数名
-    int len; // 名前の長さ
+    int len;        // 名前の長さ
 };
 
 // error -> @ codegen.c

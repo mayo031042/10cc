@@ -133,7 +133,6 @@ void gen(Node *node)
         printf("mov rax, 0\n");
         printf("call %s\n", funcs[node->func_pos]->name);
         printf("push rax\n");
-
         return;
     }
 
