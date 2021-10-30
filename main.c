@@ -3,6 +3,7 @@
 // グローバル変数の宣言
 char *user_input;
 int token_pos = 0;
+
 int main(int argc, char **argv)
 {
     if (argc != 2)

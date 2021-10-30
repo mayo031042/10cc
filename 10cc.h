@@ -73,7 +73,7 @@ struct Node
     // char *name; // func のラベル作成に使用
     int val;
     int offset;   // ND_LVARのときのみ使う
-    int func_pos;
+    int func_num;
 };
 
 // LVar

@@ -141,7 +141,7 @@ void gen(Node *node)
 
     case ND_FUNC_CALL:
         printf("    mov rax, 0\n");
-        printf("    call %s\n", funcs[node->func_pos]->name);
+        printf("    call %s\n", funcs[node->func_num]->name);
         printf("    push rax\n");
         return;
     }
@@ -206,7 +206,7 @@ void gen(Node *node)
         printf("    idiv rdi\n");
         printf("    mov rax, rdx\n");
         break;
-        
+
     // 不等号
     case ND_EQ:
         printf("    cmp rax, rdi\n");

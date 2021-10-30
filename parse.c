@@ -166,7 +166,7 @@ Node *primary()
         if (consume(TK_RESERVED, "("))
         {
             node = create_node(ND_FUNC_CALL);
-            node->func_pos = find_func(false);
+            node->func_num = find_func(false);
 
             // 引数
             expect(TK_RESERVED, ")");
