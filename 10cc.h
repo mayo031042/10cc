@@ -140,7 +140,6 @@ extern int pos;
 extern char *user_input;
 extern Node *codes[];
 extern Token *tokens[];
-extern LVar *locals;
 extern Func *funcs[];
 extern int Queue[];
 extern int ident_pos;

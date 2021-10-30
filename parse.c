@@ -5,6 +5,7 @@
 
 Node *codes[MAX_CODE_SIZE];
 Func *funcs[MAX_FUNC_SIZE];
+LVar *locals = NULL;
 
 Node *create_node(NodeKind kind)
 {

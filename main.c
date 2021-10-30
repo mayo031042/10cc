@@ -3,8 +3,6 @@
 // グローバル変数の宣言
 char *user_input;
 int pos = 0;
-LVar *locals = NULL;
-
 int main(int argc, char **argv)
 {
     if (argc != 2)
