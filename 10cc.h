@@ -73,7 +73,7 @@ struct Node
     // char *name; // func のラベル作成に使用
     int val;
     int offset; // ND_LVARのときのみ使う
-    int label;  // ND_CONTINUEのときのみ使う
+    int func_pos;  // ND_CONTINUEのときのみ使う
 };
 
 // LVar
@@ -89,11 +89,11 @@ struct LVar
 typedef struct Func Func;
 struct Func
 {
-    Func *next;
-    Node *lhs;
-    Node *rhs;
-    char *name;
-    int len;
+    Func *next; // 次の関数
+    Node *lhs; // 引数
+    Node *rhs; // 定義
+    char *name; // 関数名
+    int len; // 名前の長さ
 };
 
 // error -> @ codegen.c
