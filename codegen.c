@@ -97,6 +97,16 @@ void gen_do(Node *node)
     stack_pop();
 }
 
+// 意味のある最初のnode からNULL になる直前までをnext 順にgen()していく
+void gen_loop(Node *node)
+{
+    for (; node; node = node->next)
+    {
+        gen(node);
+        printf("    pop rax\n");
+    }
+}
+
 void gen(Node *node)
 {
     if (node->kind == ND_NULL)
@@ -163,11 +173,7 @@ void gen(Node *node)
         printf("    jmp .Lbrk%d\n", stack_front());
         return;
     case ND_BLOCK:
-        for (Node *n = node->lhs; n; n = n->next)
-        {
-            gen(n);
-            printf("    pop rax\n");
-        }
+        gen_loop(node->lhs);
         return;
     }
 
@@ -222,6 +228,7 @@ void gen(Node *node)
     printf("    push rax\n");
 }
 
+// 関数の定義部分を出力 main も含まれる
 void code_gen()
 {
     printf(".intel_syntax noprefix\n");
@@ -234,11 +241,7 @@ void code_gen()
 
         gen_prologue(208);
 
-        for (Node *n = funcs[i]->def; n; n = n->next)
-        {
-            gen(n);
-            printf("    pop rax\n");
-        }
+        gen_loop(funcs[i]->def);
 
         // printf("    mov rax, 0\n");
         gen_epilogue();
