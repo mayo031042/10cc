@@ -127,7 +127,7 @@ LVar *find_lvar()
     return lvar;
 }
 
-int find_func()
+int find_func(bool serach_only)
 {
     for (int i = 0; funcs[i]; i++)
     {
@@ -137,7 +137,14 @@ int find_func()
         }
     }
 
-    error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+    if (serach_only)
+    {
+        return -1;
+    }
+    else
+    {
+        error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+    }
 }
 
 // programの中の最小単位 (expr)か数値か変数しかありえない　
@@ -159,7 +166,7 @@ Node *primary()
         if (consume(TK_RESERVED, "("))
         {
             node = create_node(ND_FUNC_CALL);
-            node->func_pos = find_func();
+            node->func_pos = find_func(false);
 
             // 引数
             expect(TK_RESERVED, ")");

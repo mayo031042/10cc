@@ -15,7 +15,6 @@ testculc: 10cc optimize
 testfunc: 10cc optimize
 	./testFunc.sh
 
-
 tmp2.s: 
 	touch tmp2.s
 
