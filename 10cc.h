@@ -140,5 +140,4 @@ extern int pos;
 extern char *user_input;
 extern Token *tokens[];
 extern Func *funcs[];
-extern int Queue[];
 extern int ident_pos;
