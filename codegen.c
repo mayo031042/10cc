@@ -80,7 +80,7 @@ void gen_for_while(Node *node)
     stack_pop();
 }
 
-void gen_do(Node *node)
+void gen_do_while(Node *node)
 {
     stack_push(count());
 
@@ -98,7 +98,7 @@ void gen_do(Node *node)
 }
 
 // 意味のある最初のnode からNULL になる直前までをnext 順にgen()していく
-void gen_loop(Node *node)
+void gen_block(Node *node)
 {
     for (; node; node = node->next)
     {
@@ -164,7 +164,7 @@ void gen(Node *node)
         gen_for_while(node);
         return;
     case ND_DO:
-        gen_do(node);
+        gen_do_while(node);
         return;
     case ND_CONTINUE:
         printf("    jmp .Lcont%d\n", stack_front());
@@ -173,7 +173,7 @@ void gen(Node *node)
         printf("    jmp .Lbrk%d\n", stack_front());
         return;
     case ND_BLOCK:
-        gen_loop(node->lhs);
+        gen_block(node->lhs);
         return;
     }
 
@@ -246,7 +246,7 @@ void code_gen()
 
         gen_prologue(208);
 
-        gen_loop(funcs[func_pos]->def);
+        gen_block(funcs[func_pos]->def);
 
         // printf("    mov rax, 0\n");
         gen_epilogue();
