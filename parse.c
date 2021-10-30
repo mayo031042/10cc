@@ -467,19 +467,10 @@ Node *stmt()
 Node *program()
 {
     expect(TK_BLOCK_FRONT, "{");
-    Node head;
-    Node *cur = &head;
-
-    while (!consume_keyword(TK_BLOCK_END))
-    {
-        cur->next = stmt();
-        cur = cur->next;
-    }
-
-    cur->next = NULL;
-    return head.next;
+    return new_node_block();
 }
 
+// name, len, definedを設定
 Func *new_func(Token *tok)
 {
     Func *func = calloc(1, sizeof(Func));
