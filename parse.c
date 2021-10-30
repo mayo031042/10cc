@@ -480,9 +480,11 @@ Func *new_func(Token *tok)
     Func *func = calloc(1, sizeof(Func));
     func->len = tok->len;
     strncpy(func->name, tok->str, tok->len);
+    func->defined = false;
     return func;
 }
 
+// 関数の宣言か定義のみを扱う
 Func *function()
 {
     int i = 0;
@@ -494,15 +496,37 @@ Func *function()
             error_at(tokens[pos]->str, "関数名ではありません");
         }
 
-        funcs[i + 1] = NULL;
-        funcs[i] = new_func(tokens[val_of_ident_pos()]);
-
         expect(TK_RESERVED, "(");
+
+        int func_pos = find_func(true);
+        // 現在見ている関数のtokens[] での位置
+        int loc_of_func_pos = val_of_ident_pos();
+
         // 引数の処理
         expect(TK_RESERVED, ")");
 
-        funcs[i]->def = program();
+        if (func_pos == -1)
+        {
+            // はじめて現れた関数である のでset してからインクリメント
+            funcs[i] = new_func(tokens[loc_of_func_pos]);
+            funcs[i + 1] = NULL;
+            func_pos = i;
+            i++;
+        }
 
-        i++;
+        // 宣言のみか　定義されるか
+        if (!consume(TK_RESERVED, ";"))
+        {
+            // 定義部分の｛｝が来ていると予想される
+            if (funcs[func_pos]->defined == true)
+            {
+                error_at(tokens[loc_of_func_pos]->str, "関数が複数回定義されています");
+            }
+
+            // program()　を呼び出す
+            funcs[func_pos]->defined = true;
+            funcs[func_pos]->def = program();
+        }
+        // 宣言のみなら次の関数の読み込みに移る
     }
 }

@@ -66,6 +66,19 @@ main()
     return x+plus();
 }"
 
-# assemble 8 "fuga();hoge(){    return fuga()+3;}fuga(){  return 5;}main(){return hoge();}"
+assert 8 "
+fuga();
+hoge()
+{
+    return fuga()+3;
+}
+fuga()
+{
+    return 5;
+}
+main()
+{
+    return hoge();
+}"
 
 echo -e "\n         You are a god-dammit genius !!\n"
