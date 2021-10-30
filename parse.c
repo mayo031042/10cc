@@ -4,6 +4,7 @@
 
 Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
+int block_nest = 0;
 
 LVar *locals = NULL;
 
@@ -85,6 +86,16 @@ Node *new_node_block()
     }
     Node *node = stmt();
     node->next = new_node_block();
+    return node;
+}
+
+// build_block() とgen_block() でのみ block_nest の値をいじる
+Node *build_block()
+{
+    expect(TK_BLOCK_FRONT, "{");
+    block_nest++;
+    Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
+    block_nest--;
     return node;
 }
 
@@ -452,9 +463,9 @@ Node *stmt()
         expect(TK_RESERVED, ";");
     }
     // : {}
-    else if (consume_keyword(TK_BLOCK_FRONT))
+    else if (is_expected_token(TK_BLOCK_FRONT, "{"))
     {
-        node = new_node(ND_BLOCK, new_node_block(), NULL);
+        node = build_block();
     }
     else
     {
@@ -468,8 +479,9 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
-    expect(TK_BLOCK_FRONT, "{");
-    return new_node(ND_BLOCK, new_node_block(), NULL);
+    return build_block();
+    //    expect(TK_BLOCK_FRONT, "{");
+    // return new_node(ND_BLOCK, new_node_block(), NULL);
 }
 
 // name, len, definedを設定

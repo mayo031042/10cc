@@ -81,4 +81,20 @@ main()
     return hoge();
 }"
 
+# ネスト位置によって参照すべき変数が違う -> 宣言である　という判断がつく必要がある　int 導入までスルー
+# assert 2 "
+# main()
+# {
+#     ret=0;
+#     x=1;
+#     {
+#         x=2;
+#         {
+#             x=3;    
+#         }
+#         ret=x;
+#     }
+#     return ret;
+# }"
+
 echo -e "\n         You are a god-dammit genius !!\n"

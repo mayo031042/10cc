@@ -98,13 +98,16 @@ void gen_do_while(Node *node)
 }
 
 // 意味のある最初のnode からNULL になる直前までをnext 順にgen()していく
+// build_block() とgen_block() でのみ block_nest の値をいじる
 void gen_block(Node *node)
 {
+    block_nest++;
     for (; node; node = node->next)
     {
         gen(node);
         printf("    pop rax\n");
     }
+    block_nest--;
 }
 
 void gen(Node *node)

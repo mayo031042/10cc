@@ -1,9 +1,14 @@
 #include "10cc.h"
 
+bool is_expected_token(TokenKind kind, char *op)
+{
+    return (tokens[token_pos]->kind == kind && tokens[token_pos]->len == strlen(op) && !memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len));
+}
+
 // 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
-    if (tokens[token_pos]->kind != kind || tokens[token_pos]->len != strlen(op) || memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len))
+    if (!is_expected_token(kind, op))
     {
         return false;
     }
