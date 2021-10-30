@@ -93,6 +93,7 @@ struct Func
     Node *def;         // 定義
     char name[100];    // 関数名
     int len;           // 名前の長さ
+    int max_offset;    // プロローグ時に下げるrsp の幅を決める
     bool defined;      // すでに定義がされているか
 };
 
