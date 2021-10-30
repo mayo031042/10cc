@@ -225,6 +225,11 @@ Node *mul()
         {
             node = new_node(ND_DIV, node, unary());
         }
+        // : %
+        else if (consume(TK_RESERVED, "%"))
+        {
+            node = new_node(ND_DIV_REM, node, unary());
+        }
         // : break
         else
         {

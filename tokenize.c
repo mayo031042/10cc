@@ -114,7 +114,7 @@ void *tokenize()
         {
             // インクリメント　の実装
         }
-        else if (strchr("+-*/!=<>", *p) && *(p + 1) == '=')
+        else if (strchr("+-*/%!=<>", *p) && *(p + 1) == '=')
         {
             if (strchr("!=<>", *p))
             {
@@ -128,7 +128,7 @@ void *tokenize()
             continue;
         }
         // 1文字解釈ゾーン
-        else if (strchr("+-*/()=<>;", *p))
+        else if (strchr("+-*/%()=<>;", *p))
         {
             new_token(TK_RESERVED, p++, 1);
             continue;

@@ -201,7 +201,12 @@ void gen(Node *node)
         printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
-
+    case ND_DIV_REM:
+        printf("    cqo\n");
+        printf("    idiv rdi\n");
+        printf("    mov rax, rdx\n");
+        break;
+        
     // 不等号
     case ND_EQ:
         printf("    cmp rax, rdi\n");
