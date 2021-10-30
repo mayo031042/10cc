@@ -29,17 +29,41 @@ assemble(){
 }
 
 echo "TEST func"
-assert 0 "
+assert 42 "
 foo()
 {
     return 42;
 }
-
 main()
 {
     x=foo();
     return x;
+}"
+
+assert 32 "
+foo1()
+{
+    30;
 }
-"
+main()
+{
+    x=1+foo1()+3;
+    return x-2;
+}"
+
+assert 11 "
+plus()
+{
+    return 3+4;
+}
+minus()
+{
+    return 5-2;
+}
+main()
+{
+    x=plus()-minus();
+    return x+plus();
+}"
 
 echo -e "\n         You are a god-dammit genius !!\n"

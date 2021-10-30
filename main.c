@@ -15,22 +15,24 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     tokenize();
-    program();
+    function();
 
     printf(".intel_syntax noprefix\n");
-    printf(".globl main\n");
-    printf("main:\n");
 
-    gen_prologue(208);
-
-    for (int i = 0; codes[i]; i++)
+    for (int i = 0; funcs[i]; i++)
     {
-        gen(codes[i]);
-        printf("    pop rax\n");
+        printf("    .globl %s\n", funcs[i]->name);
+        printf("%s:\n", funcs[i]->name);
+
+        gen_prologue(208);
+        for (Node *n = funcs[i]->def; n; n = n->next)
+        {
+            gen(n);
+            printf("    pop rax\n");
+        }
+        // printf("    mov rax, 0\n");
+        gen_epilogue();
     }
 
-    // printf("    mov rax, 0\n");
-    gen_epilogue();
-    
     return 0;
 }

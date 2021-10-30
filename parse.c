@@ -128,6 +128,19 @@ LVar *find_lvar()
     return lvar;
 }
 
+int find_func()
+{
+    for (int i = 0; funcs[i]; i++)
+    {
+        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
+        {
+            return i;
+        }
+    }
+
+    error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+}
+
 // programの中の最小単位 (expr)か数値か変数しかありえない　
 // 演算子は処理されているので　残るは数値等　のみである
 Node *primary()
@@ -146,14 +159,11 @@ Node *primary()
         // 関数かチェック
         if (consume(TK_RESERVED, "("))
         {
-
+            node = create_node(ND_FUNC_CALL);
+            node->func_pos=find_func();
+            
             // 引数
             expect(TK_RESERVED, ")");
-
-            if (consume_keyword(TK_BLOCK_FRONT))
-            {
-                // 定義
-            }
         }
         else
         {
@@ -446,11 +456,48 @@ Node *stmt()
 // code全体を　;　で区切る
 Node *program()
 {
-    int i = 0;
-    while (!at_eof())
+    expect(TK_BLOCK_FRONT, "{");
+    Node head;
+    Node *cur = &head;
+
+    while (!consume_keyword(TK_BLOCK_END))
     {
-        codes[i++] = stmt();
+        cur->next = stmt();
+        cur = cur->next;
     }
 
-    codes[i] = NULL;
+    cur->next = NULL;
+    return head.next;
+}
+
+Func *new_func(Token *tok)
+{
+    Func *func = calloc(1, sizeof(Func));
+    func->len = tok->len;
+    strncpy(func->name, tok->str, tok->len);
+    return func;
+}
+
+Func *function()
+{
+    int i = 0;
+
+    while (!at_eof())
+    {
+        if (!consume_keyword(TK_IDENT))
+        {
+            error_at(tokens[pos]->str, "関数名ではありません");
+        }
+
+        funcs[i + 1] = NULL;
+        funcs[i] = new_func(tokens[val_of_ident_pos()]);
+
+        expect(TK_RESERVED, "(");
+        // 引数の処理
+        expect(TK_RESERVED, ")");
+
+        funcs[i]->def = program();
+
+        i++;
+    }
 }

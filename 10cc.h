@@ -90,7 +90,7 @@ typedef struct Func Func;
 struct Func
 {
     // Node *args[6]; // 引数→とりあえず無視
-    Node *f_codes[200]; // 定義
+    Node *def; // 定義
     char name[100]; // 関数名
     int len; // 名前の長さ
 };
@@ -134,6 +134,7 @@ void stack_push(int val);
 void stack_pop();
 int val_of_ident_pos();
 // void clear_semicolon();
+void aaa();
 
 // グローバル変数 -> 定義はmainにて
 extern int pos;

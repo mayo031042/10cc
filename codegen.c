@@ -128,6 +128,13 @@ void gen(Node *node)
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
+
+    case ND_FUNC_CALL:
+        printf("mov rax, 0\n");
+        printf("call %s\n", funcs[node->func_pos]->name);
+        printf("push rax\n");
+
+        return;
     }
 
     switch (node->kind)

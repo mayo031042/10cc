@@ -64,3 +64,8 @@ int val_of_ident_pos()
 {
     return ident_pos;
 }
+
+void aaa()
+{
+    fprintf(stderr, "\n\tnow-> %s\n", tokens[pos]->str);
+}
