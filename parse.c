@@ -6,7 +6,7 @@ Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
 int block_nest = 0;
 
-LVar *locals = NULL;
+LVar *__locals = NULL;
 
 Node *create_node(NodeKind kind)
 {
@@ -92,52 +92,47 @@ Node *new_node_block()
 // build_block() とgen_block() でのみ block_nest の値をいじる
 Node *build_block()
 {
-    expect(TK_BLOCK_FRONT, "{");
     block_nest++;
+    expect(TK_BLOCK_FRONT, "{");
+
     Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
+
     block_nest--;
     return node;
 }
 
-// lvar name,len
-LVar *create_lvar()
+LVar *new_lvar(int max_offset)
 {
     LVar *lvar = calloc(1, sizeof(LVar));
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
+    // 最大のoffset よりも１変数分だけ下げる
+    lvar->offset = max_offset + 8;
+    lvar->next = funcs[func_pos]->locals[block_nest];
+    funcs[func_pos]->locals[block_nest] = lvar;
     return lvar;
 }
 
-// なかったらNULL あったらLVar を返す
 LVar *find_lvar()
 {
-    LVar *lvar;
-
-    for (lvar = locals; lvar; lvar = lvar->next)
+    int max_offset = 0;
+    for (int i = block_nest; 0 <= i; i--)
     {
-        if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
+        for (LVar *lvar = funcs[func_pos]->locals[i]; lvar; lvar = lvar->next)
         {
-            return lvar;
+            if (max_offset < lvar->offset)
+            {
+                max_offset = lvar->offset;
+            }
+
+            if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
+            {
+                return lvar;
+            }
         }
     }
-
-    lvar = create_lvar();
-
-    // 変数がまだ何も登録されていない時　offsetを初期化する
-    if (locals == NULL)
-    {
-        lvar->offset = 8;
-    }
-    // localsは既出変数配列の末尾変数を指しているのでlvar はlocals を参照すれば良い
-    else
-    {
-        lvar->offset = locals->offset + 8;
-    }
-
-    lvar->next = locals;
-    locals = lvar;
-
-    return lvar;
+    // 今後必要な変数の中で最大のoffsetを渡す
+    return new_lvar(max_offset);
 }
 
 int find_func(bool serach_only)

@@ -89,11 +89,11 @@ struct LVar
 typedef struct Func Func;
 struct Func
 {
-    // LVar *locals[100]; // 引数→とりあえず無視
-    Node *def;      // 定義
-    char name[100]; // 関数名
-    int len;        // 名前の長さ
-    bool defined;   // すでに定義がされているか
+    LVar *locals[100]; // 引数→とりあえず無視
+    Node *def;         // 定義
+    char name[100];    // 関数名
+    int len;           // 名前の長さ
+    bool defined;      // すでに定義がされているか
 };
 
 // error -> @ codegen.c

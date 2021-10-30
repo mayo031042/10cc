@@ -20,7 +20,7 @@ assert() {
 
 assemble(){
     expected="$1"
-    input="$2"
+    input="main(){ $2 }"
 
     ./10cc "$input" > tmp.s
     echo "compiled"

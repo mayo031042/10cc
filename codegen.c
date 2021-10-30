@@ -102,11 +102,13 @@ void gen_do_while(Node *node)
 void gen_block(Node *node)
 {
     block_nest++;
+
     for (; node; node = node->next)
     {
         gen(node);
         printf("    pop rax\n");
     }
+
     block_nest--;
 }
 
