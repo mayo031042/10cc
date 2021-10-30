@@ -30,7 +30,6 @@ struct Token
 {
     TokenKind kind;
     Token *next;
-    int pos; // 自分がtokens　の何番目か
     int val;
     char *str;
     int len;
@@ -74,7 +73,7 @@ struct Node
     // char *name; // func のラベル作成に使用
     int val;
     int offset;   // ND_LVARのときのみ使う
-    int func_pos; // ND_CONTINUEのときのみ使う
+    int func_pos;
 };
 
 // LVar
@@ -137,7 +136,8 @@ void aaa();
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;
+extern int ident_pos;
+extern int func_pos;
 extern char *user_input;
 extern Token *tokens[];
 extern Func *funcs[];
-extern int ident_pos;

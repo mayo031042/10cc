@@ -3,7 +3,7 @@
 #define MAX_TOKEN_SIZE 200
 
 Token *tokens[MAX_TOKEN_SIZE];
-int ident_pos;
+int ident_pos = 0;
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
@@ -13,7 +13,6 @@ void new_token(TokenKind kind, char *str, int len)
     tokens[token_pos]->kind = kind;
     tokens[token_pos]->str = str;
     tokens[token_pos]->len = len;
-    tokens[token_pos]->pos = token_pos;
     token_pos++;
 }
 
