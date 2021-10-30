@@ -5,64 +5,6 @@
 Token *tokens[MAX_TOKEN_SIZE];
 int ident_pos;
 
-bool is_expected_token(TokenKind kind, char *op)
-{
-    return (tokens[pos]->kind == kind && tokens[pos]->len == strlen(op) && !memcmp(tokens[pos]->str, op, tokens[pos]->len));
-}
-
-// 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
-bool consume(TokenKind kind, char *op)
-{
-    if (!is_expected_token(kind, op))
-    {
-        return false;
-    }
-    pos++;
-    return true;
-}
-
-// consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
-bool expect(TokenKind kind, char *op)
-{
-    if (consume(kind, op))
-    {
-        return true;
-    }
-    error_at(tokens[pos]->str, "%cではありません\n", op);
-}
-
-// expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
-int expect_number()
-{
-    if (tokens[pos]->kind != TK_NUM)
-    {
-        error_at(tokens[pos]->str, "数値ではありません\n");
-    }
-    int val = tokens[pos]->val;
-    pos++;
-    return val;
-}
-
-bool consume_keyword(TokenKind kind)
-{
-    if (tokens[pos]->kind != kind)
-    {
-        return false;
-    }
-    if (kind == TK_IDENT)
-    {
-        ident_pos = pos;
-    }
-    pos++;
-    return true;
-}
-
-// token 列の最後尾の次だったらtrue
-bool at_eof()
-{
-    return (tokens[pos]->kind == TK_EOF);
-}
-
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 void new_token(TokenKind kind, char *str, int len)
