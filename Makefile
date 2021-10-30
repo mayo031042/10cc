@@ -9,8 +9,12 @@ OBJS=$(SRCS:.c=.o)
 
 $(OBJS): 10cc.h
 
-test: 10cc optimize
-	./test.sh
+test1: 10cc optimize
+	./test1.sh
+
+test2: 10cc optimize
+	./test2.sh
+
 
 tmp2.s: 
 	touch tmp2.s
