@@ -70,7 +70,7 @@ struct Node
     Node *lhs;
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
-    char *name; // func のラベル作成に使用
+    // char *name; // func のラベル作成に使用
     int val;
     int offset; // ND_LVARのときのみ使う
     int label;  // ND_CONTINUEのときのみ使う
@@ -84,6 +84,16 @@ struct LVar
     char *name;
     int len;
     int offset; // RBPからの距離
+};
+
+typedef struct Func Func;
+struct Func
+{
+    Func *next;
+    Node *lhs;
+    Node *rhs;
+    char *name;
+    int len;
 };
 
 // error -> @ codegen.c
