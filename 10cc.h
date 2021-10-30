@@ -72,7 +72,7 @@ struct Node
     Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
     // char *name; // func のラベル作成に使用
     int val;
-    int offset;   // ND_LVARのときのみ使う
+    int offset; // ND_LVARのときのみ使う
     int func_num;
 };
 
@@ -89,7 +89,7 @@ struct LVar
 typedef struct Func Func;
 struct Func
 {
-    // Node *args[6]; // 引数→とりあえず無視
+    // LVar *locals[100]; // 引数→とりあえず無視
     Node *def;      // 定義
     char name[100]; // 関数名
     int len;        // 名前の長さ
@@ -135,9 +135,11 @@ int val_of_ident_pos();
 void aaa();
 
 // グローバル変数 -> 定義はmainにて
-extern int token_pos;
-extern int ident_pos;
-extern int func_pos;
+extern int token_pos;  // 今見ているtokens の位置
+extern int ident_pos;  // 最後に確認した識別子のtoken_pos
+extern int func_pos;   // 今見ているfuncs の位置
+extern int block_nest; // 今見ているコードの｛｝ネストの階層
+
 extern char *user_input;
 extern Token *tokens[];
 extern Func *funcs[];
