@@ -301,12 +301,10 @@ Node *equality()
         if (consume(TK_RESERVED, "=="))
         {
             node = new_node(ND_EQ, node, relational());
-            continue;
         }
         else if (consume(TK_RESERVED, "!="))
         {
             node = new_node(ND_NE, node, relational());
-            continue;
         }
         // : break
         else
@@ -348,7 +346,9 @@ Node *assign()
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
         }
         else
+        {
             error_at(tokens[pos]->str, "代入演算子ではありません\n");
+        }
     }
 
     return node;
@@ -368,8 +368,7 @@ Node *stmt()
     // : return,
     if (consume_keyword(TK_RETURN))
     {
-        node = create_node(ND_RETURN);
-        node->lhs = expr();
+        node = new_node(ND_RETURN, expr(), NULL);
         expect(TK_RESERVED, ";");
     }
     // : if
