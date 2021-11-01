@@ -87,6 +87,7 @@ struct LVar
     int offset; // RBPからの距離
 };
 
+// Func
 typedef struct Func Func;
 struct Func
 {
@@ -98,6 +99,7 @@ struct Func
     bool defined;      // すでに定義がされているか→definition がNULLかだけでは判定できない
 };
 
+// tokenize のための関数 -> @ tokenize.c
 void *tokenize();
 
 // node作成 のための関数 -> @ parse_func.c
@@ -116,7 +118,7 @@ Func *function();
 void code_gen();
 void gen(Node *node);
 
-// 分類が半端な関数 @ utils
+// 分類が半端な関数 -> @ utils
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
 int count();

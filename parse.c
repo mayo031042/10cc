@@ -24,6 +24,7 @@ Node *primary()
         // 関数かチェック
         if (consume(TK_RESERVED, "("))
         {
+            // 関数なら　関数呼び出しである
             node = create_node(ND_FUNC_CALL);
             node->func_num = find_func(false);
 
@@ -32,10 +33,11 @@ Node *primary()
         }
         else
         {
+            // 変数なので
             node = new_node_ident(find_lvar());
         }
     }
-    // 数値
+    // 数値なので
     else
     {
         node = new_node_num(expect_number());
@@ -54,7 +56,7 @@ Node *unary()
     {
         node = primary();
     }
-    // : -a
+    // : -a -> 0-a に展開
     else if (consume(TK_RESERVED, "-"))
     {
         node = new_node(ND_SUB, new_node_num(0), primary());
