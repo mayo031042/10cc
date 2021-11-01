@@ -371,7 +371,7 @@ Func *function()
 
             // program()　を呼び出す
             funcs[func_pos]->defined = true;
-            funcs[func_pos]->def = program();
+            funcs[func_pos]->definition = program();
         }
         // 宣言のみなら次の関数の読み込みに移る
     }

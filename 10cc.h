@@ -91,11 +91,11 @@ typedef struct Func Func;
 struct Func
 {
     LVar *locals[100]; // 引数→とりあえず無視
-    Node *def;         // 定義
+    Node *definition;  // 定義
     char name[100];    // 関数名
     int len;           // 名前の長さ
     int max_offset;    // プロローグ時に下げるrsp の幅を決める
-    bool defined;      // すでに定義がされているか
+    bool defined;      // すでに定義がされているか→definition がNULLかだけでは判定できない
 };
 
 void *tokenize();
