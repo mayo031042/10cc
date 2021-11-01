@@ -3,6 +3,7 @@
 #define MAX_TOKEN_SIZE 200
 
 Token *tokens[MAX_TOKEN_SIZE];
+int token_pos = 0;
 int ident_pos = 0;
 
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
