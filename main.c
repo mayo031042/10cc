@@ -1,6 +1,5 @@
 #include "10cc.h"
 
-// グローバル変数の宣言
 char *user_input;
 
 int main(int argc, char **argv)
