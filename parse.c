@@ -344,12 +344,11 @@ Func *function()
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }
 
-        expect(TK_RESERVED, "(");
-
         func_pos = find_func(true);
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 
+        expect(TK_RESERVED, "(");
         // 引数の処理
         expect(TK_RESERVED, ")");
 
