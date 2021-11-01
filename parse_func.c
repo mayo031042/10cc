@@ -141,6 +141,7 @@ Node *new_node_else()
     return node;
 }
 
+// 孫node に引数順のnode を持つnode を作成して返す
 Node *new_grand_node(NodeKind kind, Node *l_l, Node *l_r, Node *r_l, Node *r_r)
 {
     Node *lhs = new_node(ND_NOP, l_l, l_r);
@@ -170,6 +171,15 @@ Node *new_node_for()
     }
 
     return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], stmt(), nodes[1]);
+}
+
+Node *new_node_while()
+{
+    expect(TK_RESERVED, "(");
+    Node *node_B = expr();
+    expect(TK_RESERVED, ")");
+
+    return new_grand_node(ND_FOR_WHILE, create_node(ND_NOP), create_node(ND_NOP), stmt(), node_B);
 }
 
 // : }が出現するまでnextつなぎにnode を登録していく　

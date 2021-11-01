@@ -29,6 +29,7 @@ Node *new_node_ident(LVar *lvar);
 Node *new_node_if();
 Node *new_node_else();
 Node *new_node_for();
+Node *new_node_while();
 Node *new_node_block();
 Node *build_block();
 

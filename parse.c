@@ -273,12 +273,7 @@ Node *stmt()
     // : while
     else if (consume_keyword(TK_WHILE))
     {
-        expect(TK_RESERVED, "(");
-        Node *node_B = expr();
-        expect(TK_RESERVED, ")");
-        Node *node_right = new_node(ND_NOP, stmt(), node_B);
-        Node *node_left = new_node(ND_NOP, create_node(ND_NOP), create_node(ND_NOP));
-        node = new_node(ND_FOR_WHILE, node_left, node_right);
+        node = new_node_while();
     }
     // : do{} while();
     else if (consume_keyword(TK_DO))
