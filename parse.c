@@ -417,7 +417,7 @@ Node *stmt()
         char *op[] = {";", ";", ")"};
         for (int i = 0; i < 3; i++)
         {
-            if (is_expected_token(TK_RESERVED, op[i]))
+            if (current_token_is(TK_RESERVED, op[i]))
             {
                 // 条件式が空欄な時は恒真式なので　１が入っているとしてparseする
                 nodes[i] = create_node(ND_PUSH_1);

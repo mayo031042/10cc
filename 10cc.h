@@ -104,7 +104,7 @@ void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
 
 // tokenize のための関数 -> @ tokenize.c
-bool is_expected_token(TokenKind kind, char *op);
+bool current_token_is(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
 int expect_number();
