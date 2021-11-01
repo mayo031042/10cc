@@ -105,6 +105,7 @@ assert 9 "a=b=3; a*=b;" # 代入乗算
 assert 18 "a=3; xyz=4; a*=3*(xyz-=2);"
 assert 3 "a=b=4; a+=8; a/=b;" # 代入除算
 assert 3 "a=15; xyz=23; a/=(xyz-=8)/3;"
+assert 1 "a=10; b=3; a%=b; a;"
 
 # 制御構文
 echo "TEST if"
