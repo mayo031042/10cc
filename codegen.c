@@ -114,8 +114,15 @@ void gen_block(Node *node)
 
 void gen(Node *node)
 {
-    if (node->kind == ND_NOP)
+    switch (node->kind)
     {
+    case ND_NOP:
+        return;
+    case ND_PUSH_1:
+        printf("    push 1\n");
+        return;
+    case ND_PUSH_0:
+        printf("    push 0\n");
         return;
     }
 

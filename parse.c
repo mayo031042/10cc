@@ -417,20 +417,16 @@ Node *stmt()
         char *op[] = {";", ";", ")"};
         for (int i = 0; i < 3; i++)
         {
-            if (consume(TK_RESERVED, op[i]))
-                nodes[i] = create_node(ND_NOP);
+            if (is_expected_token(TK_RESERVED, op[i]))
+            {
+                // 条件式が空欄な時は恒真式なので　１が入っているとしてparseする
+                nodes[i] = create_node(ND_PUSH_1);
+            }
             else
             {
                 nodes[i] = expr();
-                expect(TK_RESERVED, op[i]);
             }
-        }
-
-        // 条件式が空欄な時は恒真式とみなすので　１が入っているとしてparseする
-        if (nodes[1]->kind == ND_NOP)
-        {
-            nodes[1]->kind = ND_NUM;
-            nodes[1]->val = 1;
+            expect(TK_RESERVED, op[i]);
         }
 
         Node *node_right = new_node(ND_NOP, stmt(), nodes[1]);
@@ -491,14 +487,14 @@ Node *program()
     return build_block();
 }
 
-// name, len, definedを設定
+// len, max_offset, defined, name を設定
 Func *new_func(Token *tok)
 {
     Func *func = calloc(1, sizeof(Func));
     func->len = tok->len;
-    strncpy(func->name, tok->str, tok->len);
     func->max_offset = 0;
     func->defined = false;
+    strncpy(func->name, tok->str, tok->len);
     return func;
 }
 
