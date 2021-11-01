@@ -22,50 +22,42 @@ void *tokenize()
         // 予約語ゾーン
         if (is_keyword("return"))
         {
-            new_token(TK_RETURN, user_input_pos, 6);
-            user_input_pos += 6;
+            new_token(TK_RETURN, 6);
             continue;
         }
         else if (is_keyword("if"))
         {
-            new_token(TK_IF, user_input_pos, 2);
-            user_input_pos += 2;
+            new_token(TK_IF, 2);
             continue;
         }
         else if (is_keyword("else"))
         {
-            new_token(TK_ELSE, user_input_pos, 4);
-            user_input_pos += 4;
+            new_token(TK_ELSE, 4);
             continue;
         }
         else if (is_keyword("while"))
         {
-            new_token(TK_WHILE, user_input_pos, 5);
-            user_input_pos += 5;
+            new_token(TK_WHILE, 5);
             continue;
         }
         else if (is_keyword("for"))
         {
-            new_token(TK_FOR, user_input_pos, 3);
-            user_input_pos += 3;
+            new_token(TK_FOR, 3);
             continue;
         }
         else if (is_keyword("do"))
         {
-            new_token(TK_DO, user_input_pos, 2);
-            user_input_pos += 2;
+            new_token(TK_DO, 2);
             continue;
         }
         else if (is_keyword("continue"))
         {
-            new_token(TK_CONTINUE, user_input_pos, 8);
-            user_input_pos += 8;
+            new_token(TK_CONTINUE, 8);
             continue;
         }
         else if (is_keyword("break"))
         {
-            new_token(TK_BREAK, user_input_pos, 5);
-            user_input_pos += 5;
+            new_token(TK_BREAK, 5);
             continue;
         }
 
@@ -74,13 +66,12 @@ void *tokenize()
         {
             if (*user_input_pos == '{')
             {
-                new_token(TK_BLOCK_FRONT, user_input_pos, 1);
+                new_token(TK_BLOCK_FRONT, 1);
             }
             else
             {
-                new_token(TK_BLOCK_END, user_input_pos, 1);
+                new_token(TK_BLOCK_END, 1);
             }
-            user_input_pos++;
             continue;
         }
 
@@ -93,26 +84,25 @@ void *tokenize()
         {
             if (strchr("!=<>", *user_input_pos))
             {
-                new_token(TK_RESERVED, user_input_pos, 2);
+                new_token(TK_RESERVED, 2);
             }
             else
             {
-                new_token(TK_ASSIGN_RESERVED, user_input_pos, 2);
+                new_token(TK_ASSIGN_RESERVED, 2);
             }
-            user_input_pos += 2;
             continue;
         }
         // 1文字解釈ゾーン
         else if (strchr("+-*/%()=<>;", *user_input_pos))
         {
-            new_token(TK_RESERVED, user_input_pos++, 1);
+            new_token(TK_RESERVED, 1);
             continue;
         }
 
         // 数値、変数、関数名 解釈ゾーン　
         if (isdigit(*user_input_pos))
         {
-            new_token(TK_NUM, user_input_pos, 0);
+            new_token(TK_NUM, 0);
             tokens[token_pos - 1]->val = strtol(user_input_pos, &user_input_pos, 10);
             continue;
         }
@@ -121,14 +111,13 @@ void *tokenize()
             char *p;
             for (p = user_input_pos; is_alnum(*p); p++)
                 ;
-            new_token(TK_IDENT, user_input_pos, p - user_input_pos);
-            user_input_pos = p;
+            new_token(TK_IDENT, p - user_input_pos);
             continue;
         }
 
         error_at(tokens[token_pos]->str, "%s tokenizeできません\n", user_input_pos);
     }
 
-    new_token(TK_EOF, user_input_pos, 0);
+    new_token(TK_EOF, 0);
     token_pos = 0;
 }
