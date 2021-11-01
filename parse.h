@@ -1,5 +1,14 @@
 #include "10cc.h"
 
+// tokens[] を見てnode 作成を補助する関数
+bool current_token_is(TokenKind kind, char *op);
+bool consume(TokenKind kind, char *op);
+bool expect(TokenKind kind, char *op);
+int expect_number();
+bool consume_keyword(TokenKind kind);
+bool at_eof();
+int val_of_ident_pos();
+
 // RDP 関数
 Node *primary();
 Node *unary();

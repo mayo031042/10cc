@@ -102,14 +102,8 @@ struct Func
 // tokenize のための関数 -> @ tokenize.c
 void *tokenize();
 
-// node作成 のための関数 -> @ parse_func.c
-bool current_token_is(TokenKind kind, char *op);
-bool consume(TokenKind kind, char *op);
-bool expect(TokenKind kind, char *op);
-int expect_number();
-bool consume_keyword(TokenKind kind);
-bool at_eof();
-int val_of_ident_pos();
+// 以下は　clear_semicolon()　でのみ使用
+// bool consume(TokenKind kind, char *op);
 
 // parse のための関数 -> @ parse.c
 Func *function();

@@ -33,11 +33,11 @@ int count()
     return cnt++;
 }
 
-void clear_semicolon()
-{
-    while (consume(TK_RESERVED, ";"))
-        ;
-}
+// void clear_semicolon()
+// {
+//     while (consume(TK_RESERVED, ";"))
+//     ;
+// }
 
 int stack_front()
 {
