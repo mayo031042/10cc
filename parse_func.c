@@ -1,4 +1,6 @@
 #include "10cc.h"
+// tokens[] やtoken_pos を扱い parse を補助する関数など
+// また node やfuncs[] の作成を補助する関数など
 
 // 最後に確認した識別子のtoken_pos
 int ident_pos = 0;
@@ -41,6 +43,7 @@ int expect_number()
     return val;
 }
 
+// 今のtoken が引数通りなら読み進める　更に識別子のときはident_pos を更新する
 bool consume_keyword(TokenKind kind)
 {
     if (tokens[token_pos]->kind != kind)
