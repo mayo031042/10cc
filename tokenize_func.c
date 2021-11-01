@@ -1,8 +1,9 @@
 #include "tokenize.h"
 
 // p とs を比較して　pがkeyword　と判定できたらtrue
-bool is_keyword(char *str, int num)
+bool is_keyword(char *str)
 {
+    int num = strlen(str);
     return (!strncmp(user_input_pos, str, num) && !is_alnum(user_input_pos[num]));
 }
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
@@ -24,7 +25,3 @@ int is_alnum(char c)
            ('0' <= c && c <= '9') ||
            (c == '_');
 }
-
-
-
-
