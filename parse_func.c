@@ -1,4 +1,4 @@
-#include "10cc.h"
+#include "parse.h"
 // tokens[] やtoken_pos を扱い parse を補助する関数など
 // また node やfuncs[] の作成を補助する関数など
 
@@ -67,4 +67,181 @@ bool at_eof()
 int val_of_ident_pos()
 {
     return ident_pos;
+}
+
+// 以下　Node LVar Func を扱う関数
+
+Node *create_node(NodeKind kind)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = kind;
+    return node;
+}
+
+// node に種類と それにつながる左辺、右辺を登録する
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+{
+    Node *node = create_node(kind);
+    node->lhs = lhs;
+    node->rhs = rhs;
+    return node;
+}
+
+// 数値を指すnode を作成する　常に葉であるような終端記号になるので左右に辺は持たない
+Node *new_node_num(int val)
+{
+    Node *node = create_node(ND_NUM);
+    node->val = val;
+    return node;
+}
+
+// LVarを参照する
+Node *new_node_ident(LVar *lvar)
+{
+    Node *node = create_node(ND_LVAR);
+    node->offset = lvar->offset;
+    return node;
+}
+
+// 完全に独立してif node を完成させる
+Node *new_node_if()
+{
+    Node *node = create_node(ND_IF);
+    expect(TK_RESERVED, "(");
+    node->lhs = expr();
+    expect(TK_RESERVED, ")");
+    node->rhs = stmt();
+    return node;
+}
+
+// if の時点で else を作る　else node　の左辺にif を配置 右辺にはNULLかstmt()
+Node *new_node_else()
+{
+    // 既にif があることがわかっていて消費されている
+    Node *node = create_node(ND_ELSE);
+    node->lhs = new_node_if();
+    // if, else if で終了しないなら
+    if (consume_keyword(TK_ELSE))
+    {
+        // else if なら
+        if (consume_keyword(TK_IF))
+        {
+            node->rhs = new_node_else();
+        }
+        else
+        {
+            node->rhs = stmt();
+        }
+    }
+    else
+    {
+        node->rhs = create_node(ND_NOP);
+    }
+
+    return node;
+}
+
+// : }が出現するまでnextつなぎにnode を登録していく　
+// 全体として繋がれたnode の先頭を返す 終端はNULL
+Node *new_node_block()
+{
+    if (consume_keyword(TK_BLOCK_END))
+    {
+        return NULL;
+    }
+    Node *node = stmt();
+    node->next = new_node_block();
+    return node;
+}
+
+// build_block() とgen_block() でのみ block_nest の値をいじる
+Node *build_block()
+{
+    block_nest++;
+
+    Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
+
+    block_nest--;
+    return node;
+}
+
+// 引数に渡された値から更に自分の必要とするメモリサイズ分下げたoffset を登録する
+// さらに該当関数のmax_offset も更新する
+// name, len, offset, next が登録された変数を作成する
+LVar *new_lvar(int max_offset)
+{
+    // 8 は自分の型に合わせて　要変更
+    int my_offset = max_offset + 8;
+    if (funcs[func_pos]->max_offset < my_offset)
+    {
+        funcs[func_pos]->max_offset = my_offset;
+    }
+
+    LVar *lvar = calloc(1, sizeof(LVar));
+    lvar->name = tokens[val_of_ident_pos()]->str;
+    lvar->len = tokens[val_of_ident_pos()]->len;
+
+    lvar->offset = my_offset;
+    lvar->next = funcs[func_pos]->locals[block_nest];
+
+    funcs[func_pos]->locals[block_nest] = lvar;
+    return lvar;
+}
+
+// 既出変数から直前識別子名に一致するものを探す
+// さらに有効な変数の中で最大のoffset を計算し新規変数作成の際に引数に渡す
+LVar *find_lvar()
+{
+    int max_offset = 0;
+    for (int i = block_nest; 0 <= i; i--)
+    {
+        for (LVar *lvar = funcs[func_pos]->locals[i]; lvar; lvar = lvar->next)
+        {
+            // 最大のoffset を保持するmax_offset を更新する
+            if (max_offset < lvar->offset)
+            {
+                max_offset = lvar->offset;
+            }
+            // 有効変数列内に　一致する変数を発見したときはその変数を返す
+            if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
+            {
+                return lvar;
+            }
+        }
+    }
+    // 登録されている既出変数の中で最大のoffsetを渡す
+    return new_lvar(max_offset);
+}
+
+// 既出関数名から直前識別子名に一致するものを探す　
+// 引数によってerror の有無を分岐させ　既出ならそのfuncs[] のpos を返す
+int find_func(bool serach_only)
+{
+    for (int i = 0; funcs[i]; i++)
+    {
+        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
+        {
+            return i;
+        }
+    }
+
+    if (serach_only == true)
+    {
+        return -1;
+    }
+    else
+    {
+        error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+    }
+}
+
+// 新しいfuncに len, max_offset, defined, name を設定
+Func *new_func(Token *tok)
+{
+    Func *func = calloc(1, sizeof(Func));
+    func->len = tok->len;
+    func->max_offset = 0;
+    func->defined = false;
+    strncpy(func->name, tok->str, tok->len);
+    return func;
 }

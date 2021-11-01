@@ -111,16 +111,6 @@ bool at_eof();
 int val_of_ident_pos();
 
 // parse のための関数 -> @ parse.c
-Node *primary();
-Node *unary();
-Node *mul();
-Node *add();
-Node *relational();
-Node *equality();
-Node *assign();
-Node *expr();
-Node *stmt();
-Node *program();
 Func *function();
 
 // codegen のための関数　-> @ codegen.c

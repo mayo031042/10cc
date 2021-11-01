@@ -1,4 +1,5 @@
-#include "10cc.h"
+#include "parse.h"
+// RDP 関数のみ
 
 #define MAX_FUNC_SIZE 100
 
@@ -6,166 +7,7 @@ Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
 int block_nest = 0;
 
-LVar *__locals = NULL;
-
-Node *create_node(NodeKind kind)
-{
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = kind;
-    return node;
-}
-
-// node の種類を登録し　それがつなぐ左辺、右辺を指すようにする
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
-{
-    Node *node = create_node(kind);
-    node->lhs = lhs;
-    node->rhs = rhs;
-    return node;
-}
-
-// 数値を指すnode を作成する　常に葉であるような終端記号になるので左右に辺は持たない
-Node *new_node_num(int val)
-{
-    Node *node = create_node(ND_NUM);
-    node->val = val;
-    return node;
-}
-
-// LVarを参照する
-Node *new_node_ident(LVar *lvar)
-{
-    Node *node = create_node(ND_LVAR);
-    node->offset = lvar->offset;
-    return node;
-}
-
-// 完全に独立してif node を完成させる
-Node *new_node_if()
-{
-    Node *node = create_node(ND_IF);
-    expect(TK_RESERVED, "(");
-    node->lhs = expr();
-    expect(TK_RESERVED, ")");
-    node->rhs = stmt();
-    return node;
-}
-
-// if の時点で else を作る　else node　の左辺にif を配置 右辺にはNULLかstmt()
-Node *new_node_else()
-{
-    // 既にif があることがわかっていて消費されている
-    Node *node = create_node(ND_ELSE);
-    node->lhs = new_node_if();
-    // if, else if で終了しないなら
-    if (consume_keyword(TK_ELSE))
-    {
-        // else if なら
-        if (consume_keyword(TK_IF))
-        {
-            node->rhs = new_node_else();
-        }
-        else
-        {
-            node->rhs = stmt();
-        }
-    }
-    else
-    {
-        node->rhs = create_node(ND_NOP);
-    }
-
-    return node;
-}
-
-Node *new_node_block()
-{
-    if (consume_keyword(TK_BLOCK_END))
-    {
-        return NULL;
-    }
-    Node *node = stmt();
-    node->next = new_node_block();
-    return node;
-}
-
-// build_block() とgen_block() でのみ block_nest の値をいじる
-Node *build_block()
-{
-    block_nest++;
-
-    Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
-
-    block_nest--;
-    return node;
-}
-
-// 引数に渡された値から更に自分の必要とするメモリサイズ下げたoffset を登録する
-// さらに該当関数のmax_offset も更新する
-LVar *new_lvar(int max_offset)
-{
-    int my_offset = max_offset + 8;
-    if (funcs[func_pos]->max_offset < my_offset)
-    {
-        funcs[func_pos]->max_offset = my_offset;
-    }
-
-    LVar *lvar = calloc(1, sizeof(LVar));
-    lvar->name = tokens[val_of_ident_pos()]->str;
-    lvar->len = tokens[val_of_ident_pos()]->len;
-
-    // 最大のoffset よりも１変数分だけ下げる
-    lvar->offset = my_offset;
-    lvar->next = funcs[func_pos]->locals[block_nest];
-
-    funcs[func_pos]->locals[block_nest] = lvar;
-    return lvar;
-}
-
-LVar *find_lvar()
-{
-    int max_offset = 0;
-    for (int i = block_nest; 0 <= i; i--)
-    {
-        for (LVar *lvar = funcs[func_pos]->locals[i]; lvar; lvar = lvar->next)
-        {
-            if (max_offset < lvar->offset)
-            {
-                max_offset = lvar->offset;
-            }
-
-            if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
-            {
-                return lvar;
-            }
-        }
-    }
-    // 今後必要な変数の中で最大のoffsetを渡す
-    return new_lvar(max_offset);
-}
-
-int find_func(bool serach_only)
-{
-    for (int i = 0; funcs[i]; i++)
-    {
-        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
-        {
-            return i;
-        }
-    }
-
-    if (serach_only)
-    {
-        return -1;
-    }
-    else
-    {
-        error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
-    }
-}
-
-// programの中の最小単位 (expr)か数値か変数しかありえない　
-// 演算子は処理されているので　残るは数値等　のみである
+// programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない
 Node *primary()
 {
     Node *node;
@@ -486,17 +328,6 @@ Node *program()
 {
     expect(TK_BLOCK_FRONT, "{");
     return build_block();
-}
-
-// len, max_offset, defined, name を設定
-Func *new_func(Token *tok)
-{
-    Func *func = calloc(1, sizeof(Func));
-    func->len = tok->len;
-    func->max_offset = 0;
-    func->defined = false;
-    strncpy(func->name, tok->str, tok->len);
-    return func;
 }
 
 // 関数の宣言か定義のみを扱う

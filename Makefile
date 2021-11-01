@@ -7,7 +7,7 @@ OBJS=$(SRCS:.c=.o)
 	$(CC) -o 10cc $(OBJS) $(LDFLAGS)
 	$(CC) -o optimize optimize.c
 
-$(OBJS): 10cc.h tokenize.h
+$(OBJS): 10cc.h tokenize.h parse.h codegen.h
 
 testculc: 10cc optimize
 	./testCulc.sh
