@@ -8,6 +8,7 @@ int func_pos = 0;
 int block_nest = 0;
 
 // programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない
+// -> ND_LVAR, ND_FUNC_CALL, ND_NUM, expr()
 Node *primary()
 {
     Node *node;
@@ -47,6 +48,7 @@ Node *primary()
 }
 
 // 単項演算子で区切る
+// -> primary()
 Node *unary()
 {
     Node *node;
@@ -70,6 +72,7 @@ Node *unary()
 }
 
 // 乗除算で区切る
+// -> unary(), ND_MUL, ND_DIV, ND_DIV_REM
 Node *mul()
 {
     Node *node = unary();
@@ -102,6 +105,7 @@ Node *mul()
 }
 
 // 加減算で区切る
+// -> MUL(), ND_ADD, ND_SUB
 Node *add()
 {
     Node *node = mul();
@@ -129,6 +133,7 @@ Node *add()
 }
 
 // 不等号で区切る
+// -> add(), ND_LE, ND_LT
 Node *relational()
 {
     Node *node = add();
@@ -164,6 +169,7 @@ Node *relational()
 }
 
 // 等号　等号否定で区切る　
+// -> relational(), ND_EQ, ND_NE
 Node *equality()
 {
     Node *node = relational();
@@ -189,6 +195,7 @@ Node *equality()
 }
 
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
+// -> equality(), ND_ASSIGN,
 Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
@@ -216,6 +223,10 @@ Node *assign()
         else if (consume(TK_ASSIGN_RESERVED, "/="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
+        }
+        else if (consume(TK_ASSIGN_RESERVED, "%="))
+        {
+            node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
         }
         else
         {
