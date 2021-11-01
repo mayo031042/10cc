@@ -48,7 +48,6 @@ typedef enum
     ND_LT,        // <
     ND_LE,        // <=
     ND_ASSIGN,    // =
-    // ND_FUNC_DEF,  // 関数定義
     ND_FUNC_CALL, // 関数呼び出し
     ND_LVAR,      // 変数
     ND_NUM,       // 数値
