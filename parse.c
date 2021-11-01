@@ -360,6 +360,7 @@ Func *function()
             func_pos = i;
             i++;
         }
+        // これ以降　関数が既出か否かに関わらずfunc_pos はfuncs[]の正しい位置を指している
 
         // 宣言のみか　定義されるか
         if (!consume(TK_RESERVED, ";"))
@@ -367,10 +368,10 @@ Func *function()
             // 定義部分の｛｝が来ていると予想される
             if (funcs[func_pos]->defined == true)
             {
+                // 多重定義にあたる
                 error_at(tokens[loc_of_func_pos]->str, "関数が複数回定義されています");
             }
 
-            // program()　を呼び出す
             funcs[func_pos]->defined = true;
             funcs[func_pos]->definition = program();
         }
