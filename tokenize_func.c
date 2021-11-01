@@ -1,5 +1,10 @@
 #include "tokenize.h"
 
+// p とs を比較して　pがkeyword　と判定できたらtrue
+bool is_keyword(char *str, int num)
+{
+    return (!strncmp(user_input_pos, str, num) && !is_alnum(user_input_pos[num]));
+}
 // 新しいtoken に{種類、文字列、長さ} を登録し　今のtoken のnext としてつなげる
 // tokenの作成はここだけでしか行われないので　tknz中のpos の移動はここでのみおこなう
 void new_token(TokenKind kind, char *str, int len)
@@ -20,11 +25,6 @@ int is_alnum(char c)
            (c == '_');
 }
 
-// p とs を比較して　pがkeyword　と判定できたらtrue
-bool is_keyword(char *p, char *str, int num)
-{
-    return (!strncmp(p, str, num) && !is_alnum(p[num]));
-}
 
 
 

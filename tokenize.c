@@ -20,49 +20,49 @@ void *tokenize()
         }
 
         // 予約語ゾーン
-        if (is_keyword(user_input_pos, "return", 6))
+        if (is_keyword("return", 6))
         {
             new_token(TK_RETURN, user_input_pos, 6);
             user_input_pos += 6;
             continue;
         }
-        else if (is_keyword(user_input_pos, "if", 2))
+        else if (is_keyword("if", 2))
         {
             new_token(TK_IF, user_input_pos, 2);
             user_input_pos += 2;
             continue;
         }
-        else if (is_keyword(user_input_pos, "else", 4))
+        else if (is_keyword("else", 4))
         {
             new_token(TK_ELSE, user_input_pos, 4);
             user_input_pos += 4;
             continue;
         }
-        else if (is_keyword(user_input_pos, "while", 5))
+        else if (is_keyword("while", 5))
         {
             new_token(TK_WHILE, user_input_pos, 5);
             user_input_pos += 5;
             continue;
         }
-        else if (is_keyword(user_input_pos, "for", 3))
+        else if (is_keyword("for", 3))
         {
             new_token(TK_FOR, user_input_pos, 3);
             user_input_pos += 3;
             continue;
         }
-        else if (is_keyword(user_input_pos, "do", 2))
+        else if (is_keyword("do", 2))
         {
             new_token(TK_DO, user_input_pos, 2);
             user_input_pos += 2;
             continue;
         }
-        else if (is_keyword(user_input_pos, "continue", 8))
+        else if (is_keyword("continue", 8))
         {
             new_token(TK_CONTINUE, user_input_pos, 8);
             user_input_pos += 8;
             continue;
         }
-        else if (is_keyword(user_input_pos, "break", 5))
+        else if (is_keyword("break", 5))
         {
             new_token(TK_BREAK, user_input_pos, 5);
             user_input_pos += 5;
