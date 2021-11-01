@@ -71,11 +71,10 @@ struct Node
     NodeKind kind;
     Node *lhs;
     Node *rhs;
-    Node *next; // ND_BLOCK でのみ使用　最後はND_EOBであるようにする
-    // char *name; // func のラベル作成に使用
+    Node *next;   // ND_BLOCK でのみ使用　最後はNULL であるようにする
+    int offset;   // ND_LVAR でのみ使用
+    int func_num; // ND_FUNC_CALL でのみ使用
     int val;
-    int offset; // ND_LVARのときのみ使う
-    int func_num;
 };
 
 // LVar
