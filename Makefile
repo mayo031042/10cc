@@ -7,18 +7,19 @@ OBJS=$(SRCS:.c=.o)
 	$(CC) -o 10cc $(OBJS) $(LDFLAGS)
 	$(CC) -o optimize optimize.c
 
-$(OBJS): 10cc.h
+$(OBJS): 10cc.h tokenize.h
 
 testculc: 10cc optimize
 	./testCulc.sh
 
+# 一度無視
 testfunc: 10cc optimize
 	./testFunc.sh
 
 tmp.s: 
 	touch tmp.s
 
-# 編集されたtmp.s をtmp2.s において実行
+# 編集されたtmp.s を実行
 s: tmp.s
 	gcc -o tmp tmp.s
 	./tmp
