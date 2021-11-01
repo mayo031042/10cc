@@ -1,5 +1,8 @@
 #include "10cc.h"
 
+// 最後に確認した識別子のtoken_pos
+int ident_pos = 0;
+
 bool current_token_is(TokenKind kind, char *op)
 {
     return (tokens[token_pos]->kind == kind && tokens[token_pos]->len == strlen(op) && !memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len));
@@ -56,4 +59,9 @@ bool consume_keyword(TokenKind kind)
 bool at_eof()
 {
     return (tokens[token_pos]->kind == TK_EOF);
+}
+
+int val_of_ident_pos()
+{
+    return ident_pos;
 }

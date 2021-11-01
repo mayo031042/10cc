@@ -4,7 +4,6 @@
 
 Token *tokens[MAX_TOKEN_SIZE];
 int token_pos = 0;
-int ident_pos = 0;
 char *user_input_pos;
 
 void *tokenize()

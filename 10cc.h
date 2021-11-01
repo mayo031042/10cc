@@ -99,15 +99,16 @@ struct Func
     bool defined;      // すでに定義がされているか
 };
 
+void *tokenize();
 
-// tokenize のための関数 -> @ tokenize.c
+// node作成 のための関数 -> @ parse_func.c
 bool current_token_is(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
 int expect_number();
 bool consume_keyword(TokenKind kind);
 bool at_eof();
-void *tokenize();
+int val_of_ident_pos();
 
 // parse のための関数 -> @ parse.c
 Node *primary();
@@ -133,16 +134,14 @@ int count();
 int stack_front();
 void stack_push(int val);
 void stack_pop();
-int val_of_ident_pos();
 void aaa();
 // void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;  // 今見ているtokens の位置
-extern int ident_pos;  // 最後に確認した識別子のtoken_pos
 extern int func_pos;   // 今見ているfuncs の位置
 extern int block_nest; // 今見ているコードの｛｝ネストの階層
-
 extern char *user_input;
+
 extern Token *tokens[];
 extern Func *funcs[];
