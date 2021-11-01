@@ -72,7 +72,7 @@ Node *new_node_else()
     }
     else
     {
-        node->rhs = create_node(ND_NULL);
+        node->rhs = create_node(ND_NOP);
     }
 
     return node;
@@ -389,6 +389,10 @@ Node *expr()
 }
 
 // 予約語,{} の解釈を行う
+// if else, for, while, do while,
+// continue, break,
+// return,
+// block, expr()
 Node *stmt()
 {
     Node *node;
@@ -414,7 +418,7 @@ Node *stmt()
         for (int i = 0; i < 3; i++)
         {
             if (consume(TK_RESERVED, op[i]))
-                nodes[i] = create_node(ND_NULL);
+                nodes[i] = create_node(ND_NOP);
             else
             {
                 nodes[i] = expr();
@@ -423,14 +427,14 @@ Node *stmt()
         }
 
         // 条件式が空欄な時は恒真式とみなすので　１が入っているとしてparseする
-        if (nodes[1]->kind == ND_NULL)
+        if (nodes[1]->kind == ND_NOP)
         {
             nodes[1]->kind = ND_NUM;
             nodes[1]->val = 1;
         }
 
-        Node *node_right = new_node(ND_NULL, stmt(), nodes[1]);
-        Node *node_left = new_node(ND_NULL, nodes[0], nodes[2]);
+        Node *node_right = new_node(ND_NOP, stmt(), nodes[1]);
+        Node *node_left = new_node(ND_NOP, nodes[0], nodes[2]);
         node = new_node(ND_FOR_WHILE, node_left, node_right);
     }
     // : while
@@ -439,8 +443,8 @@ Node *stmt()
         expect(TK_RESERVED, "(");
         Node *node_B = expr();
         expect(TK_RESERVED, ")");
-        Node *node_right = new_node(ND_NULL, stmt(), node_B);
-        Node *node_left = new_node(ND_NULL, create_node(ND_NULL), create_node(ND_NULL));
+        Node *node_right = new_node(ND_NOP, stmt(), node_B);
+        Node *node_left = new_node(ND_NOP, create_node(ND_NOP), create_node(ND_NOP));
         node = new_node(ND_FOR_WHILE, node_left, node_right);
     }
     // : do{} while();

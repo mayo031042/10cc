@@ -114,7 +114,7 @@ void gen_block(Node *node)
 
 void gen(Node *node)
 {
-    if (node->kind == ND_NULL)
+    if (node->kind == ND_NOP)
     {
         return;
     }
