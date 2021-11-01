@@ -1,119 +1,8 @@
-#include "10cc.h"
-
-void cmp_rax(int val)
-{
-    printf("    pop rax\n");
-    printf("    cmp rax, %d\n", val);
-}
-
-void gen_prologue(int sz)
-{
-    printf("    push rbp\n");
-    printf("    mov rbp, rsp\n");
-    printf("    sub rsp, %d\n", sz);
-}
-
-void gen_epilogue()
-{
-    printf("    mov rsp, rbp\n");
-    printf("    pop rbp\n");
-    printf("    ret\n");
-}
-
-// nodeを左辺値とみなせた時　そのアドレスをスタックに積む
-void gen_lval(Node *node)
-{
-    if (node->kind != ND_LVAR)
-    {
-        error("右辺値ではありません\n");
-    }
-    printf("    mov rax, rbp\n");
-    printf("    sub rax, %d\n", node->offset);
-    printf("    push rax\n");
-}
-
-void gen_if(Node *node, int end_label)
-{
-    gen(node->lhs); // B
-
-    int next_label = count();
-    cmp_rax(0);
-    printf("    je .Lifnext%d\n", next_label);
-
-    gen(node->rhs); // X
-    printf("    jmp .Lifend%d\n", end_label);
-
-    printf(".Lifnext%d:\n", next_label);
-}
-
-void gen_else(Node *node, int end_label)
-{
-    if (node->kind != ND_ELSE)
-    {
-        gen(node);
-        return;
-    }
-    gen_if(node->lhs, end_label);
-    gen_else(node->rhs, end_label);
-}
-
-void gen_for_while(Node *node)
-{
-    stack_push(count());
-
-    gen(node->lhs->lhs); // A
-    printf("    jmp .Lreq%d\n", stack_front());
-
-    printf(".Lexe%d:\n", stack_front());
-    gen(node->rhs->lhs); // X
-
-    printf(".Lcont%d:\n", stack_front()); // continue先
-    gen(node->lhs->rhs);                  // C :whileの場合はND_NULLなので何も出力されない
-
-    printf(".Lreq%d:\n", stack_front());
-    gen(node->rhs->rhs); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
-
-    cmp_rax(0);
-    printf("    jne .Lexe%d\n", stack_front());
-    printf(".Lbrk%d:\n", stack_front());
-
-    stack_pop();
-}
-
-void gen_do_while(Node *node)
-{
-    stack_push(count());
-
-    printf(".Lexe%d:\n", stack_front());
-    gen(node->lhs); // X
-
-    printf(".Lcont%d:\n", stack_front()); // continue 先
-    gen(node->rhs);                       // B
-
-    cmp_rax(0);
-    printf("    jne .Lexe%d\n", stack_front());
-    printf(".Lbrk%d:\n", stack_front());
-
-    stack_pop();
-}
-
-// 意味のある最初のnode からNULL になる直前までをnext 順にgen()していく
-// build_block() とgen_block() でのみ block_nest の値をいじる
-void gen_block(Node *node)
-{
-    block_nest++;
-
-    for (; node; node = node->next)
-    {
-        gen(node);
-        printf("    pop rax\n");
-    }
-
-    block_nest--;
-}
+#include "codegen.h"
 
 void gen(Node *node)
 {
+    // NOPや 数値のみをpush するnode を処理
     switch (node->kind)
     {
     case ND_NOP:
@@ -124,15 +13,14 @@ void gen(Node *node)
     case ND_PUSH_0:
         printf("    push 0\n");
         return;
-    }
-
-    // 数値や変数　終端記号であって左右辺の展開を行わずにreturn したい場合と
-    // 代入式　　　変数のアドレスに対して値のコピーをし　その値をstack に保存
-    switch (node->kind)
-    {
     case ND_NUM:
         printf("    push %d\n", node->val);
         return;
+    }
+
+    // 変数や関数呼び出しを処理
+    switch (node->kind)
+    {
     // ストア 代入式
     case ND_ASSIGN:
         gen(node->lhs);
@@ -150,7 +38,7 @@ void gen(Node *node)
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
-
+    // 関数呼び出し
     case ND_FUNC_CALL:
         printf("    mov rax, 0\n");
         printf("    call %s\n", funcs[node->func_num]->name);
@@ -158,20 +46,9 @@ void gen(Node *node)
         return;
     }
 
+    // ループに関するnode を処理
     switch (node->kind)
     {
-    case ND_RETURN:
-        gen(node->lhs);
-        printf("    pop rax\n");
-        printf("    mov rsp, rbp\n");
-        printf("    pop rbp\n");
-        printf("    ret\n");
-        return;
-    case ND_ELSE:
-        int end_label = count();
-        gen_else(node, end_label);
-        printf(".Lifend%d:\n", end_label);
-        return;
     case ND_FOR_WHILE:
         gen_for_while(node);
         return;
@@ -183,6 +60,20 @@ void gen(Node *node)
         return;
     case ND_BREAK:
         printf("    jmp .Lbrk%d\n", stack_front());
+        return;
+    }
+
+    switch (node->kind)
+    {
+    case ND_RETURN:
+        gen(node->lhs);
+        printf("    pop rax\n");
+        gen_epilogue();
+        return;
+    case ND_ELSE:
+        int end_label = count();
+        gen_else(node, end_label);
+        printf(".Lifend%d:\n", end_label);
         return;
     case ND_BLOCK:
         gen_block(node->lhs);
