@@ -141,6 +141,37 @@ Node *new_node_else()
     return node;
 }
 
+Node *new_grand_node(NodeKind kind, Node *l_l, Node *l_r, Node *r_l, Node *r_r)
+{
+    Node *lhs = new_node(ND_NOP, l_l, l_r);
+    Node *rhs = new_node(ND_NOP, r_l, r_r);
+    return new_node(kind, lhs, rhs);
+}
+
+Node *new_node_for()
+{
+    expect(TK_RESERVED, "(");
+
+    Node *nodes[3];
+    char *op[] = {";", ";", ")"};
+    for (int i = 0; i < 3; i++)
+    {
+        if (current_token_is(TK_RESERVED, op[i]))
+        {
+            // 条件式が空欄な時は恒真式なので　１が入っているとしてparseする
+            nodes[i] = create_node(ND_PUSH_1);
+        }
+        else
+        {
+            nodes[i] = expr();
+        }
+
+        expect(TK_RESERVED, op[i]);
+    }
+
+    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], stmt(), nodes[1]);
+}
+
 // : }が出現するまでnextつなぎにnode を登録していく　
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()

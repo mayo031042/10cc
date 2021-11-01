@@ -195,7 +195,7 @@ Node *equality()
 }
 
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
-// -> equality(), ND_ASSIGN,
+// -> equality(), ND_ASSIGN
 Node *assign()
 {
     // == ,!=, < 等はequality()内で優先的に処理されている
@@ -238,6 +238,7 @@ Node *assign()
 }
 
 // 予約語のない純粋な計算式として解釈する 三項間演算子もここ？
+// -> assign()
 Node *expr()
 {
     return assign();
@@ -248,6 +249,7 @@ Node *expr()
 // continue, break,
 // return,
 // block, expr()
+// -> expr(), ND_RETURN, ND_ELSE, ND_FOR_WHILE, ND_DO, ND_CONTINUE, ND_BREAK, ND_BLOCK
 Node *stmt()
 {
     Node *node;
@@ -266,28 +268,7 @@ Node *stmt()
     // : for
     else if (consume_keyword(TK_FOR))
     {
-        Node *nodes[3];
-        expect(TK_RESERVED, "(");
-
-        char *op[] = {";", ";", ")"};
-        for (int i = 0; i < 3; i++)
-        {
-            if (current_token_is(TK_RESERVED, op[i]))
-            {
-                // 条件式が空欄な時は恒真式なので　１が入っているとしてparseする
-                nodes[i] = create_node(ND_PUSH_1);
-            }
-            else
-            {
-                nodes[i] = expr();
-            }
-
-            expect(TK_RESERVED, op[i]);
-        }
-
-        Node *node_right = new_node(ND_NOP, stmt(), nodes[1]);
-        Node *node_left = new_node(ND_NOP, nodes[0], nodes[2]);
-        node = new_node(ND_FOR_WHILE, node_left, node_right);
+        node = new_node_for();
     }
     // : while
     else if (consume_keyword(TK_WHILE))
@@ -337,6 +318,7 @@ Node *stmt()
 }
 
 // code全体を　;　で区切る
+// -> ND_BLOCK
 Node *program()
 {
     expect(TK_BLOCK_FRONT, "{");
