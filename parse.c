@@ -315,7 +315,7 @@ Node *program()
 }
 
 // 関数の宣言か定義のみを扱う
-Func *function()
+void *function()
 {
     int i = 0;
 

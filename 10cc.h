@@ -105,7 +105,7 @@ void *tokenize();
 // bool consume(TokenKind kind, char *op);
 
 // parse のための関数 -> @ parse.c
-Func *function();
+void *function();
 
 // codegen のための関数　-> @ codegen.c
 void code_gen();
