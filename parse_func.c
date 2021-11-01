@@ -182,6 +182,17 @@ Node *new_node_while()
     return new_grand_node(ND_FOR_WHILE, create_node(ND_NOP), create_node(ND_NOP), stmt(), node_B);
 }
 
+Node *new_node_do()
+{
+    Node *lhs = stmt();
+    expect(TK_WHILE, "while");
+    expect(TK_RESERVED, "(");
+    Node *rhs = expr();
+    expect(TK_RESERVED, ")");
+    expect(TK_RESERVED, ";");
+    
+    return new_node(ND_DO, lhs, rhs);
+}
 // : }が出現するまでnextつなぎにnode を登録していく　
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()

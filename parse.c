@@ -278,13 +278,7 @@ Node *stmt()
     // : do{} while();
     else if (consume_keyword(TK_DO))
     {
-        Node *lhs = stmt();
-        expect(TK_WHILE, "while");
-        expect(TK_RESERVED, "(");
-        Node *rhs = expr();
-        expect(TK_RESERVED, ")");
-        expect(TK_RESERVED, ";");
-        node = new_node(ND_DO, lhs, rhs);
+        node = new_node_do();
     }
     // : continue
     else if (consume_keyword(TK_CONTINUE))
