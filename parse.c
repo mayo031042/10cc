@@ -426,6 +426,7 @@ Node *stmt()
             {
                 nodes[i] = expr();
             }
+
             expect(TK_RESERVED, op[i]);
         }
 

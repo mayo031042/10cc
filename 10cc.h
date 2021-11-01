@@ -99,9 +99,6 @@ struct Func
     bool defined;      // すでに定義がされているか
 };
 
-// error -> @ codegen.c
-void error(char *fmt, ...);
-void error_at(char *loc, char *fmt, ...);
 
 // tokenize のための関数 -> @ tokenize.c
 bool current_token_is(TokenKind kind, char *op);
@@ -130,13 +127,15 @@ void code_gen();
 void gen(Node *node);
 
 // 分類が半端な関数 @ utils
+void error(char *fmt, ...);
+void error_at(char *loc, char *fmt, ...);
 int count();
 int stack_front();
 void stack_push(int val);
 void stack_pop();
 int val_of_ident_pos();
-// void clear_semicolon();
 void aaa();
+// void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;  // 今見ているtokens の位置
