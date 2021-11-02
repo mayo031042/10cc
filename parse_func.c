@@ -246,6 +246,7 @@ Node *build_block()
 
 // 引数に渡された値から更に自分の必要とするメモリサイズ分下げたoffset を登録する
 // さらに該当関数のmax_offset も更新する
+// funcs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
 // name, len, offset, next が登録された変数を作成する
 LVar *new_lvar(int max_offset)
 {
@@ -267,25 +268,45 @@ LVar *new_lvar(int max_offset)
     return lvar;
 }
 
+LVar *find_lvar_from_cur_block(LVar *lvar)
+{
+    for (; lvar; lvar = lvar->next)
+    {
+        // 有効変数列内に　一致する変数を発見したときはその変数を返す
+        if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
+        {
+            return lvar;
+        }
+    }
+
+    return lvar;
+}
+
 // 既出変数から直前識別子名に一致するものを探す
 // さらに有効な変数の中で最大のoffset を計算し新規変数作成の際に引数に渡す
 LVar *find_lvar()
 {
     int max_offset = 0;
+    LVar *lvar;
+
     for (int i = block_nest; 0 <= i; i--)
     {
-        for (LVar *lvar = funcs[func_pos]->locals[i]; lvar; lvar = lvar->next)
+        lvar = funcs[func_pos]->locals[i];
+        if (lvar == NULL)
         {
-            // 最大のoffset を保持するmax_offset を更新する
-            if (max_offset < lvar->offset)
-            {
-                max_offset = lvar->offset;
-            }
-            // 有効変数列内に　一致する変数を発見したときはその変数を返す
-            if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
-            {
-                return lvar;
-            }
+            continue;
+        }
+
+        // 最大のoffset を保持するmax_offset を更新する
+        if (max_offset < lvar->offset)
+        {
+            max_offset = lvar->offset;
+        }
+
+        lvar = find_lvar_from_cur_block(lvar);
+        if (lvar)
+        {
+            return lvar;
         }
     }
     // 登録されている既出変数の中で最大のoffsetを渡す
