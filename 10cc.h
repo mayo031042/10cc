@@ -77,9 +77,15 @@ struct Node
 };
 
 // LVar
+typedef enum
+{
+    LV_INT, // int
+} LvarKind;
+
 typedef struct LVar LVar;
 struct LVar
 {
+    LvarKind kind; // 変数の型
     LVar *next;
     char *name;
     int len;
