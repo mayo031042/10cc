@@ -1,6 +1,8 @@
 #include "10cc.h"
 // codegen を補助する関数
 
+void gen(Node *node);
+
 void cmp_rax(int val);
 void gen_prologue(int sz);
 void gen_epilogue();

@@ -101,15 +101,11 @@ struct Func
 // tokenize のための関数 -> @ tokenize.c
 void *tokenize();
 
-// 以下は　clear_semicolon()　でのみ使用
-// bool consume(TokenKind kind, char *op);
-
 // parse のための関数 -> @ parse.c
 void *function();
 
 // codegen のための関数　-> @ codegen.c
 void code_gen();
-void gen(Node *node);
 
 // 分類が半端な関数 -> @ utils
 void error(char *fmt, ...);
@@ -121,10 +117,10 @@ void stack_pop();
 void aaa();
 
 // グローバル変数 -> 定義はmainにて
-extern int token_pos;  // 今見ているtokens の位置
-extern int func_pos;   // 今見ているfuncs の位置
-extern int block_nest; // 今見ているコードの｛｝ネストの階層
-extern char *user_input;
+extern int token_pos;    // 今見ているtokens の位置
+extern int func_pos;     // 今見ているfuncs の位置
+extern int block_nest;   // 今見ているコードの｛｝ネストの階層
+extern char *user_input; // main関数の引数を保持すptr
 
 extern Token *tokens[];
 extern Func *funcs[];
