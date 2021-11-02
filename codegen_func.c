@@ -23,6 +23,14 @@ void gen_epilogue()
     printf("    ret\n");
 }
 
+// rax = rax / rdi;
+// rdx = rax % rdi;
+void gen_div()
+{
+    printf("    cqo\n");
+    printf("    idiv rdi\n");
+}
+
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_lval(Node *node)
 {
@@ -32,6 +40,31 @@ void gen_lval(Node *node)
     }
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
+    printf("    push rax\n");
+}
+
+// call 命令前にrsp の値をrsp が16の倍数になるように１回または２回push する
+// return されてからrax を変更する前にpop rsp することでpush 回数に関わらずrsp の復元ができる
+void gen_func_call(Node *node)
+{
+    printf("    mov rax, rsp\n");
+    printf("    mov rdi, 16\n");
+    gen_div();
+    // rdx = rax % rdi(16);
+
+    printf("    mov rax, rsp\n");
+
+    int cnt = count();
+    printf("    cmp rdx, 0\n");
+    printf("    jne .Lcall%d\n", cnt);
+    printf("    push rax\n");
+
+    printf(".Lcall%d:\n", cnt);
+    printf("    push rax\n");
+
+    printf("    mov rax, 0\n");
+    printf("    call %s\n", funcs[node->func_num]->name);
+    printf("    pop rsp\n");
     printf("    push rax\n");
 }
 

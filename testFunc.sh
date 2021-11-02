@@ -40,14 +40,14 @@ main()
     return x;
 }"
 
-assert 32 "
-foo1()
+assert 5 "
+foo11()
 {
-    30;
+    return 3;
 }
 main()
 {
-    x=1+foo1()+3;
+    x=1+foo11()+3;
     return x-2;
 }"
 
