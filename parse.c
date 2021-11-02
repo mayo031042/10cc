@@ -246,11 +246,8 @@ Node *expr()
 }
 
 // 予約語,{} の解釈を行う
-// if else, for, while, do while,
-// continue, break,
-// return,
-// block, expr()
 // -> expr(), ND_RETURN, ND_ELSE, ND_FOR_WHILE, ND_DO, ND_CONTINUE, ND_BREAK, ND_BLOCK
+// 意味のない 空欄+; はブロックで処理する
 Node *stmt()
 {
     Node *node;

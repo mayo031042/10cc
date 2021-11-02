@@ -219,10 +219,15 @@ Node *new_node_do()
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()
 {
+    // 意味のある; はstmt() 内で処理をする
+    while (consume(TK_RESERVED, ";"))
+        ;
+
     if (consume_keyword(TK_BLOCK_END))
     {
         return NULL;
     }
+
     Node *node = stmt();
     node->next = new_node_block();
     return node;

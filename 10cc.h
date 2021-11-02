@@ -119,7 +119,6 @@ int stack_front();
 void stack_push(int val);
 void stack_pop();
 void aaa();
-// void clear_semicolon();
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;  // 今見ているtokens の位置
