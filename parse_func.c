@@ -244,8 +244,8 @@ Node *build_block()
     return node;
 }
 
-// 引数に渡された値から更に自分の必要とするメモリサイズ分下げたoffset を登録する
-// さらに該当関数のmax_offset も更新する
+// 引数に渡された値から更に自分の必要とするメモリサイズ分下げたoffset が登録されたLVar を作成する
+// さらに該当関数のmax_offset も更新し　locals[] の最新を変更する
 // funcs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
 // name, len, offset, next が登録された変数を作成する
 LVar *new_lvar(int max_offset)

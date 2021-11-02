@@ -285,8 +285,29 @@ Node *stmt()
 
     else
     {
+        // : int
+        if (consume_keyword(TK_INT))
+        {
+            if (!consume_keyword(TK_IDENT))
+            {
+                error_at(tokens[token_pos]->str, "変数ではありません");
+            }
+
+            LVar *latest_lvar = funcs[func_pos]->locals[block_nest];
+
+            // 現在のスコープの中からのみ探索し　同一変数が見つかればエラー
+            if (find_lvar_from_cur_block(latest_lvar))
+            {
+                error_at(tokens[token_pos]->str, "既に宣言されている変数です");
+            }
+            else
+            {
+                latest_lvar = new_lvar(funcs[func_pos]->max_offset);
+                node = new_node_ident(latest_lvar);
+            }
+        }
         // : return
-        if (consume_keyword(TK_RETURN))
+        else if (consume_keyword(TK_RETURN))
         {
             node = new_node(ND_RETURN, expr(), NULL);
         }
@@ -326,10 +347,16 @@ void *function()
 
     while (!at_eof())
     {
+        // if (!consume_keyword(TK_INT))
+        // {
+        //     error_at(tokens[token_pos]->str, "型宣言がありません");
+        // }
+
         if (!consume_keyword(TK_IDENT))
         {
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }
+
         expect(TK_RESERVED, "(");
 
         func_pos = find_func(true);

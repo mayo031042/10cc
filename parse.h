@@ -36,6 +36,7 @@ Node *new_node_do();
 Node *build_block();
 
 LVar *new_lvar(int max_offset);
+LVar *find_lvar_from_cur_block(LVar *lvar);
 LVar *find_lvar();
 
 int find_func(bool serach_only);
