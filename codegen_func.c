@@ -37,21 +37,24 @@ void gen_lval(Node *node)
 
 // 条件式が偽のときのみ次の処理パートへjmp する
 // 同一else 群の中で１つでもif 実行文が実行されたときは　else 群の末尾の次にjmp する
+// stack top はif 前後でずれない
 void gen_if(Node *node, int end_label)
 {
-    gen(node->lhs); // B
-
     int next_label = count();
+
+    gen(node->lhs); // B
     cmp_rax(0);
     printf("    je .Lifnext%d\n", next_label);
 
     gen(node->rhs); // X
+    printf("    pop rax\n");
     printf("    jmp .Lifend%d\n", end_label);
 
     printf(".Lifnext%d:\n", next_label);
 }
 
 // 同一else 群のif 文を順次処理していく　
+// else 終了後で1push 保証されている
 void gen_else(Node *node, int end_label)
 {
     if (node->kind != ND_ELSE)
@@ -64,25 +67,38 @@ void gen_else(Node *node, int end_label)
 }
 
 // 初期化式、条件式、(jmp)、実行式、変化式の順に処理する
+//
 void gen_for_while(Node *node)
 {
     stack_push(count());
 
+    // 初期化してから　条件式へjmp
     gen(node->lhs->lhs); // A
+    printf("    pop rax\n");
     printf("    jmp .Lreq%d\n", stack_front());
 
     printf(".Lexe%d:\n", stack_front());
-    gen(node->rhs->lhs); // X
 
-    printf(".Lcont%d:\n", stack_front()); // continue先
-    gen(node->lhs->rhs);                  // C :whileの場合はND_NULLなので何も出力されない
+    // 実行文　ここでも必ず1push を保証する
+    gen(node->rhs->lhs); // X
+    printf("    pop rax\n");
+
+    printf(".Lcont%d:\n", stack_front()); // continue先 → 変化式の前
+
+    gen(node->lhs->rhs); // C
+    printf("    pop rax\n");
 
     printf(".Lreq%d:\n", stack_front());
-    gen(node->rhs->rhs); // B :forで空欄の場合　数値の１が入っているとしてparse で処理されている
 
+    // 条件式を実行、評価して　実行文に移動するかを決める
+    gen(node->rhs->rhs); // B
     cmp_rax(0);
     printf("    jne .Lexe%d\n", stack_front());
+
     printf(".Lbrk%d:\n", stack_front());
+
+    // for, while 全体でも1push を保証
+    printf("    push rax\n");
 
     stack_pop();
 }
@@ -92,14 +108,18 @@ void gen_do_while(Node *node)
     stack_push(count());
 
     printf(".Lexe%d:\n", stack_front());
-    gen(node->lhs); // X
+    gen(node->lhs);          // X
+    printf("    pop rax\n"); // x の揃えポップ　→　continue ではすでに揃っているのでスキップ
 
-    printf(".Lcont%d:\n", stack_front()); // continue 先
-    gen(node->rhs);                       // B
+    printf(".Lcont%d:\n", stack_front()); // continue 先 contiの有無に関わらずスタックトップは揃っている
 
+    gen(node->rhs); // B
     cmp_rax(0);
     printf("    jne .Lexe%d\n", stack_front());
-    printf(".Lbrk%d:\n", stack_front());
+
+    printf(".Lbrk%d:\n", stack_front()); // break先　有無に関わらずスタックトップは揃っている
+
+    printf("    push rax\n");
 
     stack_pop();
 }

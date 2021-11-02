@@ -57,11 +57,9 @@ void gen(Node *node)
         return;
     case ND_CONTINUE:
         printf("    jmp .Lcont%d\n", stack_front());
-        printf("    push 0\n");
         return;
     case ND_BREAK:
         printf("    jmp .Lbrk%d\n", stack_front());
-        printf("    push 0\n");
         return;
     }
 
