@@ -103,6 +103,22 @@ Node *new_node_ident(LVar *lvar)
     return node;
 }
 
+// stmt を期待する位置の直後に；が来ている場合　1push 保証の観点から 代わりにcreate_node() する
+Node *create_or_stmt(NodeKind kind)
+{
+    Node *node;
+    if (consume(TK_RESERVED, ";"))
+    {
+        node = create_node(kind);
+    }
+    else
+    {
+        node = stmt();
+    }
+
+    return node;
+}
+
 // 完全に独立してif node を完成させる
 Node *new_node_if()
 {
@@ -110,47 +126,36 @@ Node *new_node_if()
     expect(TK_RESERVED, "(");
     node->lhs = expr();
     expect(TK_RESERVED, ")");
-    node->rhs = stmt();
+    node->rhs = create_or_stmt(ND_PUSH_0);
     return node;
 }
 
 // if の時点で else を作る　else node　の左辺にif を配置 右辺にはNULLかstmt()
+// 条件分岐の終了はif かelse -> if で終了するときはelse 0; の省略と解釈する
 Node *new_node_else()
 {
     // 既にif があることがわかっていて消費されている
     Node *node = create_node(ND_ELSE);
     node->lhs = new_node_if();
-    // if, else if で終了しないなら
+
+    // 条件分岐制御構文がまだ続くなら
     if (consume_keyword(TK_ELSE))
     {
-        // else if なら
+        // else if として続くなら
         if (consume_keyword(TK_IF))
         {
             node->rhs = new_node_else();
         }
+        // else だけで終わるなら
         else
         {
-            node->rhs = stmt();
+            node->rhs = create_or_stmt(ND_PUSH_0);
         }
     }
+    // if で終了するならelse 0; の省略として処理
     else
     {
-        node->rhs = create_node(ND_NOP);
-    }
-
-    return node;
-}
-
-Node *PUSH_0_or_stmt()
-{
-    Node *node;
-    if (consume(TK_RESERVED, ";"))
-    {
-        node = create_node(ND_PUSH_0);
-    }
-    else
-    {
-        node = stmt();
+        node->rhs = create_node(ND_PUSH_0);
     }
 
     return node;
@@ -185,7 +190,7 @@ Node *new_node_for()
         expect(TK_RESERVED, op[i]);
     }
 
-    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], PUSH_0_or_stmt(), nodes[1]);
+    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], create_or_stmt(ND_PUSH_0), nodes[1]);
 }
 
 Node *new_node_while()
@@ -195,12 +200,12 @@ Node *new_node_while()
     expect(TK_RESERVED, ")");
 
     // A式, C式はfor の空欄時に従って　ND_PUSH_1 を入れておく
-    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), PUSH_0_or_stmt(), node_B);
+    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), create_or_stmt(ND_PUSH_0), node_B);
 }
 
 Node *new_node_do()
 {
-    Node *lhs = PUSH_0_or_stmt();
+    Node *lhs = create_or_stmt(ND_PUSH_0);
 
     expect(TK_WHILE, "while");
     expect(TK_RESERVED, "(");
