@@ -190,13 +190,26 @@ x=0;
 for(i=0;i<7;i+=1){
     for(j=0;j<8;j+=1){
         {
-            x+=1;
+            {
+                x+=1;
+                if(0)x;
+                if(0)x;
+                if(0)x;
+                if(0)x;
+                if(0)x;
+                if(0)x;
+            }
         }
     }
 }
 return x;"
 
     # COMMENTOUT
+
+assert 1 "
+ret=1;
+for(i=0;i<10000;i+=1);
+return ret;"
 
 assert 10 "
 x=6; acc=0;
