@@ -28,6 +28,10 @@ Node *primary()
             // 関数なら　関数呼び出しである
             node = create_node(ND_FUNC_CALL);
             node->func_num = find_func(false);
+            if (funcs[node->func_num]->defined == false)
+            {
+                error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+            }
 
             // 引数
             expect(TK_RESERVED, ")");
