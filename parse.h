@@ -36,8 +36,9 @@ Node *new_node_do();
 Node *build_block();
 
 LVar *new_lvar(int max_offset);
-LVar *find_lvar_from_cur_block(LVar *lvar);
-LVar *find_lvar();
+LVar *find_lvar_within_block(int depth);
+LVar *find_lvar(bool search_only);
+Node *lvar_declare();
 
-int find_func(bool serach_only);
+int find_func(bool only_culc_offset);
 Func *new_func(Token *tok);
