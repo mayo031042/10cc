@@ -48,7 +48,7 @@ Node *primary()
 }
 
 // 単項演算子で区切る
-// -> primary()
+// -> primary(), ND_SUB
 Node *unary()
 {
     Node *node;
@@ -238,6 +238,7 @@ Node *assign()
 }
 
 // 予約語のない純粋な計算式として解釈する 三項間演算子もここ？
+// 必ずちょうど１つpush するっぽい
 // -> assign()
 Node *expr()
 {
