@@ -146,7 +146,7 @@ void code_gen()
         printf("    .globl %s\n", funcs[func_pos]->name);
         printf("%s:\n", funcs[func_pos]->name);
 
-        gen_prologue(208);
+        gen_prologue(funcs[func_pos]->max_offset);
 
         gen(funcs[func_pos]->definition);
         printf("    pop rax\n");

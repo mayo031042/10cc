@@ -37,7 +37,7 @@ void gen_lval(Node *node)
 
 // 条件式が偽のときのみ次の処理パートへjmp する
 // 同一else 群の中で１つでもif 実行文が実行されたときは　else 群の末尾の次にjmp する
-// stack top はif 前後でずれない
+// １つのif 内で1push 保証される
 void gen_if(Node *node, int end_label)
 {
     int next_label = count();
@@ -47,7 +47,6 @@ void gen_if(Node *node, int end_label)
     printf("    je .Lifnext%d\n", next_label);
 
     gen(node->rhs); // X
-    printf("    pop rax\n");
     printf("    jmp .Lifend%d\n", end_label);
 
     printf(".Lifnext%d:\n", next_label);
