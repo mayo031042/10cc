@@ -200,7 +200,7 @@ Node *new_node_while()
 
 Node *new_node_do()
 {
-    Node *lhs = PUSH_0_or_stmt();
+    Node *lhs = PUSH_0_or_stmt(); 
 
     expect(TK_WHILE, "while");
     expect(TK_RESERVED, "(");
