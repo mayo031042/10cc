@@ -279,7 +279,7 @@ LVar *find_lvar_from_cur_block(LVar *lvar)
         }
     }
 
-    return lvar;
+    return NULL;
 }
 
 // 既出変数から直前識別子名に一致するものを探す
