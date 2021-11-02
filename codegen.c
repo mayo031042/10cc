@@ -40,9 +40,7 @@ void gen(Node *node)
         return;
     // 関数呼び出し
     case ND_FUNC_CALL:
-        printf("    mov rax, 0\n");
-        printf("    call %s\n", funcs[node->func_num]->name);
-        printf("    push rax\n");
+        gen_func_call(node);
         return;
     }
 
@@ -101,12 +99,10 @@ void gen(Node *node)
         printf("    imul rax, rdi\n");
         break;
     case ND_DIV:
-        printf("    cqo\n");
-        printf("    idiv rdi\n");
+        gen_div();
         break;
     case ND_DIV_REM:
-        printf("    cqo\n");
-        printf("    idiv rdi\n");
+        gen_div();
         printf("    mov rax, rdx\n");
         break;
 
