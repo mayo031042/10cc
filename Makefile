@@ -1,19 +1,23 @@
 CFLAGS=-std=c11 -g -static
 SRCS=$(wildcard *.c)
-SRCS:=$(filter-out optimize.c,$(SRCS))
+HEADS=$(wildcard *.h)
+# SRCS:=$(filter-out optimize.c,$(SRCS))
 OBJS=$(SRCS:.c=.o)
+CC = cc
+TARDIR=./bin
+# OBJROOT=./obj
+# VPATH = /home/mayo/Documents/codes/cpp/10cc/codegen
 
-10cc: $(OBJS) optimize.c
-	$(CC) -o 10cc $(OBJS) $(LDFLAGS)
-	$(CC) -o optimize optimize.c
+10cc: $(OBJS) 
+	$(CC) -o $(TARDIR)/$@ $(OBJS) $(LDFLAGS)
 
-$(OBJS): 10cc.h tokenize.h parse.h codegen.h
+$(OBJS): $(HEADS)
 
-testculc: 10cc optimize
+testculc: 10cc 
 	./testCulc.sh
 
 # 一度無視
-testfunc: 10cc optimize
+testfunc: 10cc
 	./testFunc.sh
 
 tmp.s: 
