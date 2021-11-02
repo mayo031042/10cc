@@ -116,5 +116,7 @@ void gen_block(Node *node)
         printf("    pop rax\n");
     }
 
+    printf("    push rax\n");
+
     block_nest--;
 }
