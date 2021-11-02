@@ -252,11 +252,10 @@ Node *stmt()
 {
     Node *node;
 
-    // : return,
-    if (consume_keyword(TK_RETURN))
+    // : {}
+    if (consume_keyword(TK_BLOCK_FRONT))
     {
-        node = new_node(ND_RETURN, expr(), NULL);
-        expect(TK_RESERVED, ";");
+        node = build_block();
     }
     // : if
     else if (consume_keyword(TK_IF))
@@ -278,26 +277,29 @@ Node *stmt()
     {
         node = new_node_do();
     }
-    // : continue
-    else if (consume_keyword(TK_CONTINUE))
-    {
-        node = create_node(ND_CONTINUE);
-        expect(TK_RESERVED, ";");
-    }
-    // : break;
-    else if (consume_keyword(TK_BREAK))
-    {
-        node = create_node(ND_BREAK);
-        expect(TK_RESERVED, ";");
-    }
-    // : {}
-    else if (consume_keyword(TK_BLOCK_FRONT))
-    {
-        node = build_block();
-    }
+
     else
     {
-        node = expr();
+        // : return
+        if (consume_keyword(TK_RETURN))
+        {
+            node = new_node(ND_RETURN, expr(), NULL);
+        }
+        // : continue
+        else if (consume_keyword(TK_CONTINUE))
+        {
+            node = create_node(ND_CONTINUE);
+        }
+        // : break;
+        else if (consume_keyword(TK_BREAK))
+        {
+            node = create_node(ND_BREAK);
+        }
+        else
+        {
+            node = expr();
+        }
+
         expect(TK_RESERVED, ";");
     }
 
