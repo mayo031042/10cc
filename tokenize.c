@@ -18,6 +18,13 @@ void *tokenize()
             continue;
         }
 
+        // 変数の型ゾーン
+        if (is_keyword("int"))
+        {
+            new_token(TK_INT, 3);
+            continue;
+        }
+
         // 予約語ゾーン
         if (is_keyword("return"))
         {

@@ -12,6 +12,7 @@ typedef enum
     TK_ASSIGN_RESERVED, // 代入演算子 +=,,,
     TK_IDENT,           // 変数
     TK_NUM,             // 数値
+    TK_INT,             // int型
     TK_RETURN,          // return
     TK_IF,              // if
     TK_ELSE,            // else
