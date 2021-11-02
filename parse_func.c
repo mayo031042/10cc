@@ -141,6 +141,21 @@ Node *new_node_else()
     return node;
 }
 
+Node *PUSH_0_or_stmt()
+{
+    Node *node;
+    if (consume(TK_RESERVED, ";"))
+    {
+        node = create_node(ND_PUSH_0);
+    }
+    else
+    {
+        node = stmt();
+    }
+
+    return node;
+}
+
 // 孫node に引数順のnode を持つnode を作成して返す
 Node *new_grand_node(NodeKind kind, Node *l_l, Node *l_r, Node *r_l, Node *r_r)
 {
@@ -170,7 +185,7 @@ Node *new_node_for()
         expect(TK_RESERVED, op[i]);
     }
 
-    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], stmt(), nodes[1]);
+    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], PUSH_0_or_stmt(), nodes[1]);
 }
 
 Node *new_node_while()
@@ -178,13 +193,15 @@ Node *new_node_while()
     expect(TK_RESERVED, "(");
     Node *node_B = expr(); // 空欄を許さない
     expect(TK_RESERVED, ")");
+
     // A式, C式はfor の空欄時に従って　ND_PUSH_1 を入れておく
-    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), stmt(), node_B);
+    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), PUSH_0_or_stmt(), node_B);
 }
 
 Node *new_node_do()
 {
-    Node *lhs = stmt();
+    Node *lhs = PUSH_0_or_stmt();
+
     expect(TK_WHILE, "while");
     expect(TK_RESERVED, "(");
     Node *rhs = expr();
