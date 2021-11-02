@@ -176,10 +176,10 @@ Node *new_node_for()
 Node *new_node_while()
 {
     expect(TK_RESERVED, "(");
-    Node *node_B = expr();
+    Node *node_B = expr(); // 空欄を許さない
     expect(TK_RESERVED, ")");
-
-    return new_grand_node(ND_FOR_WHILE, create_node(ND_NOP), create_node(ND_NOP), stmt(), node_B);
+    // A式, C式はfor の空欄時に従って　ND_PUSH_1 を入れておく
+    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), stmt(), node_B);
 }
 
 Node *new_node_do()
@@ -190,7 +190,7 @@ Node *new_node_do()
     Node *rhs = expr();
     expect(TK_RESERVED, ")");
     expect(TK_RESERVED, ";");
-    
+
     return new_node(ND_DO, lhs, rhs);
 }
 // : }が出現するまでnextつなぎにnode を登録していく　
