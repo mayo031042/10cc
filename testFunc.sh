@@ -24,7 +24,7 @@ assemble(){
     ./bin/10cc "$input" > tmp.s
     echo "compiled"
 
-    ./optimize
+    # ./optimize
     exit 0
 }
 
