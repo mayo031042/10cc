@@ -7,7 +7,7 @@ Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
 int block_nest = 0;
 
-// programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない
+// programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない -> ここでの宣言はありえない
 // -> ND_LVAR, ND_FUNC_CALL, ND_NUM, expr()
 Node *primary()
 {
@@ -23,9 +23,9 @@ Node *primary()
     else if (consume_keyword(TK_IDENT))
     {
         // 関数かチェック
-        if (consume(TK_RESERVED, "("))
+        if (current_token_is(TK_RESERVED, "("))
         {
-            // 関数なら　関数呼び出しである
+            // 関数なら　呼び出しである
             node = create_node(ND_FUNC_CALL);
             node->func_num = find_func(false);
 
@@ -34,13 +34,14 @@ Node *primary()
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
 
+            expect(TK_RESERVED, "(");
             // 引数
             expect(TK_RESERVED, ")");
         }
         else
         {
-            // 変数なので
-            node = new_node_ident(find_lvar());
+            // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
+            node = new_node_ident(find_lvar(false));
         }
     }
     // 数値なので
@@ -250,7 +251,7 @@ Node *expr()
     return assign();
 }
 
-// 予約語,{} の解釈を行う
+// 予約語,{} 変数宣言の解釈を行う
 // -> expr(), ND_RETURN, ND_ELSE, ND_FOR_WHILE, ND_DO, ND_CONTINUE, ND_BREAK, ND_BLOCK
 // 意味のない 空欄+; はブロックで処理する
 Node *stmt()
@@ -285,26 +286,11 @@ Node *stmt()
 
     else
     {
+        // 変数の宣言はcodegen() としては何も出力しない
         // : int
         if (consume_keyword(TK_INT))
         {
-            if (!consume_keyword(TK_IDENT))
-            {
-                error_at(tokens[token_pos]->str, "変数ではありません");
-            }
-
-            LVar *latest_lvar = funcs[func_pos]->locals[block_nest];
-
-            // 現在のスコープの中からのみ探索し　同一変数が見つかればエラー
-            if (find_lvar_from_cur_block(latest_lvar))
-            {
-                error_at(tokens[token_pos]->str, "既に宣言されている変数です");
-            }
-            else
-            {
-                latest_lvar = new_lvar(funcs[func_pos]->max_offset);
-                node = new_node_ident(latest_lvar);
-            }
+            node = lvar_declare();
         }
         // : return
         else if (consume_keyword(TK_RETURN))
@@ -347,22 +333,21 @@ void *function()
 
     while (!at_eof())
     {
-        // if (!consume_keyword(TK_INT))
-        // {
-        //     error_at(tokens[token_pos]->str, "型宣言がありません");
-        // }
+        if (!consume_keyword(TK_INT))
+        {
+            error_at(tokens[token_pos]->str, "型宣言がありません");
+        }
 
         if (!consume_keyword(TK_IDENT))
         {
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }
 
-        expect(TK_RESERVED, "(");
-
         func_pos = find_func(true);
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 
+        expect(TK_RESERVED, "(");
         // 引数の処理
         expect(TK_RESERVED, ")");
 

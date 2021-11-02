@@ -1,7 +1,7 @@
 CFLAGS=-std=c11 -g -static
 SRCS=$(wildcard *.c)
 HEADS=$(wildcard *.h)
-# SRCS:=$(filter-out optimize.c,$(SRCS))
+SRCS:=$(filter-out test.c,$(SRCS))
 OBJS=$(SRCS:.c=.o)
 CC = cc
 TARDIR=bin
@@ -12,6 +12,9 @@ OBJROOT=obj
 	$(CC) -o $(TARDIR)/$@ $(OBJS) $(LDFLAGS)
 
 $(OBJS): $(HEADS)
+
+testtype: 10cc 
+	./testType.sh
 
 testculc: 10cc 
 	./testCulc.sh
