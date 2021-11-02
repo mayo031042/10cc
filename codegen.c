@@ -57,9 +57,11 @@ void gen(Node *node)
         return;
     case ND_CONTINUE:
         printf("    jmp .Lcont%d\n", stack_front());
+        printf("    push 0\n");
         return;
     case ND_BREAK:
         printf("    jmp .Lbrk%d\n", stack_front());
+        printf("    push 0\n");
         return;
     }
 
@@ -143,15 +145,14 @@ void code_gen()
 
     for (func_pos = 0; funcs[func_pos]; func_pos++)
     {
-
         printf("    .globl %s\n", funcs[func_pos]->name);
         printf("%s:\n", funcs[func_pos]->name);
 
         gen_prologue(208);
 
         gen(funcs[func_pos]->definition);
+        printf("    pop rax\n");
 
-        // printf("    mov rax, 0\n");
         gen_epilogue();
     }
 }
