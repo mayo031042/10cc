@@ -337,19 +337,16 @@ void *function()
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }
 
+        // 識別子から　今までに登録されている関数列を全探索する
         func_pos = find_func();
-        // 現在見ている関数のtokens[] での位置
-        int loc_of_func_pos = val_of_ident_pos();
-
         if (func_pos == -1)
         {
-            // はじめて現れた関数である のでset してからインクリメント
-            funcs[i] = new_func(tokens[loc_of_func_pos]);
+            // はじめて現れた関数であるのでfuncs[] にset してからインクリメント
+            funcs[i] = new_func(tokens[val_of_ident_pos()]);
             funcs[i + 1] = NULL;
             func_pos = i;
             i++;
         }
-        // これ以降　関数が既出か否かに関わらずfunc_pos はfuncs[]の正しい位置を指している
 
         // 引数の登録
         declare_arg();
@@ -361,7 +358,7 @@ void *function()
             if (funcs[func_pos]->defined == true)
             {
                 // 多重定義にあたる
-                error_at(tokens[loc_of_func_pos]->str, "関数が複数回定義されています");
+                error_at(tokens[token_pos]->str, "関数が複数回定義されています");
             }
 
             funcs[func_pos]->defined = true;
