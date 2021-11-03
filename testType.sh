@@ -165,4 +165,21 @@ int foo(int x)
     return x;
 }"
 
+assert 19 "
+int hoge(int x);
+int fuga(int x)
+{
+    if(10<x)return x;
+    return hoge(x+5);
+}
+int hoge(int x)
+{
+    return fuga(x)+1;
+}
+int main()
+{
+    return hoge(0);
+}
+"
+
 echo -e "\n         You are a god-dammit genius !!\n"
