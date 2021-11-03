@@ -31,6 +31,16 @@ bool expect(TokenKind kind, char *op)
     error_at(tokens[token_pos]->str, "%cではありません\n", op);
 }
 
+// int 型宣言を期待　拡張可能
+int expect_vartype()
+{
+    if (consume_keyword(TK_INT))
+    {
+        return TK_INT;
+    }
+    error_at(tokens[token_pos]->str, "型宣言がありません");
+}
+
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
@@ -255,7 +265,7 @@ int culc_offset()
         }
         // locals[depth] がNULL なら上位のブロック深度を探索
     }
-    
+
     return 0;
 }
 
@@ -320,6 +330,7 @@ LVar *find_lvar()
 }
 
 // stmt() 内での変数の宣言について扱う　型部分だけ既に読み勧めている
+// token が識別子であることを確認し　初出変数であることを確認し　作成する
 // funcs[]->locals[]にlvar を登録する 多重定義はエラー
 Node *declare_lvar()
 {
@@ -386,5 +397,28 @@ int arg_offset(int func_pos)
     else
     {
         return 0;
+    }
+}
+
+// locals[0] に引数を登録する 登録された引数は関数呼び出しの際に　ブロック０で宣言された変数として振る舞う
+// 関数宣言、定義の際　引数を解釈する　既に（　は消費されている
+void declare_arg()
+{
+    // 引数なしならNULL を返す
+    if (consume(TK_RESERVED, ")"))
+    {
+        return;
+    }
+
+    // global変数を除き　その関数内ではじめて作成される変数
+    expect_vartype();
+    declare_lvar();
+
+    // ")" が出現するまで ", 変数"　を０回以上解析する
+    while (!consume(TK_RESERVED, ")"))
+    {
+        expect(TK_RESERVED, ",");
+        expect_vartype();
+        declare_lvar();
     }
 }

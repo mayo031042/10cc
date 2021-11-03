@@ -4,6 +4,7 @@
 bool current_token_is(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool expect(TokenKind kind, char *op);
+int expect_vartype();
 int expect_number();
 bool consume_keyword(TokenKind kind);
 bool at_eof();
@@ -39,6 +40,7 @@ LVar *new_lvar();
 LVar *find_lvar_within_block(int depth);
 LVar *find_lvar();
 Node *declare_lvar();
+void declare_arg();
 
 int find_func(bool only_culc_offset);
 Func *new_func(Token *tok);

@@ -333,10 +333,7 @@ void *function()
 
     while (!at_eof())
     {
-        if (!consume_keyword(TK_INT))
-        {
-            error_at(tokens[token_pos]->str, "型宣言がありません");
-        }
+        expect_vartype();
 
         if (!consume_keyword(TK_IDENT))
         {
@@ -347,9 +344,9 @@ void *function()
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 
-        expect(TK_RESERVED, "(");
         // 引数の処理
-        expect(TK_RESERVED, ")");
+        expect(TK_RESERVED, "(");
+        declare_arg();
 
         if (func_pos == -1)
         {
