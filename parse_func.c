@@ -385,12 +385,14 @@ int find_func(bool serach_only)
 }
 
 // 新しいfuncに len, max_offset, defined, name を設定
+// 型の登録はとりあえずint のみ
 Func *new_func(Token *tok)
 {
     Func *func = calloc(1, sizeof(Func));
+    func->kind = FN_INT; // 要　変更
+    func->defined = false;
     func->len = tok->len;
     func->max_offset = 0;
-    func->defined = false;
     strncpy(func->name, tok->str, tok->len);
     return func;
 }
@@ -431,11 +433,11 @@ void declare_arg()
     }
 }
 
-// 関数呼び出しの際の引数渡しを解釈する　引数の型と
+// 関数呼び出しの際の引数渡しを解釈する　
+// 引数の型と個数を呼び出し先関数の引数と比較する　違っていたらエラー
 void consume_arg()
 {
-    if(consume(TK_RESERVED,")"))
+    if (consume(TK_RESERVED, ")"))
     {
-
     }
 }
