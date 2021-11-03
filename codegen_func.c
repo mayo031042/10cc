@@ -43,10 +43,32 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+// rsp は変化しない
+void set_regi(Node *node)
+{
+    Node *n;
+    int i = 0;
+    char *regi[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
+    // 解釈された引数を末尾から順にstack に積む
+    for (n = node; n; n = n->next)
+    {
+        gen(n->lhs);
+    }
+
+    // スタックに値を積んだことにより順番が逆転し 先頭の引数から処理される
+    for (n = node; n; n = n->next)
+    {
+        printf("    pop %s\n", regi[i]);
+        i++;
+    }
+}
+
 // call 命令前にrsp の値をrsp が16の倍数になるように１回または２回push する
 // return されてからrax を変更する前にpop rsp することでpush 回数に関わらずrsp の復元ができる
 void gen_func_call(Node *node)
 {
+
     printf("    mov rax, rsp\n");
     printf("    mov rdi, 16\n");
     gen_div();
@@ -61,6 +83,9 @@ void gen_func_call(Node *node)
 
     printf(".Lcall%d:\n", cnt);
     printf("    push rax\n");
+
+    // 引数を解釈して　レジスタにセットする
+    set_regi(node->lhs);
 
     printf("    mov rax, 0\n");
     printf("    call %s\n", funcs[node->func_num]->name);

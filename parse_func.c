@@ -438,8 +438,8 @@ void declare_arg()
     }
 }
 
-// 関数呼び出しの際の引数渡しを解釈する　
-// 引数の型と個数を呼び出し先関数の引数と比較する　違っていたらエラー
+// 関数呼び出しの際の引数渡しを解釈する　順番はlocals[] 等と同様最新を末尾に持つ
+// 引数の型と個数を呼び出し先関数の引数と比較する　違っていたらエラー -> スルー
 // 数値リテラルの場合は？　整数からキャスト、、、-> とりあえずスルー
 
 //                func_call
@@ -455,16 +455,15 @@ Node *build_arg()
         return NULL;
     }
 
-    int regi = 0;
-    // 最初の引数をexpr() 解釈する val には何番目の引数かを入れる
+    // 最初の引数をexpr() 解釈する
     Node *node = new_node(ND_NOP, expr(), NULL);
-    node->val = regi++;
+    node->next = NULL;
 
     while (!consume(TK_RESERVED, ")"))
     {
         expect(TK_RESERVED, ",");
+
         Node *arg = new_node(ND_NOP, expr(), NULL);
-        arg->val = regi++;
         arg->next = node;
         node = arg;
     }
