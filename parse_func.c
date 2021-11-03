@@ -430,3 +430,12 @@ void declare_arg()
         declare_lvar();
     }
 }
+
+// 関数呼び出しの際の引数渡しを解釈する　引数の型と
+void consume_arg()
+{
+    if(consume(TK_RESERVED,")"))
+    {
+
+    }
+}
