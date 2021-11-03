@@ -73,7 +73,6 @@ int expect_vartype()
     error_at(tokens[token_pos]->str, "型宣言がありません");
 }
 
-
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
@@ -438,6 +437,16 @@ void declare_arg()
         expect(TK_RESERVED, ",");
         expect_vartype();
         declare_lvar();
+    }
+}
+
+// 引数リストを読み飛ばす
+void consume_arg()
+{
+    expect(TK_RESERVED, "(");
+    while (!consume(TK_RESERVED, ")"))
+    {
+        token_pos++;
     }
 }
 

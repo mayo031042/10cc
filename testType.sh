@@ -154,4 +154,15 @@ int main()
     return fib(1,1);
 }"
 
+assert 5 "
+int foo(int x);
+int main()
+{
+    return foo(2)+3;
+}
+int foo(int x)
+{
+    return x;
+}"
+
 echo -e "\n         You are a god-dammit genius !!\n"

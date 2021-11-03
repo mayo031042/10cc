@@ -335,18 +335,25 @@ void *function()
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
-        func_pos = find_func();
-        if (func_pos == -1)
+        int declared = find_func();
+        // func_pos = find_func();
+
+        // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
+        if (declared == -1)
         {
-            // はじめて現れた関数であるのでfuncs[] にset してからインクリメント
             funcs[i] = new_func(tokens[val_of_ident_pos()]);
             funcs[i + 1] = NULL;
             func_pos = i;
             i++;
+            // 引数リストの登録
+            declare_arg();
         }
-
-        // 引数の登録
-        declare_arg();
+        else
+        {
+            func_pos = declared;
+            // 引数リストの読み飛ばし
+            consume_arg();
+        }
 
         // 宣言のみか　定義されるか
         if (!consume(TK_RESERVED, ";"))
