@@ -142,10 +142,7 @@ void code_gen()
         printf("    .globl %s\n", funcs[func_pos]->name);
         printf("%s:\n", funcs[func_pos]->name);
 
-        gen_prologue(funcs[func_pos]->max_offset);
-
-        // 引数分レジスタからスタックに積む
-        pop_regi(funcs[func_pos]->locals[0]);
+        gen_prologue();
 
         gen(funcs[func_pos]->definition);
         printf("    pop rax\n");

@@ -4,7 +4,7 @@
 void gen(Node *node);
 
 void cmp_rax(int val);
-void gen_prologue(int offset);
+void gen_prologue();
 void gen_epilogue();
 
 void gen_div();

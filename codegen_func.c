@@ -9,12 +9,26 @@ void cmp_rax(int val)
     printf("    cmp rax, %d\n", val);
 }
 
+// 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
+void pop_regi()
+{
+    int i = 0;
+    for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
+    {
+        printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi[i]);
+        i++;
+    }
+}
+
 // rbp, rsp を準備する
-void gen_prologue(int offset)
+// これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
+void gen_prologue()
 {
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
-    printf("    sub rsp, %d\n", offset);
+    printf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
+
+    pop_regi();
 }
 
 // rbp, rsp をもとに関数呼び出し前に戻しreturn する
@@ -43,17 +57,6 @@ void gen_lval(Node *node)
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
-}
-
-// 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
-void pop_regi(LVar *lvar)
-{
-    int i = 0;
-    for (; lvar; lvar = lvar->next)
-    {
-        printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi[i]);
-        i++;
-    }
 }
 
 // rsp は変化しない
