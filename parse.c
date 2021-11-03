@@ -355,19 +355,19 @@ void *function()
             consume_arg();
         }
 
-        // 宣言のみか　定義されるか
-        if (!consume(TK_RESERVED, ";"))
+        // 宣言のみなら　次の関数読み込みに移る
+        if (consume(TK_RESERVED, ";"))
         {
-            // 定義部分の｛｝が来ていると予想される
-            if (funcs[func_pos]->defined == true)
-            {
-                // 多重定義にあたる
-                error_at(tokens[token_pos]->str, "関数が複数回定義されています");
-            }
-
-            funcs[func_pos]->defined = true;
-            funcs[func_pos]->definition = program();
+            continue;
         }
-        // 宣言のみなら次の関数の読み込みに移る
+
+        // 定義がくるので　多重定義されていないか確認する
+        if (funcs[func_pos]->defined == true)
+        {
+            error_at(tokens[token_pos]->str, "関数が多重定義されています");
+        }
+
+        funcs[func_pos]->defined = true;
+        funcs[func_pos]->definition = program();
     }
 }
