@@ -24,6 +24,9 @@ void pop_regi()
 // これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
 void gen_prologue()
 {
+    printf("    .globl %s\n", funcs[func_pos]->name);
+    printf("%s:\n", funcs[func_pos]->name);
+
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
     printf("    sub rsp, %d\n", funcs[func_pos]->max_offset);

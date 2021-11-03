@@ -139,9 +139,6 @@ void code_gen()
 
     for (func_pos = 0; funcs[func_pos]; func_pos++)
     {
-        printf("    .globl %s\n", funcs[func_pos]->name);
-        printf("%s:\n", funcs[func_pos]->name);
-
         gen_prologue();
 
         gen(funcs[func_pos]->definition);
