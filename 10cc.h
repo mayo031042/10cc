@@ -127,7 +127,7 @@ int val_of_block_nest();
 void add_block_nest();
 void sub_block_nest();
 
-@void aaa();
+void aaa();
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;    // 今見ているtokens の位置
