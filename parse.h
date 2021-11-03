@@ -43,7 +43,8 @@ LVar *new_lvar();
 LVar *find_lvar_within_block(int depth);
 LVar *find_lvar();
 Node *declare_lvar();
-void declare_arg();
+void declare_arg(); // 関数宣言、定義の際に 引数表をセットする
+Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈して登録先のレジスタを記憶する
 
 int find_func(bool only_culc_offset);
 Func *new_func(Token *tok);
