@@ -8,10 +8,11 @@ void cmp_rax(int val)
 }
 
 // rbp, rsp を準備する
-void gen_prologue()
+void gen_prologue(int offset)
 {
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
+    printf("    sub rsp, %d\n", offset);
 }
 
 // rbp, rsp をもとに関数呼び出し前に戻しreturn する
