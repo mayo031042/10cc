@@ -382,3 +382,16 @@ Func *new_func(Token *tok)
     strncpy(func->name, tok->str, tok->len);
     return func;
 }
+
+// func_pos で指定された関数の引数の最大offset を返す
+int arg_offset(int func_pos)
+{
+    if (funcs[func_pos]->locals[0])
+    {
+        return funcs[func_pos]->locals[0]->offset;
+    }
+    else
+    {
+        return 0;
+    }
+}

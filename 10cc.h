@@ -97,7 +97,7 @@ struct LVar
 typedef struct Func Func;
 struct Func
 {
-    LVar *locals[100]; // 引数→とりあえず無視
+    LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
     Node *definition;  // 定義
     char name[100];    // 関数名
     int len;           // 名前の長さ
