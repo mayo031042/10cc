@@ -5,7 +5,6 @@
 
 Func *funcs[MAX_FUNC_SIZE];
 int func_pos = 0;
-int block_nest = 0;
 
 // programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない -> ここでの宣言はありえない
 // -> ND_LVAR, ND_FUNC_CALL, ND_NUM, expr()

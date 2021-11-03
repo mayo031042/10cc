@@ -160,7 +160,7 @@ void gen_do_while(Node *node)
 // 意味のある最初のnode からNULL になる直前までをnext 順にgen()していく
 void gen_block(Node *node)
 {
-    block_nest++;
+    add_block_nest();
 
     for (; node; node = node->next)
     {
@@ -170,5 +170,5 @@ void gen_block(Node *node)
 
     printf("    push rax\n");
 
-    block_nest--;
+    sub_block_nest();
 }

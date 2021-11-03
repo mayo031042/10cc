@@ -4,6 +4,7 @@
 
 int Stack[MAX_STACK_SIZE];
 int StackTop = 0;
+int block_nest = 0;
 
 void error(char *fmt, ...)
 {
@@ -52,6 +53,21 @@ void stack_pop()
     if (!StackTop)
         error("Stack size underflowed.");
     StackTop--;
+}
+
+int val_of_block_nest()
+{
+    return block_nest;
+}
+
+void add_block_nest()
+{
+    block_nest++;
+}
+
+void sub_block_nest()
+{
+    block_nest--;
 }
 
 void aaa()

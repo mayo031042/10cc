@@ -246,18 +246,18 @@ Node *new_node_block()
 // build_block() とgen_block() でのみ block_nest の値をいじる
 Node *build_block()
 {
-    block_nest++;
+    add_block_nest();
 
     Node *node = new_node(ND_BLOCK, new_node_block(), NULL);
 
-    block_nest--;
+    sub_block_nest();
     return node;
 }
 
 // 有効変数列内を新規作成順に探索する　最初に発見した変数のoffset を返す
 int culc_offset()
 {
-    for (int depth = block_nest; 0 <= depth; depth--)
+    for (int depth = val_of_block_nest(); 0 <= depth; depth--)
     {
         if (funcs[func_pos]->locals[depth])
         {
@@ -288,8 +288,8 @@ LVar *new_lvar()
         funcs[func_pos]->max_offset = lvar->offset;
     }
 
-    lvar->next = funcs[func_pos]->locals[block_nest];
-    funcs[func_pos]->locals[block_nest] = lvar;
+    lvar->next = funcs[func_pos]->locals[val_of_block_nest()];
+    funcs[func_pos]->locals[val_of_block_nest()] = lvar;
 
     return lvar;
 }
@@ -315,7 +315,7 @@ LVar *find_lvar()
 {
     LVar *lvar;
     // 有効変数列を全探索する
-    for (int depth = block_nest; 0 <= depth; depth--)
+    for (int depth = val_of_block_nest(); 0 <= depth; depth--)
     {
         lvar = find_lvar_within_block(depth);
         // 変数が帰ってきた場合　条件に合致しているので返す
@@ -340,7 +340,7 @@ Node *declare_lvar()
     }
 
     // 現在のスコープの中を探索する
-    LVar *lvar = find_lvar_within_block(block_nest);
+    LVar *lvar = find_lvar_within_block(val_of_block_nest());
 
     // 同一変数が見つかれば多重定義としてエラー
     if (lvar)

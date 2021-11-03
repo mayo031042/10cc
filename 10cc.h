@@ -121,6 +121,9 @@ int count();
 int stack_front();
 void stack_push(int val);
 void stack_pop();
+int val_of_block_nest();
+void add_block_nest();
+void sub_block_nest();
 void aaa();
 
 // グローバル変数 -> 定義はmainにて
