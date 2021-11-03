@@ -19,7 +19,7 @@ Node *primary()
         expect(TK_RESERVED, ")");
     }
     // 変数,関数
-    else if (consume_keyword(TK_IDENT))
+    else if (consume_ident())
     {
         // 関数かチェック
         if (current_token_is(TK_RESERVED, "("))
@@ -334,7 +334,7 @@ void *function()
     {
         expect_vartype();
 
-        if (!consume_keyword(TK_IDENT))
+        if (!consume_ident())
         {
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }

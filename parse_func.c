@@ -21,6 +21,29 @@ bool consume(TokenKind kind, char *op)
     return true;
 }
 
+// 今のtoken が引数通りなら読み進める　更に識別子のときはident_pos を更新する
+bool consume_keyword(TokenKind kind)
+{
+    if (tokens[token_pos]->kind != kind)
+    {
+        return false;
+    }
+    token_pos++;
+    return true;
+}
+
+// 識別子専用の関数　consume と同時にident_pos のセットも行う
+bool consume_ident()
+{
+    if (tokens[token_pos]->kind != TK_IDENT)
+    {
+        return false;
+    }
+    ident_pos = token_pos;
+    token_pos++;
+    return true;
+}
+
 // consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
 bool expect(TokenKind kind, char *op)
 {
@@ -51,21 +74,6 @@ int expect_number()
     int val = tokens[token_pos]->val;
     token_pos++;
     return val;
-}
-
-// 今のtoken が引数通りなら読み進める　更に識別子のときはident_pos を更新する
-bool consume_keyword(TokenKind kind)
-{
-    if (tokens[token_pos]->kind != kind)
-    {
-        return false;
-    }
-    if (kind == TK_IDENT)
-    {
-        ident_pos = token_pos;
-    }
-    token_pos++;
-    return true;
 }
 
 // token 列の最後尾の次だったらtrue
@@ -334,7 +342,7 @@ LVar *find_lvar()
 // funcs[]->locals[]にlvar を登録する 多重定義はエラー
 Node *declare_lvar()
 {
-    if (!consume_keyword(TK_IDENT))
+    if (!consume_ident())
     {
         error_at(tokens[token_pos]->str, "変数ではありません");
     }
