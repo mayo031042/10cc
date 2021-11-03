@@ -8,6 +8,7 @@ bool consume_ident();
 
 bool expect(TokenKind kind, char *op);
 int expect_vartype();
+bool expect_ident();
 int expect_number();
 
 bool at_eof();

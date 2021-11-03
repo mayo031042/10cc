@@ -21,6 +21,16 @@ bool consume(TokenKind kind, char *op)
     return true;
 }
 
+// consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
+bool expect(TokenKind kind, char *op)
+{
+    if (consume(kind, op))
+    {
+        return true;
+    }
+    error_at(tokens[token_pos]->str, "%cではありません\n", op);
+}
+
 // 今のtoken が引数通りなら読み進める　更に識別子のときはident_pos を更新する
 bool consume_keyword(TokenKind kind)
 {
@@ -44,14 +54,13 @@ bool consume_ident()
     return true;
 }
 
-// consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
-bool expect(TokenKind kind, char *op)
+bool expect_ident()
 {
-    if (consume(kind, op))
+    if (consume_ident())
     {
         return true;
     }
-    error_at(tokens[token_pos]->str, "%cではありません\n", op);
+    error_at(tokens[token_pos]->str, "関数名ではありません");
 }
 
 // int 型宣言を期待　拡張可能
@@ -63,6 +72,7 @@ int expect_vartype()
     }
     error_at(tokens[token_pos]->str, "型宣言がありません");
 }
+
 
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()

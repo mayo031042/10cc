@@ -332,10 +332,7 @@ void *function()
     while (!at_eof())
     {
         expect_vartype();
-        if (!consume_ident())
-        {
-            error_at(tokens[token_pos]->str, "関数名ではありません");
-        }
+        expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
         func_pos = find_func();
