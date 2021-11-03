@@ -119,6 +119,7 @@ void *function();
 
 // codegen のための関数　-> @ codegen.c
 void code_gen();
+void pop_regi(LVar *lvar);
 
 // 分類が半端な関数 -> @ utils
 void error(char *fmt, ...);
