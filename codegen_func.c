@@ -1,5 +1,7 @@
 #include "codegen.h"
 
+char *regi[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
 // スタックトップと引数をcmp する 条件分岐jmp 命令の直前に使用
 void cmp_rax(int val)
 {
@@ -43,12 +45,22 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+// 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
+void pop_regi(LVar *lvar)
+{
+    int i = 0;
+    for (; lvar; lvar = lvar->next)
+    {
+        printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi[i]);
+        i++;
+    }
+}
+
 // rsp は変化しない
 void push_regi(Node *node)
 {
     Node *n;
     int i = 0;
-    char *regi[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
     // 解釈された引数を末尾から順にstack に積む
     for (n = node; n; n = n->next)
