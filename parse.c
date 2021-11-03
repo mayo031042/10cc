@@ -338,9 +338,9 @@ void *function()
         int declared = find_func();
         // func_pos = find_func();
 
-        // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
         if (declared == -1)
         {
+            // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
             funcs[i] = new_func(tokens[val_of_ident_pos()]);
             funcs[i + 1] = NULL;
             func_pos = i;
@@ -350,8 +350,8 @@ void *function()
         }
         else
         {
+            // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
             func_pos = declared;
-            // 引数リストの読み飛ばし
             consume_arg();
         }
 
