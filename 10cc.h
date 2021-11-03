@@ -102,13 +102,13 @@ typedef enum
 typedef struct Func Func;
 struct Func
 {
+    FuncKind kind;     // 関数の型
     LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
     Node *definition;  // 定義
-    FuncKind kind;     // 関数の型
+    char name[100];    // 関数名
     bool defined;      // すでに定義がされているか→definition がNULLかだけでは判定できない
     int len;           // 名前の長さ
     int max_offset;    // プロローグ時に下げるrsp の幅を決める
-    char name[100];    // 関数名
 };
 
 // tokenize のための関数 -> @ tokenize.c

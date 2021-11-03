@@ -282,6 +282,7 @@ int culc_offset()
 // つまりfuncs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
 // name, len, offset, next が登録された変数を作成する
 // 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らない
+// 変数の型を登録　とりあえずINTのみ
 LVar *new_lvar()
 {
     LVar *lvar = calloc(1, sizeof(LVar));
