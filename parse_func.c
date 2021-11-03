@@ -92,6 +92,8 @@ int val_of_ident_pos()
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
+    node->lhs = NULL;
+    node->rhs = NULL;
     node->kind = kind;
     return node;
 }
@@ -400,7 +402,7 @@ Func *new_func(Token *tok)
 }
 
 // func_pos で指定された関数の引数の最大offset を返す
-int arg_offset(int func_pos)
+int offset_arg(int func_pos)
 {
     if (funcs[func_pos]->locals[0])
     {
@@ -416,6 +418,7 @@ int arg_offset(int func_pos)
 // 関数宣言、定義の際　引数を解釈する　既に（　は消費されている
 void declare_arg()
 {
+    expect(TK_RESERVED, "(");
     // 引数なしならNULL を返す
     if (consume(TK_RESERVED, ")"))
     {
@@ -437,9 +440,34 @@ void declare_arg()
 
 // 関数呼び出しの際の引数渡しを解釈する　
 // 引数の型と個数を呼び出し先関数の引数と比較する　違っていたらエラー
-void consume_arg()
+// 数値リテラルの場合は？　整数からキャスト、、、-> とりあえずスルー
+
+//                func_call
+// ... <- arg3 <- (lhs:arg4)
+//                (lhs:expr, val:regi)
+Node *build_arg()
 {
+    expect(TK_RESERVED, "(");
+
+    // 引数が１つもない場合 NULL を返す
     if (consume(TK_RESERVED, ")"))
     {
+        return NULL;
     }
+
+    int regi = 0;
+    // 最初の引数をexpr() 解釈する val には何番目の引数かを入れる
+    Node *node = new_node(ND_NOP, expr(), NULL);
+    node->val = regi++;
+
+    while (!consume(TK_RESERVED, ")"))
+    {
+        expect(TK_RESERVED, ",");
+        Node *arg = new_node(ND_NOP, expr(), NULL);
+        arg->val = regi++;
+        arg->next = node;
+        node = arg;
+    }
+
+    return node;
 }
