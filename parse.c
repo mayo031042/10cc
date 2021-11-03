@@ -26,9 +26,9 @@ Node *primary()
         {
             // 関数なら　呼び出しである
             node = create_node(ND_FUNC_CALL);
-            node->func_num = find_func(false);
 
-            if (funcs[func_pos]->defined == false)
+            node->func_num = find_func();
+            if (node->func_num == -1)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
@@ -337,7 +337,7 @@ void *function()
             error_at(tokens[token_pos]->str, "関数名ではありません");
         }
 
-        func_pos = find_func(true);
+        func_pos = find_func();
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 

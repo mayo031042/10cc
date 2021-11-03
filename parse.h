@@ -46,5 +46,5 @@ Node *declare_lvar();
 void declare_arg(); // 関数宣言、定義の際に 引数表をセットする
 Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈して登録先のレジスタを記憶する
 
-int find_func(bool only_culc_offset);
+int find_func();
 Func *new_func(Token *tok);

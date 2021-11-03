@@ -367,8 +367,8 @@ Node *declare_lvar()
 }
 
 // 既出関数名から直前識別子名に一致するものを探す　
-// 引数によってerror の有無を分岐させ　既出ならそのfuncs[] のpos を返す
-int find_func(bool serach_only)
+// 既出ならそのfuncs[] のpos を返し　そうでないなら−１を返す
+int find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
@@ -378,14 +378,7 @@ int find_func(bool serach_only)
         }
     }
 
-    if (serach_only == true)
-    {
-        return -1;
-    }
-    else
-    {
-        error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
-    }
+    return -1;
 }
 
 // 新しいfuncに len, max_offset, defined, name を設定
