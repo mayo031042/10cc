@@ -33,9 +33,8 @@ Node *primary()
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
 
-            expect(TK_RESERVED, "(");
-            // 引数
-            expect(TK_RESERVED, ")");
+            // 引数を解釈する
+            node->lhs = build_arg();
         }
         else
         {
@@ -243,7 +242,7 @@ Node *assign()
 }
 
 // 予約語のない純粋な計算式として解釈する 三項間演算子もここ？
-// 必ずちょうど１つpush するっぽい
+// void と四則演算しない　など計算結果が整数であることを保証したい
 // -> assign()
 Node *expr()
 {
@@ -343,8 +342,7 @@ void *function()
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
 
-        // 引数の処理
-        expect(TK_RESERVED, "(");
+        // 引数の登録
         declare_arg();
 
         if (func_pos == -1)
