@@ -118,4 +118,40 @@ int main()
     return 1;
 }
 "
+echo "OK"
+
+assert 1 "
+int foo(int x)
+{
+    return x;
+}
+int main()
+{
+    return foo(1);
+}
+"
+
+assert 6 "
+int plus2(int x)
+{
+    return x+2;
+}
+int main()
+{
+    int x;
+    x=plus2(4);
+    return x;
+}"
+
+assert 34 "
+int fib(int x,int y)
+{
+    if(30 < x+y)return x+y;
+    return fib(y,x+y);
+}
+int main()
+{
+    return fib(1,1);
+}"
+
 echo -e "\n         You are a god-dammit genius !!\n"
