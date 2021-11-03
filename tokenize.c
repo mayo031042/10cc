@@ -99,7 +99,7 @@ void *tokenize()
             continue;
         }
         // 1文字解釈ゾーン
-        else if (strchr("+-*/%()=<>;", *user_input_pos))
+        else if (strchr("+-*/%()=<>,;", *user_input_pos))
         {
             new_token(TK_RESERVED, 1);
             continue;
