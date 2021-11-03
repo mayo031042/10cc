@@ -332,7 +332,6 @@ void *function()
     while (!at_eof())
     {
         expect_vartype();
-
         if (!consume_ident())
         {
             error_at(tokens[token_pos]->str, "関数名ではありません");
@@ -341,9 +340,6 @@ void *function()
         func_pos = find_func(true);
         // 現在見ている関数のtokens[] での位置
         int loc_of_func_pos = val_of_ident_pos();
-
-        // 引数の登録
-        declare_arg();
 
         if (func_pos == -1)
         {
@@ -354,6 +350,9 @@ void *function()
             i++;
         }
         // これ以降　関数が既出か否かに関わらずfunc_pos はfuncs[]の正しい位置を指している
+
+        // 引数の登録
+        declare_arg();
 
         // 宣言のみか　定義されるか
         if (!consume(TK_RESERVED, ";"))
