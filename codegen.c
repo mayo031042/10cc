@@ -143,9 +143,9 @@ void code_gen()
         printf("%s:\n", funcs[func_pos]->name);
 
         gen_prologue();
-        
-        printf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
         // 引数分レジスタからスタックに積む
+
+        printf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
 
         gen(funcs[func_pos]->definition);
         printf("    pop rax\n");
