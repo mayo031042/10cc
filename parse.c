@@ -41,7 +41,7 @@ Node *primary()
         else
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
-            node = new_node_ident(find_lvar(false));
+            node = new_node_ident(find_lvar());
         }
     }
     // 数値なので
@@ -290,7 +290,7 @@ Node *stmt()
         // : int
         if (consume_keyword(TK_INT))
         {
-            node = lvar_declare();
+            node = declare_lvar();
         }
         // : return
         else if (consume_keyword(TK_RETURN))

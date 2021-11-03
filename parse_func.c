@@ -244,32 +244,47 @@ Node *build_block()
     return node;
 }
 
-// 引数に渡された値から更に自分の必要とするメモリサイズ分下げたoffset が登録されたLVar を作成する
-// さらに該当関数のmax_offset も更新し　locals[] の最新を変更する
-// funcs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
-// name, len, offset, next が登録された変数を作成する
-// 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らないので　引数を採る
-LVar *new_lvar(int max_offset)
+// 有効変数列内を新規作成順に探索する　最初に発見した変数のoffset を返す
+int culc_offset()
 {
-    // 8 は自分の型に合わせて　要変更
-    int my_offset = max_offset + 8;
-    if (funcs[func_pos]->max_offset < my_offset)
+    for (int depth = block_nest; 0 <= depth; depth--)
     {
-        funcs[func_pos]->max_offset = my_offset;
+        if (funcs[func_pos]->locals[depth])
+        {
+            return funcs[func_pos]->locals[depth]->offset;
+        }
+        // locals[depth] がNULL なら上位のブロック深度を探索
     }
+    
+    return 0;
+}
 
+// 有効変数列の中で最大のoofset から必要とするメモリサイズ分下げたoffset を登録したLVar を作成する
+// さらに該当関数のmax_offset も更新し　locals[] の最後尾を変更する
+// つまりfuncs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
+// name, len, offset, next が登録された変数を作成する
+// 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らない
+LVar *new_lvar()
+{
     LVar *lvar = calloc(1, sizeof(LVar));
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
 
-    lvar->offset = my_offset;
-    lvar->next = funcs[func_pos]->locals[block_nest];
+    // 8 は自分の型に合わせて　変更
+    lvar->offset = culc_offset() + 8;
 
+    if (funcs[func_pos]->max_offset < lvar->offset)
+    {
+        funcs[func_pos]->max_offset = lvar->offset;
+    }
+
+    lvar->next = funcs[func_pos]->locals[block_nest];
     funcs[func_pos]->locals[block_nest] = lvar;
+
     return lvar;
 }
 
-// func_pos を参照しつつ引数のブロック深度内のみから 直前識別子名に合致する変数を探す
+// func_pos を参照しつつ引数のブロック深度内のみから 直前識別子名に合致する変数を探す なければNULL
 LVar *find_lvar_within_block(int depth)
 {
     for (LVar *lvar = funcs[func_pos]->locals[depth]; lvar; lvar = lvar->next)
@@ -284,71 +299,46 @@ LVar *find_lvar_within_block(int depth)
     return NULL;
 }
 
-// 有効変数列内を新規作成順に探索する　最初に発見した変数のoffset を返す
-int culc_offset()
+// 既出変数から直前識別子名に一致するものを探す -> 変数呼び出しの際にのみ使用
+// 合致する変数が見つかればその変数を　なければerror
+LVar *find_lvar()
 {
-    for (int depth = block_nest; 0 <= depth; depth--)
-    {
-        if (funcs[func_pos]->locals[depth])
-        {
-            return funcs[func_pos]->locals[depth]->offset;
-        }
-    }
-}
-
-// 既出変数から直前識別子名に一致するものを探す
-// offset の算出のみが目的なら　最大のoffset を計算して必ず 変数を新規登録する
-// only_culc_offset がfalse なら探索も行い合致する変数が見つかればそれを　なければ新規登録して返す
-LVar *find_lvar(bool only_culc_offset)
-{
-    // int max_offset = 0;
     LVar *lvar;
-
+    // 有効変数列を全探索する
     for (int depth = block_nest; 0 <= depth; depth--)
     {
-        lvar = funcs[func_pos]->locals[depth];
-
-        if (only_culc_offset == false)
+        lvar = find_lvar_within_block(depth);
+        // 変数が帰ってきた場合　条件に合致しているので返す
+        if (lvar)
         {
-            lvar = find_lvar_within_block(depth);
-            if (lvar)
-            {
-                return lvar;
-            }
+            return lvar;
         }
     }
 
-    if (only_culc_offset == false)
-    {
-        // 宣言なしに作成はできないのでエラー
-        error_at(tokens[token_pos]->str, "宣言されていない変数です");
-    }
-
-    // 登録されている既出変数の中で最大のoffsetを渡す
-    // -> 現在のブロックの最新変数のoffset を参照する方法ではNULLに対応できない
-    return new_lvar(culc_offset());
-    // return new_lvar(max_offset);
+    // 宣言されていた変数列から見つからなかったのでエラー
+    error_at(tokens[token_pos]->str, "宣言されていない変数です");
 }
 
-// 変数の宣言について扱う　型部分だけ既に読み勧めている
-// funcs[]->locals[]にlvar を登録する
-Node *lvar_declare()
+// stmt() 内での変数の宣言について扱う　型部分だけ既に読み勧めている
+// funcs[]->locals[]にlvar を登録する 多重定義はエラー
+Node *declare_lvar()
 {
     if (!consume_keyword(TK_IDENT))
     {
         error_at(tokens[token_pos]->str, "変数ではありません");
     }
 
+    // 現在のスコープの中を探索する
     LVar *lvar = find_lvar_within_block(block_nest);
 
-    // 現在のスコープの中から同一変数が見つかればエラー
+    // 同一変数が見つかれば多重定義としてエラー
     if (lvar)
     {
         error_at(tokens[token_pos]->str, "既に宣言されている変数です");
     }
 
-    // 新規変数なので上位ブロック深度に合致する変数が存在するしないに関わらず　必ず新規登録する
-    find_lvar(true);
+    // 変数宣言なので上位ブロック深度に 合致する変数が存在するしないに関わらず　必ず新規登録する
+    new_lvar();
 
     return create_node(ND_PUSH_0);
 }
