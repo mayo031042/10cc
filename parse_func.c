@@ -284,27 +284,29 @@ LVar *find_lvar_within_block(int depth)
     return NULL;
 }
 
+// 有効変数列内を新規作成順に探索する　最初に発見した変数のoffset を返す
+int culc_offset()
+{
+    for (int depth = block_nest; 0 <= depth; depth--)
+    {
+        if (funcs[func_pos]->locals[depth])
+        {
+            return funcs[func_pos]->locals[depth]->offset;
+        }
+    }
+}
+
 // 既出変数から直前識別子名に一致するものを探す
 // offset の算出のみが目的なら　最大のoffset を計算して必ず 変数を新規登録する
 // only_culc_offset がfalse なら探索も行い合致する変数が見つかればそれを　なければ新規登録して返す
 LVar *find_lvar(bool only_culc_offset)
 {
-    int max_offset = 0;
+    // int max_offset = 0;
     LVar *lvar;
 
     for (int depth = block_nest; 0 <= depth; depth--)
     {
         lvar = funcs[func_pos]->locals[depth];
-        if (lvar == NULL)
-        {
-            continue;
-        }
-
-        // 最大のoffset を保持するmax_offset を更新する -> 変数が１つ以上登録されているならば　１度だけ更新される
-        if (max_offset < lvar->offset)
-        {
-            max_offset = lvar->offset;
-        }
 
         if (only_culc_offset == false)
         {
@@ -324,7 +326,8 @@ LVar *find_lvar(bool only_culc_offset)
 
     // 登録されている既出変数の中で最大のoffsetを渡す
     // -> 現在のブロックの最新変数のoffset を参照する方法ではNULLに対応できない
-    return new_lvar(max_offset);
+    return new_lvar(culc_offset());
+    // return new_lvar(max_offset);
 }
 
 // 変数の宣言について扱う　型部分だけ既に読み勧めている

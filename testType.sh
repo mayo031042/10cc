@@ -96,11 +96,13 @@ int main()
     int ret; ret=0;
     int x; x=1;
     {
-        int x; x=2;
         {
-            int x; x=3;    
+            int x; x=2;
+            {
+                int x; x=3;    
+            }
+            ret=x;
         }
-        ret=x;
     }
     return ret;
 }"
