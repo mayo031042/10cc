@@ -44,7 +44,7 @@ void gen_lval(Node *node)
 }
 
 // rsp は変化しない
-void set_regi(Node *node)
+void push_regi(Node *node)
 {
     Node *n;
     int i = 0;
@@ -85,7 +85,7 @@ void gen_func_call(Node *node)
     printf("    push rax\n");
 
     // 引数を解釈して　レジスタにセットする
-    set_regi(node->lhs);
+    push_regi(node->lhs);
 
     printf("    mov rax, 0\n");
     printf("    call %s\n", funcs[node->func_num]->name);

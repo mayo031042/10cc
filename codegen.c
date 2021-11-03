@@ -143,6 +143,7 @@ void code_gen()
         printf("%s:\n", funcs[func_pos]->name);
 
         gen_prologue(funcs[func_pos]->max_offset);
+        
 
         // 引数分レジスタからスタックに積む
 
