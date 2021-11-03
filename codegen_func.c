@@ -7,12 +7,11 @@ void cmp_rax(int val)
     printf("    cmp rax, %d\n", val);
 }
 
-// rbp, rsp を準備し引数の分だけローカル変数用のメモリを確保する
-void gen_prologue(int sz)
+// rbp, rsp を準備する
+void gen_prologue()
 {
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
-    printf("    sub rsp, %d\n", sz);
 }
 
 // rbp, rsp をもとに関数呼び出し前に戻しreturn する
