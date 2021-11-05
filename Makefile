@@ -1,26 +1,26 @@
-CFLAGS=-std=c11 -g -static
-SRCS=$(wildcard *.c)
-HEADS=$(wildcard *.h)
-SRCS:=$(filter-out test.c,$(SRCS))
-OBJS=$(SRCS:.c=.o)
 CC = cc
-TARDIR=bin
-OBJROOT=obj
-# VPATH = /home/mayo/Documents/codes/cpp/10cc/codegen
+CFLAGS=-std=c11 -g -static
 
-10cc: $(OBJS) 
+# ディレクトリを指定
+OBJDIR=./obj
+TARDIR=./bin
+
+# カレントディレクトリ内から 末尾が.c であるようなすべてのファイルを配列で持つ？
+SRCS=$(wildcard *.c)
+# 上記のような配列のすべての要素に対して 共通の接頭語を据える
+OBJS=$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
+HEADS=$(wildcard *.h)
+
+# 10cc はカレントディレクトリに存在するすべてのCファイルと同名の./obj/*.o ファイルに依存している
+10cc: $(OBJS)
 	$(CC) -o $(TARDIR)/$@ $(OBJS) $(LDFLAGS)
 
-$(OBJS): $(HEADS)
+# ディレクトリ名と拡張子を取り除いて.c 拡張子を新しくつける　他にもやり方はあるはず、、、
+%.o: 
+	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
 
-testtype: 10cc 
+test: 10cc 
 	./testType.sh
-
-testculc: 10cc 
-	./testCulc.sh
-
-testfunc: 10cc
-	./testFunc.sh
 
 # 編集されたtmp.s を実行
 s: tmp.s
@@ -28,6 +28,6 @@ s: tmp.s
 	./tmp
 
 clean:
-	rm -f 10cc *.o *~ tmp* optimize
+	rm -f ./bin/10cc *.o *~ tmp* optimize ./obj/*
 
 .PHONY: test clean
