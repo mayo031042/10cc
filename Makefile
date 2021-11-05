@@ -20,7 +20,7 @@ HEADS=$(wildcard *.h)
 	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
 
 test: 10cc 
-	./testType.sh
+	./testsh/testType.sh
 
 # 編集されたtmp.s を実行
 s: tmp.s
