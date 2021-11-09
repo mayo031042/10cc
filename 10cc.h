@@ -90,7 +90,6 @@ struct Type
     } ty;
     Type *ptr_to;
 };
-
 typedef struct LVar LVar;
 struct LVar
 {
