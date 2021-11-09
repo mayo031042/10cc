@@ -84,12 +84,12 @@ typedef enum
 {
     INT, // 4
     PTR, // 8
-} ty;
+} TypeKind;
 
 typedef struct Type Type;
 struct Type
 {
-    ty type;
+    TypeKind type;
     Type *ptr_to;
 };
 typedef struct LVar LVar;
