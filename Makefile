@@ -38,28 +38,28 @@ HEADS=$(wildcard *.h)
 $(OBJS): $(HEADS)
 
 obj/main.o: main.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/utils.o: utils.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/tokenize.o: tokenize.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/tokenize_func.o: tokenize_func.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/parse.o: parse.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/parse_func.o: parse_func.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/codegen.o: codegen.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/codegen_func.o: codegen_func.c
-	$(CC) -c $(CFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 test: 10cc 
 	./testsh/testType.sh

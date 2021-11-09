@@ -297,7 +297,7 @@ int culc_offset()
 LVar *new_lvar()
 {
     LVar *lvar = calloc(1, sizeof(LVar));
-    lvar->kind = LV_INT; // 要　変更
+    lvar->type.ty = INT; // 要　変更
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
 

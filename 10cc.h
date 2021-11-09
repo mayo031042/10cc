@@ -80,15 +80,21 @@ struct Node
 };
 
 // LVar
-typedef enum
+typedef struct Type Type;
+struct Type
 {
-    LV_INT, // int
-} LvarKind;
+    enum
+    {
+        INT,
+        PTR,
+    } ty;
+    Type *ptr_to;
+};
 
 typedef struct LVar LVar;
 struct LVar
 {
-    LvarKind kind; // 変数の型
+    Type type; // 変数の型
     LVar *next;
     char *name;
     int len;
