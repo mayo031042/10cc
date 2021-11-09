@@ -92,10 +92,11 @@ struct Type
     TypeKind type;
     Type *ptr_to;
 };
+
 typedef struct LVar LVar;
 struct LVar
 {
-    Type type; // 変数の型
+    Type *type; // 変数の型
     LVar *next;
     char *name;
     int len;
