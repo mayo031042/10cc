@@ -12,6 +12,8 @@ void gen_div();
 void gen_lval(Node *node);
 void gen_func_call(Node *node);
 
+void gen_deref(Node *node);
+
 void gen_if(Node *node, int end_label);
 void gen_else(Node *node, int end_label);
 

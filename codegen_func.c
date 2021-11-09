@@ -63,6 +63,17 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+
+
+void gen_deref(Node *node)
+{
+    // 型からサイズを計算し　右辺値としてアドレスを算出する
+    gen_lval(node);
+    printf("    pop rax\n");
+    printf("    mov rax, [rax]\n");
+    printf("    push rax\n");
+}
+
 // rsp は変化しない
 void push_regi(Node *node)
 {
