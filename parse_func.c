@@ -63,6 +63,18 @@ bool expect_ident()
     error_at(tokens[token_pos]->str, "関数名ではありません");
 }
 
+// 今見ているtoken が変数の型ならtrue
+bool current_token_is_type()
+{
+    TokenKind kind = tokens[token_pos]->kind;
+    if (kind == TK_INT)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 // int 型宣言を期待　拡張可能
 int expect_vartype()
 {
@@ -70,6 +82,7 @@ int expect_vartype()
     {
         return TK_INT;
     }
+
     error_at(tokens[token_pos]->str, "型宣言がありません");
 }
 
