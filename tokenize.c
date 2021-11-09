@@ -126,7 +126,7 @@ void *tokenize()
             continue;
         }
 
-        error_at(tokens[token_pos]->str, "%s tokenizeできません\n", user_input_pos);
+        error_at(tokens[token_pos]->str, "tokenizeできません\n");
     }
 
     new_token(TK_EOF, 0);
