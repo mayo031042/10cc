@@ -18,6 +18,11 @@ void *tokenize()
             continue;
         }
 
+        if (commentout())
+        {
+            continue;
+        }
+
         // 変数の型ゾーン
         if (is_keyword("int"))
         {

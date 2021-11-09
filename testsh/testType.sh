@@ -183,4 +183,14 @@ int main()
 }
 "
 
+assert 40 "
+int main()
+{ 
+// return 42;
+/*
+return 41;
+*/
+return 40;
+}"
+
 echo -e "\n         You are a god-dammit genius !!\n"

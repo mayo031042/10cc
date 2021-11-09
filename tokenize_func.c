@@ -27,3 +27,36 @@ int is_alnum(char c)
            ('0' <= c && c <= '9') ||
            (c == '_');
 }
+
+// コメントアウトを処理したときはtrue しなかったときはfalse を返す
+bool commentout()
+{
+    // 改行までtknz しない
+    if (strncmp(user_input_pos, "//", 2) == 0)
+    {
+        user_input_pos += 2;
+        while (*user_input_pos != '\n')
+        {
+            user_input_pos++;
+        }
+        return true;
+    }
+
+    /* 終端記号が出るまでtknz しない　*/
+    else if (strncmp(user_input_pos, "/*", 2) == 0)
+    {
+        // 開始記号の次から探しはじめて　発見した終端記号の先頭のポインタｗｐ返す
+        char *p = strstr(user_input_pos + 2, "*/");
+        // 終端記号が見つからないとNULL が返る
+        if (!p)
+        {
+            error_at(tokens[token_pos]->str, "コメントが閉じられていません");
+        }
+
+        // コメントアウトの次のtoken にセット
+        user_input_pos = p + 2;
+        return true;
+    }
+
+    return false;
+}
