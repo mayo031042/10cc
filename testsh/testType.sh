@@ -10,7 +10,8 @@ assert() {
     actual="$?"
 
     if [ "$actual" = "$expected" ]; then
-        echo "   $input => $actual"
+        # echo "   $input => $actual"
+        echo "  OK  $actual"
     else
         echo "$input => $expected expected, but got $actual"
         exit 1
