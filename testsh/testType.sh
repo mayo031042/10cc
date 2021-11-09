@@ -119,7 +119,7 @@ int main()
     return 1;
 }
 "
-echo "OK"
+echo "OK1"
 
 assert 1 "
 int foo(int x)
@@ -193,11 +193,22 @@ return 41;
 return 40;
 }"
 
-# assert "
-# int main()
-# {
-#     int x    
-    
-# }"
+assert 1 "
+int main()
+{
+    int x;
+    &x;
+    *x;
+    return 1;
+}"
+
+assert 3 "
+int main()
+{
+    int x;  x=1;
+    int *y; y=&x;
+    *y=3;
+    return x;
+}"
 
 echo -e "\n         You are a god-dammit genius !!\n"
