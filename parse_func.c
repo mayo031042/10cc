@@ -60,7 +60,7 @@ bool expect_ident()
     {
         return true;
     }
-    error_at(tokens[token_pos]->str, "関数名ではありません");
+    error_at(tokens[token_pos]->str, "識別子ではありません");
 }
 
 // 今見ているtoken が変数の型ならtrue
@@ -76,11 +76,12 @@ bool current_token_is_type()
 }
 
 // int 型宣言を期待　拡張可能
-int expect_vartype()
+// 型宣言を処理し TypeKind で返す
+TypeKind expect_vartype()
 {
     if (consume_keyword(TK_INT))
     {
-        return TK_INT;
+        return INT;
     }
 
     error_at(tokens[token_pos]->str, "型宣言がありません");
@@ -307,10 +308,10 @@ int culc_offset()
 // name, len, offset, next が登録された変数を作成する
 // 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らない
 // 変数の型を登録　とりあえずINTのみ
-LVar *new_lvar()
+LVar *new_lvar(Type *type)
 {
     LVar *lvar = calloc(1, sizeof(LVar));
-    lvar->type.ty = INT; // 要　変更
+    lvar->type = type;
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
 
@@ -363,15 +364,30 @@ LVar *find_lvar()
     error_at(tokens[token_pos]->str, "宣言されていない変数です");
 }
 
+Type *new_type(TypeKind kind)
+{
+    Type *type = calloc(1, sizeof(type));
+    type->type = kind;
+    return type;
+}
+
 // stmt() 内での変数の宣言について扱う　型部分だけ既に読み勧めている
 // token が識別子であることを確認し　初出変数であることを確認し　作成する
 // funcs[]->locals[]にlvar を登録する 多重定義はエラー
 Node *declare_lvar()
 {
-    if (!consume_ident())
+    // 型宣言を処理
+    Type *type = new_type(expect_vartype());
+
+    // * が続く限り処理する
+    while (consume(TK_RESERVED, "*"))
     {
-        error_at(tokens[token_pos]->str, "変数ではありません");
+        Type *next = new_type(PTR);
+        next->ptr_to = type;
+        type = next;
     }
+
+    expect_ident();
 
     // 現在のスコープの中を探索する
     LVar *lvar = find_lvar_within_block(val_of_block_nest());
@@ -383,7 +399,7 @@ Node *declare_lvar()
     }
 
     // 変数宣言なので上位ブロック深度に 合致する変数が存在するしないに関わらず　必ず新規登録する
-    new_lvar();
+    new_lvar(type);
 
     return create_node(ND_PUSH_0);
 }
@@ -441,14 +457,12 @@ void declare_arg()
     }
 
     // global変数を除き　その関数内ではじめて作成される変数
-    expect_vartype();
     declare_lvar();
 
     // ")" が出現するまで ", 変数"　を０回以上解析する
     while (!consume(TK_RESERVED, ")"))
     {
         expect(TK_RESERVED, ",");
-        expect_vartype();
         declare_lvar();
     }
 }
