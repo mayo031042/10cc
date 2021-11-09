@@ -67,6 +67,14 @@ Node *unary()
     {
         node = new_node(ND_SUB, new_node_num(0), primary());
     }
+    else if (consume(TK_RESERVED, "*"))
+    {
+        node = new_node(ND_DEREF, unary(), NULL);
+    }
+    else if (consume(TK_RESERVED, "&"))
+    {
+        node = new_node(ND_ADDR, unary(), NULL);
+    }
     else
     {
         node = primary();

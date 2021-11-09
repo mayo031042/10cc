@@ -51,6 +51,8 @@ typedef enum
     ND_ASSIGN,    // =
     ND_FUNC_CALL, // 関数呼び出し
     ND_LVAR,      // 変数
+    ND_ADDR,      // address
+    ND_DEREF,     // dereference
     ND_NUM,       // 数値
     ND_RETURN,    // return
     ND_IF,        // if 条件文とcmp 0 ,je

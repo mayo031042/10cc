@@ -38,6 +38,18 @@ void gen(Node *node)
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
+    // *x xの中身をアドレスと解釈、参照しスタックに積む
+    case ND_DEREF:
+        gen_lval(node->lhs);
+        printf("    pop rax\n");
+        printf("    mov rax, [rax]\n");
+        printf("    push rax\n");
+        return;
+    // &x
+    case ND_ADDR:
+        gen_lval(node->lhs);
+        return;
+
     // 関数呼び出し
     case ND_FUNC_CALL:
         gen_func_call(node);

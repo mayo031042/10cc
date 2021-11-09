@@ -55,8 +55,9 @@ void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
     {
-        error("右辺値ではありません\n");
+        error("左辺値ではありません\n");
     }
+
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
