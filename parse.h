@@ -5,9 +5,10 @@ bool current_token_is(TokenKind kind, char *op);
 bool consume(TokenKind kind, char *op);
 bool consume_keyword(TokenKind kind);
 bool consume_ident();
+bool current_token_is_type();
 
 bool expect(TokenKind kind, char *op);
-int expect_vartype();
+TypeKind expect_vartype();
 bool expect_ident();
 int expect_number();
 
