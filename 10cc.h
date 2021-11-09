@@ -80,14 +80,16 @@ struct Node
 };
 
 // LVar
+typedef enum
+{
+    INT, // 4
+    PTR, // 8
+} ty;
+
 typedef struct Type Type;
 struct Type
 {
-    enum
-    {
-        INT,
-        PTR,
-    } ty;
+    ty type;
     Type *ptr_to;
 };
 typedef struct LVar LVar;
