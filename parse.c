@@ -294,7 +294,7 @@ Node *stmt()
     {
         // 変数の宣言はcodegen() としては何も出力しない
         // : int
-        if (consume_keyword(TK_INT))
+        if (current_token_is_type())
         {
             node = declare_lvar();
         }
