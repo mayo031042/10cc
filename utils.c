@@ -74,3 +74,29 @@ void aaa()
 {
     fprintf(stderr, "\n\tnow-> %s\n", tokens[token_pos]->str);
 }
+
+int size_of(Type *type)
+{
+    switch (type->type)
+    {
+    case CHAR:
+        return 1;
+    case INT:
+        return 4;
+    case PTR:
+        return 8;
+    }
+}
+
+char *char_of(Type *type)
+{
+    switch (type->type)
+    {
+    case CHAR:
+        return "BYTE\0";
+    case INT:
+        return "DWORD\0";
+    case PTR:
+        return "QWORD\0";
+    }
+}

@@ -36,6 +36,31 @@ struct Token
     int len;
 };
 
+// LVar
+typedef enum
+{
+    CHAR, // 1
+    INT,  // 4
+    PTR,  // 8
+} TypeKind;
+
+typedef struct Type Type;
+struct Type
+{
+    TypeKind type;
+    Type *ptr_to;
+};
+
+typedef struct LVar LVar;
+struct LVar
+{
+    Type *type; // 変数の型
+    LVar *next;
+    char *name;
+    int len;
+    int offset; // RBPからの距離
+};
+
 // node
 typedef enum
 {
@@ -75,33 +100,9 @@ struct Node
     Node *rhs;
     Node *next;   // ND_BLOCK でのみ使用　最後はNULL であるようにする
     int offset;   // ND_LVAR でのみ使用
+    LVar *lvar;   // ND_LVAR でのみ使用
     int func_num; // ND_FUNC_CALL でのみ使用
     int val;
-};
-
-// LVar
-typedef enum
-{
-    CHAR, // 1
-    INT,  // 4
-    PTR,  // 8
-} TypeKind;
-
-typedef struct Type Type;
-struct Type
-{
-    TypeKind type;
-    Type *ptr_to;
-};
-
-typedef struct LVar LVar;
-struct LVar
-{
-    Type *type; // 変数の型
-    LVar *next;
-    char *name;
-    int len;
-    int offset; // RBPからの距離
 };
 
 // Func
@@ -145,6 +146,9 @@ void add_block_nest();
 void sub_block_nest();
 
 void aaa();
+
+int size_of(Type *type);
+char *char_of(Type *type);
 
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;    // 今見ているtokens の位置
