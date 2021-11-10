@@ -51,11 +51,16 @@ void gen_div()
 }
 
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
-void gen_lval(Node *node)
+void gen_addr(Node *node)
 {
+    // if (node->kind == ND_DEREF)
+    // {
+    //     node = node->lhs;
+    // }
+
     if (node->kind != ND_LVAR)
     {
-        error("左辺値ではありません\n");
+        error_at(tokens[token_pos]->str, "左辺値ではありません\n");
     }
 
     printf("    mov rax, rbp\n");
@@ -63,12 +68,25 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
-
-
+// unary() を計算する　結果をアドレスとして返す -> スルー
+// *を外す　ND_DEREF, ND_LVAR のどちらかのみがくるはず
 void gen_deref(Node *node)
 {
-    // 型からサイズを計算し　右辺値としてアドレスを算出する
-    gen_lval(node);
+    // 参照が外れきったら変数のアドレスを積む
+    if (node->kind == ND_LVAR)
+    {
+        gen_addr(node);
+        return;
+    }
+
+    // 変数でないなら参照であるはずである
+    if (node->kind != ND_DEREF)
+    {
+        error_at(tokens[token_pos]->str, "参照が正しくありません");
+    }
+
+    // 参照を１つ外す　すべて外れきると変数のアドレスが積まれているはずである
+    gen_deref(node->lhs);
     printf("    pop rax\n");
     printf("    mov rax, [rax]\n");
     printf("    push rax\n");

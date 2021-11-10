@@ -24,27 +24,27 @@ void gen(Node *node)
     // ストア 代入式
     case ND_ASSIGN:
         gen(node->lhs);
-        gen_lval(node->rhs);
+        gen_deref(node->rhs);
         printf("    pop rax\n");
         printf("    pop rdi\n");
         printf("    mov [rax], rdi\n");
         // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
         printf("    push rdi\n");
         return;
-    // ロード
+    // ロード アドレスに入っている値をスタックに積む
     case ND_LVAR:
-        gen_lval(node);
+        gen_addr(node);
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
-    // *x xの中身をアドレスと解釈、参照しスタックに積む
+    // *x 続くunary() をアドレス計算式として計算し　結果を左辺値のアドレスとしてpush する
     case ND_DEREF:
-        gen_deref(node->lhs);
+        gen_deref(node);
         return;
-    // &x
+    // &x　
     case ND_ADDR:
-        gen_lval(node->lhs);
+        gen_addr(node->lhs);
         return;
 
     // 関数呼び出し
