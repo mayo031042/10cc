@@ -51,6 +51,8 @@ void gen_div()
 }
 
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
+// addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
+// addr は変数として割り当てられている領域のみを対象とする点で異なる
 void gen_addr(Node *node)
 {
     if (node->kind != ND_LVAR)
@@ -64,8 +66,10 @@ void gen_addr(Node *node)
     printf("    push rax\n");
 }
 
-// unary() を計算する　結果をアドレスとして返す -> スルー
-// *を外す　ND_DEREF, ND_LVAR のどちらかのみがくるはず
+// unary() を計算する　結果をアドレスとして返す
+// 呼び出しの際　呼び出しもとで参照は外されない（ND_DEREFのまま引数に渡される）
+// addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
+// deref は変数として割り当てられていないようなアドレスも積むことができる
 void gen_deref(Node *node)
 {
     // 参照が外れきったら変数のアドレスを積む
@@ -81,11 +85,8 @@ void gen_deref(Node *node)
         error_at(tokens[token_pos]->str, "参照が正しくありません");
     }
 
-    // 参照を１つ外す　すべて外れきると変数のアドレスが積まれているはずである
-    gen_deref(node->lhs);
-    printf("    pop rax\n");
-    printf("    mov rax, [rax]\n");
-    printf("    push rax\n");
+    // 参照を１つ外す　まだ参照が続くならばgen() 内でまたgen_deref() が呼ばれる
+    gen(node->lhs);
 }
 
 // rsp は変化しない

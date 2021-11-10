@@ -18,22 +18,26 @@ void gen(Node *node)
         return;
 
     // 変数や関数について
+    // 変数の保持している値を積む
     case ND_LVAR:
         gen_addr(node);
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
         printf("    push rax\n");
         return;
-    // *x 続くunary() をアドレス計算式として計算し　結果を左辺値のアドレスとしてpush する
+    // *x 変数の保持している値をメモリであると解釈して積む
     case ND_DEREF:
         gen_deref(node);
+        printf("    pop rax\n");
+        printf("    mov rax, [rax]\n");
+        printf("    push rax\n");
         return;
-    // &x　
+    // &x 変数の割り当てられているアドレスを返す
     case ND_ADDR:
         gen_addr(node->lhs);
         return;
 
-    // 代入 適切なアドレスの値を書き換え結果を積む
+    // 代入 適切なアドレスに保持されている値を書き換え結果を積む
     case ND_ASSIGN:
         gen(node->lhs);
         gen_deref(node->rhs);
