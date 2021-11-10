@@ -1,5 +1,7 @@
 #!/bin/bash
 # 関数対応開始
+count=0
+
 assert() {
     expected="$1"
     input="$2"
@@ -10,8 +12,8 @@ assert() {
     actual="$?"
 
     if [ "$actual" = "$expected" ]; then
-        # echo "   $input => $actual"
-        echo "  OK  $actual"
+        echo "  OK  $count"
+        count=$((count += 1))
     else
         echo "$input => $expected expected, but got $actual"
         exit 1
@@ -31,6 +33,7 @@ assemble(){
 
 echo "TEST func"
 
+# 0
 assert 1 " int main(){ return 1;}"
 assert 1 " int main(){ int x; return 1;}"
 assert 1 " int main(){ int x; x=1; return x;}"
@@ -117,8 +120,7 @@ int main()
         int x;
     }
     return 1;
-}
-"
+}"
 
 assert 1 "
 int foo(int x)
@@ -128,9 +130,9 @@ int foo(int x)
 int main()
 {
     return foo(1);
-}
-"
+}"
 
+# 10
 assert 6 "
 int plus2(int x)
 {
@@ -179,8 +181,7 @@ int hoge(int x)
 int main()
 {
     return hoge(0);
-}
-"
+}"
 
 assert 40 "
 int main()
@@ -214,6 +215,7 @@ int main()
     }
 }"
 
+# 17
 assert 2 "
 int main()
 {
