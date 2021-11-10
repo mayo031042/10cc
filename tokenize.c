@@ -73,16 +73,14 @@ void *tokenize()
         }
 
         // : { or }
-        if (strchr("{}", *user_input_pos))
+        if (*user_input_pos == '{')
         {
-            if (*user_input_pos == '{')
-            {
-                new_token(TK_BLOCK_FRONT, 1);
-            }
-            else
-            {
-                new_token(TK_BLOCK_END, 1);
-            }
+            new_token(TK_BLOCK_FRONT, 1);
+            continue;
+        }
+        else if (*user_input_pos == '}')
+        {
+            new_token(TK_BLOCK_END, 1);
             continue;
         }
 
@@ -103,8 +101,9 @@ void *tokenize()
             }
             continue;
         }
+
         // 1文字解釈ゾーン
-        else if (strchr("+-*/%&()=<>,;", *user_input_pos))
+        if (strchr("+-*/%&()=<>,;", *user_input_pos))
         {
             new_token(TK_RESERVED, 1);
             continue;
