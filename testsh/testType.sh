@@ -119,7 +119,6 @@ int main()
     return 1;
 }
 "
-echo "OK1"
 
 assert 1 "
 int foo(int x)
@@ -226,5 +225,16 @@ int main()
     ***ppp=2;
     return x;
 }"
+
+# C の仕様に反するが以下は正常に動作する
+# assert 0 "
+# int main()
+# {
+#     int x; int y;
+#     x=1; y=2;
+#     int *p; p=&x;
+#     *(p-8)=0;
+#     return y;
+# }"
 
 echo -e "\n         You are a god-dammit genius !!\n"
