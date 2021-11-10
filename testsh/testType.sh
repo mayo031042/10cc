@@ -4,9 +4,9 @@ assert() {
     expected="$1"
     input="$2"
 
-    ./bin/10cc "$input" > tmp.s
-    gcc -o tmp tmp.s
-    ./tmp
+    ./bin/10cc "$input" > tmp/tmp.s
+    gcc -o tmp/tmp tmp/tmp.s
+    ./tmp/tmp
     actual="$?"
 
     if [ "$actual" = "$expected" ]; then
@@ -22,7 +22,7 @@ assemble(){
     expected="$1"
     input="$2"
 
-    ./bin/10cc "$input" > tmp.s
+    ./bin/10cc "$input" > tmp/tmp.s
     echo "compiled"
 
     # ./optimize

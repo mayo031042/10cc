@@ -70,6 +70,6 @@ s: tmp.s
 	./tmp
 
 clean:
-	rm -f ./bin/10cc *.o *~ tmp* optimize ./obj/*
+	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/*
 
 .PHONY: test clean
