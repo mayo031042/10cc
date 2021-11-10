@@ -193,21 +193,37 @@ return 41;
 return 40;
 }"
 
-assert 1 "
-int main()
-{
-    int x;
-    &x;
-    *x;
-    return 1;
-}"
-
 assert 3 "
 int main()
 {
     int x;  x=1;
     int *y; y=&x;
     *y=3;
+    return x;
+}"
+
+assert 3 "
+int main()
+{
+    int x; x=1;
+    {
+        int *y; y=&x;
+        {
+            *y=3;   
+        }
+        return x;   
+    }
+}"
+
+assert 2 "
+int main()
+{
+    int x;      x=1;
+    int *p;     p=&x;
+    int **pp;   pp=&p;
+    int ***ppp; ppp=&pp;
+
+    ***ppp=2;
     return x;
 }"
 
