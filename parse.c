@@ -18,13 +18,14 @@ Node *primary()
         node = expr();
         expect(TK_RESERVED, ")");
     }
+
     // 変数,関数
     else if (consume_ident())
     {
         // 関数かチェック
         if (current_token_is(TK_RESERVED, "("))
         {
-            // 関数なら　呼び出しである
+            // 関数なので　関数呼び出しである
             node = create_node(ND_FUNC_CALL);
 
             node->func_num = find_func();
@@ -36,13 +37,15 @@ Node *primary()
             // 引数を解釈する
             node->lhs = build_arg();
         }
+
         else
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_ident(find_lvar());
         }
     }
-    // 数値なので
+
+    // 数値
     else
     {
         node = new_node_num(expect_number());
@@ -106,7 +109,7 @@ Node *mul()
         {
             node = new_node(ND_DIV_REM, node, unary());
         }
-        // : break
+
         else
         {
             break;
@@ -134,7 +137,7 @@ Node *add()
         {
             node = new_node(ND_SUB, node, mul());
         }
-        // : break
+
         else
         {
             break;
@@ -170,7 +173,7 @@ Node *relational()
         {
             node = new_node(ND_LT, add(), node);
         }
-        // : break
+
         else
         {
             break;
@@ -196,7 +199,7 @@ Node *equality()
         {
             node = new_node(ND_NE, node, relational());
         }
-        // : break
+
         else
         {
             break;
@@ -344,7 +347,6 @@ void *function()
 
         // 識別子から　今までに登録されている関数列を全探索する
         int declared = find_func();
-        // func_pos = find_func();
 
         if (declared == -1)
         {
@@ -353,7 +355,6 @@ void *function()
             funcs[i + 1] = NULL;
             func_pos = i;
             i++;
-            // 引数リストの登録
             declare_arg();
         }
         else
