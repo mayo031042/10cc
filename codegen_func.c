@@ -53,16 +53,12 @@ void gen_div()
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 void gen_addr(Node *node)
 {
-    // if (node->kind == ND_DEREF)
-    // {
-    //     node = node->lhs;
-    // }
-
     if (node->kind != ND_LVAR)
     {
         error_at(tokens[token_pos]->str, "左辺値ではありません\n");
     }
 
+    // rbp とoffsset からアドレスを計算し積む
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");

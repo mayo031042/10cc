@@ -2,9 +2,9 @@
 
 void gen(Node *node)
 {
-    // NOPや 数値のみをpush するnode を処理
     switch (node->kind)
     {
+    // NOP か数値を積む
     case ND_NOP:
         return;
     case ND_PUSH_1:
@@ -16,22 +16,8 @@ void gen(Node *node)
     case ND_NUM:
         printf("    push %d\n", node->val);
         return;
-    }
 
-    // 変数や関数呼び出しを処理
-    switch (node->kind)
-    {
-    // ストア 代入式
-    case ND_ASSIGN:
-        gen(node->lhs);
-        gen_deref(node->rhs);
-        printf("    pop rax\n");
-        printf("    pop rdi\n");
-        printf("    mov [rax], rdi\n");
-        // 代入式自体の評価は　左辺の値に同じ　→　代入式全体の計算結果(=左辺)はstack に積まれる
-        printf("    push rdi\n");
-        return;
-    // ロード アドレスに入っている値をスタックに積む
+    // 変数や関数について
     case ND_LVAR:
         gen_addr(node);
         printf("    pop rax\n");
@@ -47,15 +33,22 @@ void gen(Node *node)
         gen_addr(node->lhs);
         return;
 
+    // 代入 適切なアドレスの値を書き換え結果を積む
+    case ND_ASSIGN:
+        gen(node->lhs);
+        gen_deref(node->rhs);
+        printf("    pop rax\n");
+        printf("    pop rdi\n");
+        printf("    mov [rax], rdi\n");
+        printf("    push rdi\n");
+        return;
+
     // 関数呼び出し
     case ND_FUNC_CALL:
         gen_func_call(node);
         return;
-    }
 
-    // ループに関するnode を処理
-    switch (node->kind)
-    {
+    // ループ
     case ND_FOR_WHILE:
         gen_for_while(node);
         return;
@@ -68,10 +61,8 @@ void gen(Node *node)
     case ND_BREAK:
         printf("    jmp .Lbrk%d\n", stack_front());
         return;
-    }
 
-    switch (node->kind)
-    {
+    // その他
     case ND_RETURN:
         gen(node->lhs);
         printf("    pop rax\n");
@@ -89,7 +80,6 @@ void gen(Node *node)
 
     gen(node->lhs);
     gen(node->rhs);
-
     // raxが左辺　rdiが右辺
     printf("    pop rdi\n");
     printf("    pop rax\n");
