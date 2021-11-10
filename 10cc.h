@@ -82,8 +82,9 @@ struct Node
 // LVar
 typedef enum
 {
-    INT, // 4
-    PTR, // 8
+    CHAR, // 1
+    INT,  // 4
+    PTR,  // 8
 } TypeKind;
 
 typedef struct Type Type;

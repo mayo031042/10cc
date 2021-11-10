@@ -37,6 +37,7 @@ echo "TEST func"
 assert 1 " int main(){ return 1;}"
 assert 1 " int main(){ int x; return 1;}"
 assert 1 " int main(){ int x; x=1; return x;}"
+assert 1 " int main(){ int i; for(i=0;i<10000;i+=1){ i; } return 1;}"
 
 assert 42 "
 int foo()
@@ -122,6 +123,7 @@ int main()
     return 1;
 }"
 
+# 10
 assert 1 "
 int foo(int x)
 {
@@ -132,7 +134,6 @@ int main()
     return foo(1);
 }"
 
-# 10
 assert 6 "
 int plus2(int x)
 {
@@ -215,7 +216,7 @@ int main()
     }
 }"
 
-# 17
+# 18
 assert 2 "
 int main()
 {
