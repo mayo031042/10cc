@@ -58,5 +58,9 @@ bool commentout()
         return true;
     }
 
-    return false;
+    // コメントアウトでなければfalse を返す
+    else
+    {
+        return false;
+    }
 }
