@@ -164,6 +164,7 @@ void gen_else(Node *node, int end_label)
         gen(node);
         return;
     }
+
     gen_if(node->lhs, end_label);
     gen_else(node->rhs, end_label);
 }

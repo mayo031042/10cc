@@ -9,7 +9,7 @@ void compile(char *p)
     fprintf(stderr, "t");
 
     function();
-    fprintf(stderr, "f");
+    fprintf(stderr, "p");
 
     code_gen();
     fprintf(stderr, "c");
