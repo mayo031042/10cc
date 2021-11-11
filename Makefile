@@ -27,7 +27,7 @@ HEADS=$(wildcard *.h)
 # 	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
 
 # 以下を変数等用いて書きたい
-10cc: obj/main.o obj/utils.o obj/tokenize.o obj/tokenize_func.o obj/parse.o obj/parse_func.o obj/codegen.o obj/codegen_func.o 
+10cc: obj/main.o obj/utils.o obj/tokenize.o obj/tokenize_func.o obj/parse.o obj/parse_func.o obj/node.o obj/lvar.o obj/func.o obj/type.o obj/codegen.o obj/codegen_func.o 
 	$(CC) -o $(TARDIR)/$@ $^ $(LDFLAGS)
 
 # 問題としては　obj/ の接頭語が正しく各単語に展開されない　
@@ -53,6 +53,18 @@ obj/parse.o: parse.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/parse_func.o: parse_func.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+obj/node.o: node.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+obj/lvar.o: lvar.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+obj/func.o: func.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+obj/type.o: type.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 obj/codegen.o: codegen.c
