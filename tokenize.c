@@ -73,6 +73,21 @@ void *tokenize()
             new_token(TK_BREAK, 5);
             continue;
         }
+        else if (is_keyword("sizeof"))
+        {
+            new_token(TK_SIZEOF, 6);
+            continue;
+        }
+        else if (is_keyword("switch"))
+        {
+            new_token(TK_SWITCH, 6);
+            continue;
+        }
+        else if (is_keyword("case"))
+        {
+            new_token(TK_CASE, 4);
+            continue;
+        }
 
         // : { }
         if (*user_input_pos == '{')
@@ -110,7 +125,7 @@ void *tokenize()
             new_token(TK_OPERATOR, 1);
             continue;
         }
-        else if (strchr("()=<>,;", *user_input_pos))
+        else if (strchr("()=<>,:;", *user_input_pos))
         {
             new_token(TK_RESERVED, 1);
             continue;

@@ -6,13 +6,13 @@ void compile(char *p)
 {
     user_input = p;
     tokenize();
-    fprintf(stderr, "t");
+    fprintf(stderr, "T");
 
     function();
-    fprintf(stderr, "p");
+    fprintf(stderr, "P");
 
     code_gen();
-    fprintf(stderr, "c");
+    fprintf(stderr, "C");
 }
 
 int main(int argc, char **argv)
