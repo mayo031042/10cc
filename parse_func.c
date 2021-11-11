@@ -29,7 +29,7 @@ bool expect(TokenKind kind, char *op)
     {
         return true;
     }
-    
+
     error_at(tokens[token_pos]->str, "%cではありません\n", op);
 }
 
@@ -209,6 +209,13 @@ Node *new_node_else()
     }
 
     return node;
+}
+
+// sizeof に続くunary() をパースする　得られた結果のnode のサイズのnd_num を登録する
+Node *new_node_sizeof()
+{
+    Node *node = unary();
+    return new_node_num(size_of_node(node));
 }
 
 // 孫node に引数順のnode を持つnode を作成して返す

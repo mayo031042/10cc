@@ -316,6 +316,11 @@ Node *stmt()
         {
             node = create_node(ND_BREAK);
         }
+        // : sizeof
+        else if (consume_keyword(TK_SIZEOF))
+        {
+            node = new_node_sizeof();
+        }
         else
         {
             node = expr();

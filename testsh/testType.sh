@@ -45,10 +45,8 @@ int foo()
     return 42;
 }
 int main()
-{
-    int x;
-    x=foo();
-    return x;
+{   
+    return foo();
 }"
 
 assert 5 "
@@ -208,8 +206,8 @@ int main()
 {
     int x; x=1;
     {
-        int *y; y=&x;
         {
+            int *y; y=&x;
             *y=3;   
         }
         return x;   
