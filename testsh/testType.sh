@@ -229,6 +229,21 @@ int main()
     return x;
 }"
 
+assert 1 "
+int foo(int *p)
+{
+    int x;    x=2;  p=&x;
+    int **pp; pp=&p;
+    **pp=1;
+    return x;
+}
+int main()
+{
+    int *p;
+    return foo(p);
+}"
+
+
 # C の仕様に反するが以下は正常に動作する
 # assert 0 "
 # int main()
