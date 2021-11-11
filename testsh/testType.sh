@@ -241,16 +241,27 @@ int main()
     return foo(p);
 }"
 
+assert 0 "
+int main()
+{
+    int x; x=1; 
+    int y; y=2;
+    int z; z=3;
+    int *p; p=&y;
 
-# C の仕様に反するが以下は正常に動作する
-# assert 0 "
-# int main()
-# {
-#     int x; int y;
-#     x=1; y=2;
-#     int *p; p=&x;
-#     *(p-8)=0;
-#     return y;
-# }"
+    *(p+1)=10;
+    if(x!=10) return 1;
+
+    *(p-1)=11;
+    if(z!=11) return 1;
+
+    p=&z;
+    p+=1; p+=1;
+
+    x=0; 
+    return *p;
+}"
+
+
 
 echo -e "\n         You are a god-dammit genius !!\n"

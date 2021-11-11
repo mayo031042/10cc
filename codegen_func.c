@@ -88,14 +88,6 @@ void gen_epilogue()
     printf("    ret\n");
 }
 
-// rax = rax / rdi;
-// rdx = rax % rdi;
-void gen_div()
-{
-    printf("    cqo\n");
-    printf("    idiv rdi\n");
-}
-
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
 // addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
 // addr は変数として割り当てられている領域のみを対象とする点で異なる
@@ -289,4 +281,117 @@ void gen_block(Node *node)
     printf("    push rax\n");
 
     sub_block_nest();
+}
+
+int cmp_TypeKind(Node *node)
+{
+    TypeKind l_kind = node->lhs->type->kind;
+    TypeKind r_kind = node->rhs->type->kind;
+
+    if (l_kind < r_kind)
+    {
+        return -1;
+    }
+    else if (l_kind == r_kind)
+    {
+        return 0;
+    }
+    else if (l_kind > r_kind)
+    {
+        return 1;
+    }
+}
+
+// 両辺のtypeKind を比較して異なる場合　大きい方に揃える
+void gen_cast(Node *node)
+{
+    switch (cmp_TypeKind(node))
+    {
+    case -1:
+        node->type->kind = node->rhs->type->kind;
+        return;
+    case 0:
+        return;
+    case 1:
+        node->type->kind = node->lhs->type->kind;
+        return;
+    }
+}
+
+// 加算を計算する　一方がポインタの場合　もう一方をそのサイズ分掛け算する
+void gen_add(Node *node)
+{
+    int cmp = cmp_TypeKind(node);
+
+    if (cmp == -1)
+    {
+        if (node->rhs->type->kind == PTR)
+        {
+            // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
+            printf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
+        }
+    }
+    else if (cmp == 0)
+    {
+        // 両方同じサイズの型なのでポインタ同士でなければ問題ない
+        if (node->lhs->type->kind == PTR)
+        {
+            error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
+        }
+    }
+    else
+    {
+        if (node->lhs->type->kind == PTR)
+        {
+            // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
+            printf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
+        }
+    }
+
+    printf("    add rax, rdi\n");
+}
+
+void gen_sub(Node *node)
+{
+    int cmp = cmp_TypeKind(node);
+
+    if (cmp == -1)
+    {
+        if (node->rhs->type->kind == PTR)
+        {
+            // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
+            printf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
+        }
+    }
+    else if (cmp == 0)
+    {
+        // 両方同じサイズの型なのでポインタ同士でなければ問題ない
+        if (node->lhs->type->kind == PTR)
+        {
+            error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
+        }
+    }
+    else
+    {
+        if (node->lhs->type->kind == PTR)
+        {
+            // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
+            printf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
+        }
+    }
+
+    printf("    sub rax, rdi\n");
+}
+
+void gen_mul()
+{
+    printf("    imul rax, rdi\n");
+}
+
+// rax = rax / rdi;
+// rdx = rax % rdi;
+void gen_div()
+{
+    printf("    cqo\n");
+    printf("    idiv rdi\n");
 }

@@ -79,6 +79,9 @@ void gen(Node *node)
 
     gen(node->lhs);
     gen(node->rhs);
+
+    gen_cast(node);
+
     // raxが左辺　rdiが右辺
     printf("    pop rdi\n");
     printf("    pop rax\n");
@@ -88,13 +91,12 @@ void gen(Node *node)
     {
     // 四則演算
     case ND_ADD:
-        printf("    add rax, rdi\n");
+        gen_add(node);
         break;
     case ND_SUB:
-        printf("    sub rax, rdi\n");
+        gen_sub(node);
         break;
     case ND_MUL:
-        printf("    imul rax, rdi\n");
         break;
     case ND_DIV:
         gen_div();
