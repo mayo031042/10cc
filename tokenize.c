@@ -12,12 +12,14 @@ void *tokenize()
 
     while (*user_input_pos)
     {
+        // 空白飛ばし
         if (isspace(*user_input_pos))
         {
             user_input_pos++;
             continue;
         }
 
+        // コメントアウト飛ばし
         if (commentout())
         {
             continue;
@@ -72,7 +74,7 @@ void *tokenize()
             continue;
         }
 
-        // : { or }
+        // : { }
         if (*user_input_pos == '{')
         {
             new_token(TK_BLOCK_FRONT, 1);
@@ -97,13 +99,18 @@ void *tokenize()
             }
             else
             {
-                new_token(TK_ASSIGN_RESERVED, 2);
+                new_token(TK_ASSIGN_OPERATOR, 2);
             }
             continue;
         }
 
         // 1文字解釈ゾーン
-        if (strchr("+-*/%&()=<>,;", *user_input_pos))
+        if (strchr("+-*/%&", *user_input_pos))
+        {
+            new_token(TK_OPERATOR, 1);
+            continue;
+        }
+        else if (strchr("()=<>,;", *user_input_pos))
         {
             new_token(TK_RESERVED, 1);
             continue;

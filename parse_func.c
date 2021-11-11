@@ -17,6 +17,7 @@ bool consume(TokenKind kind, char *op)
     {
         return false;
     }
+
     token_pos++;
     return true;
 }
@@ -28,6 +29,7 @@ bool expect(TokenKind kind, char *op)
     {
         return true;
     }
+    
     error_at(tokens[token_pos]->str, "%cではありません\n", op);
 }
 
@@ -38,6 +40,7 @@ bool consume_keyword(TokenKind kind)
     {
         return false;
     }
+
     token_pos++;
     return true;
 }
@@ -49,6 +52,7 @@ bool consume_ident()
     {
         return false;
     }
+
     ident_pos = token_pos;
     token_pos++;
     return true;
@@ -60,6 +64,7 @@ bool expect_ident()
     {
         return true;
     }
+
     error_at(tokens[token_pos]->str, "識別子ではありません");
 }
 
@@ -94,6 +99,7 @@ int expect_number()
     {
         error_at(tokens[token_pos]->str, "数値ではありません\n");
     }
+
     int val = tokens[token_pos]->val;
     token_pos++;
     return val;
@@ -381,7 +387,7 @@ Node *declare_lvar()
     Type *type = new_type(expect_vartype());
 
     // * が続く限り処理する
-    while (consume(TK_RESERVED, "*"))
+    while (consume(TK_OPERATOR, "*"))
     {
         Type *next = new_type(PTR);
         next->ptr_to = type;

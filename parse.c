@@ -61,20 +61,20 @@ Node *unary()
     Node *node;
 
     // : +a
-    if (consume(TK_RESERVED, "+"))
+    if (consume(TK_OPERATOR, "+"))
     {
         node = primary();
     }
     // : -a -> 0-a に展開
-    else if (consume(TK_RESERVED, "-"))
+    else if (consume(TK_OPERATOR, "-"))
     {
         node = new_node(ND_SUB, new_node_num(0), primary());
     }
-    else if (consume(TK_RESERVED, "*"))
+    else if (consume(TK_OPERATOR, "*"))
     {
         node = new_node(ND_DEREF, unary(), NULL);
     }
-    else if (consume(TK_RESERVED, "&"))
+    else if (consume(TK_OPERATOR, "&"))
     {
         node = new_node(ND_ADDR, unary(), NULL);
     }
@@ -95,17 +95,17 @@ Node *mul()
     for (;;)
     {
         // : *
-        if (consume(TK_RESERVED, "*"))
+        if (consume(TK_OPERATOR, "*"))
         {
             node = new_node(ND_MUL, node, unary());
         }
         // ; /
-        else if (consume(TK_RESERVED, "/"))
+        else if (consume(TK_OPERATOR, "/"))
         {
             node = new_node(ND_DIV, node, unary());
         }
         // : %
-        else if (consume(TK_RESERVED, "%"))
+        else if (consume(TK_OPERATOR, "%"))
         {
             node = new_node(ND_DIV_REM, node, unary());
         }
@@ -128,12 +128,12 @@ Node *add()
     for (;;)
     {
         // : a+b
-        if (consume(TK_RESERVED, "+"))
+        if (consume(TK_OPERATOR, "+"))
         {
             node = new_node(ND_ADD, node, mul());
         }
         // : a-b
-        else if (TK_RESERVED, consume(TK_RESERVED, "-"))
+        else if (consume(TK_OPERATOR, "-"))
         {
             node = new_node(ND_SUB, node, mul());
         }
@@ -221,25 +221,25 @@ Node *assign()
         node = new_node(ND_ASSIGN, assign(), node);
     }
 
-    else if (tokens[token_pos]->kind == TK_ASSIGN_RESERVED)
+    else if (tokens[token_pos]->kind == TK_ASSIGN_OPERATOR)
     {
-        if (consume(TK_ASSIGN_RESERVED, "+="))
+        if (consume(TK_ASSIGN_OPERATOR, "+="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
         }
-        else if (consume(TK_ASSIGN_RESERVED, "-="))
+        else if (consume(TK_ASSIGN_OPERATOR, "-="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
         }
-        else if (consume(TK_ASSIGN_RESERVED, "*="))
+        else if (consume(TK_ASSIGN_OPERATOR, "*="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
         }
-        else if (consume(TK_ASSIGN_RESERVED, "/="))
+        else if (consume(TK_ASSIGN_OPERATOR, "/="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
         }
-        else if (consume(TK_ASSIGN_RESERVED, "%="))
+        else if (consume(TK_ASSIGN_OPERATOR, "%="))
         {
             node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
         }
