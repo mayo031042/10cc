@@ -3,7 +3,6 @@
 // tokens[] を見てnode 作成を補助する関数
 
 // parce_func.c
-
 // token の判別だけを行いtoken_pos を進めない関数 -> current...
 bool current_token_is(TokenKind kind, char *op);
 bool current_token_is_type();

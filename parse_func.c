@@ -5,6 +5,7 @@
 // 最後に確認した識別子のtoken_pos
 int ident_pos = 0;
 
+// 今見ているtoken と引数を比較し一致するならtrue
 bool current_token_is(TokenKind kind, char *op)
 {
     return (tokens[token_pos]->kind == kind && tokens[token_pos]->len == strlen(op) && !memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len));
@@ -22,7 +23,7 @@ bool current_token_is_type()
     return false;
 }
 
-// 今見ているtoken と引数の文字列が一致していたら　true を返しtoken を読み進める
+// 今見ているtoken と引数の文字列が一致していたならtrue を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
 {
     if (!current_token_is(kind, op))
