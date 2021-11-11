@@ -17,10 +17,10 @@ int find_func()
 
 // 新しいfuncに len, max_offset, defined, name を設定
 // 型の登録はとりあえずint のみ
-Func *new_func(Token *tok)
+Func *new_func(Token *tok, Type *type)
 {
     Func *func = calloc(1, sizeof(Func));
-    func->kind = FN_INT; // 要　変更
+    func->type = type; // 要　変更
     func->defined = false;
     func->len = tok->len;
     func->max_offset = 0;

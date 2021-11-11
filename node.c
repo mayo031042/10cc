@@ -6,6 +6,7 @@ Node *create_node(NodeKind kind)
     node->lhs = NULL;
     node->rhs = NULL;
     node->kind = kind;
+    node->type=new_type(INT);
     return node;
 }
 

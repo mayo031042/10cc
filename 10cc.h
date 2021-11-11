@@ -111,15 +111,10 @@ struct Node
 };
 
 // Func
-typedef enum
-{
-    FN_INT, // int
-} FuncKind;
-
 typedef struct Func Func;
 struct Func
 {
-    FuncKind kind;     // 関数の型
+    Type *type;     // 関数の型  
     LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
     Node *definition;  // 定義
     char name[100];    // 関数名

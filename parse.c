@@ -34,6 +34,9 @@ Node *primary()
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
 
+            // node のtype をfunc のtype に揃える
+            node->type = funcs[node->func_num]->type;
+
             // 引数を解釈する
             node->lhs = build_arg();
         }
@@ -42,6 +45,7 @@ Node *primary()
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_ident(find_lvar());
+            node->type = node->lvar->type;
         }
     }
 
@@ -347,7 +351,7 @@ void *function()
 
     while (!at_eof())
     {
-        expect_vartype();
+        Type *type = new_type(expect_vartype());
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
@@ -356,7 +360,7 @@ void *function()
         if (declared == -1)
         {
             // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
-            funcs[i] = new_func(tokens[val_of_ident_pos()]);
+            funcs[i] = new_func(tokens[val_of_ident_pos()], type);
             funcs[i + 1] = NULL;
             func_pos = i;
             i++;
