@@ -75,6 +75,21 @@ void aaa()
     fprintf(stderr, "\n\tnow-> %s\n", tokens[token_pos]->str);
 }
 
+int size_of_lvar(Node *node)
+{
+    if (node->lvar)
+    {
+        return size_of(node->lvar->type);
+    }
+
+    else if (node->kind == ND_DEREF)
+    {
+        return 8;
+    }
+
+    // error();
+}
+
 int size_of(Type *type)
 {
     switch (type->type)
