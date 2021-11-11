@@ -75,7 +75,7 @@ void aaa()
     fprintf(stderr, "\n\tnow-> %s\n", tokens[token_pos]->str);
 }
 
-int size_of_lvar(Node *node)
+int size_of_node(Node *node)
 {
     if (node->lvar)
     {

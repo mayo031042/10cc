@@ -16,7 +16,7 @@ void gen_cng_addr_to_imm(Node *node)
 {
     printf("    pop rax\n");
 
-    switch (size_of_lvar(node))
+    switch (size_of_node(node))
     {
     case 1:
         printf("    movsx rax, BYTE PTR [rax]\n");
@@ -38,7 +38,7 @@ void gen_mov_imm_to_addr(Node *node)
     printf("    pop rax\n");
     printf("    pop rdi\n");
 
-    switch (size_of_lvar(node))
+    switch (size_of_node(node))
     {
     case 1:
         printf("    mov BYTE PTR [rax], di\n");
