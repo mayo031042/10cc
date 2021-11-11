@@ -33,6 +33,7 @@ Node *new_node_lvar(LVar *lvar)
     Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
     node->lvar = lvar;
+    node->type = lvar->type;
     return node;
 }
 

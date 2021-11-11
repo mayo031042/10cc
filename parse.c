@@ -45,7 +45,6 @@ Node *primary()
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_lvar(find_lvar());
-            node->type = node->lvar->type;
         }
     }
 
