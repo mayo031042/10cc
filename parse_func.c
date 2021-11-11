@@ -368,7 +368,7 @@ LVar *find_lvar()
 Type *new_type(TypeKind kind)
 {
     Type *type = calloc(1, sizeof(type));
-    type->type = kind;
+    type->kind = kind;
     return type;
 }
 

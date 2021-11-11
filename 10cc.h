@@ -47,7 +47,7 @@ typedef enum
 typedef struct Type Type;
 struct Type
 {
-    TypeKind type;
+    TypeKind kind;
     Type *ptr_to;
 };
 

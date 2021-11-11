@@ -92,7 +92,7 @@ int size_of_lvar(Node *node)
 
 int size_of(Type *type)
 {
-    switch (type->type)
+    switch (type->kind)
     {
     case CHAR:
         return 1;
@@ -105,7 +105,7 @@ int size_of(Type *type)
 
 char *char_of(Type *type)
 {
-    switch (type->type)
+    switch (type->kind)
     {
     case CHAR:
         return "BYTE\0";
