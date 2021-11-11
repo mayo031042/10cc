@@ -1,5 +1,6 @@
 #include "parse.h"
 
+// nodekind が引数であるようなnode をメモリ確保とint type 指定だけする
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
