@@ -1,6 +1,7 @@
 #include "codegen.h"
 
-char *regi[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+char *regi64[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+char *regi32[] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 // スタックトップと引数をcmp する 条件分岐jmp 命令の直前に使用
 void cmp_rax(int val)
@@ -9,13 +10,52 @@ void cmp_rax(int val)
     printf("    cmp rax, %d\n", val);
 }
 
+// スタックトップをアドレスと解釈し　そのアドレスに入っている値に変更する
+// そのアドレスがどのサイズの型に対応しているかを判断し適切なアセンブリを出力する
+void gen_cng_addr_to_imm(Node *node)
+{
+    printf("    pop rax\n");
+
+    switch (size_of_lvar(node))
+    {
+    case 4:
+        printf("    movsx rax, DWORD PTR [rax]\n");
+        break;
+    case 8:
+        printf("    mov rax, [rax]\n");
+        break;
+    }
+
+    printf("    push rax\n");
+}
+
+// スタックから２つ取り出し　変数に対応した適切なサイズ分　メモリに移動する
+void gen_mov_imm_to_addr(Node *node)
+{
+    printf("    pop rax\n");
+    printf("    pop rdi\n");
+
+    switch (size_of_lvar(node))
+    {
+    case 4:
+        printf("    mov DWORD PTR [rax], edi\n");
+        break;
+    case 8:
+        printf("    mov [rax], rdi\n");
+        break;
+    }
+
+    printf("    push rdi\n");
+}
+
 // 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
 void pop_regi()
 {
     int i = 0;
     for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
     {
-        printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi[i]);
+        printf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
+        // printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
         i++;
     }
 }
@@ -70,6 +110,7 @@ void gen_addr(Node *node)
 // 呼び出しの際　呼び出しもとで参照は外されない（ND_DEREFのまま引数に渡される）
 // addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
 // deref は変数として割り当てられていないようなアドレスも積むことができる
+// assign で参照外しとアドレス積みのどちらにも対応する必要があるので両対応で実装
 void gen_deref(Node *node)
 {
     // 参照が外れきったら変数のアドレスを積む
@@ -104,7 +145,7 @@ void push_regi(Node *node)
     // スタックに値を積んだことにより順番が逆転し 先頭の引数から処理される
     for (n = node; n; n = n->next)
     {
-        printf("    pop %s\n", regi[i]);
+        printf("    pop %s\n", regi64[i]);
         i++;
     }
 }

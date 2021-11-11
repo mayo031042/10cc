@@ -17,21 +17,19 @@ void gen(Node *node)
         printf("    push %d\n", node->val);
         return;
 
-    // 変数や関数について
     // 変数の保持している値を積む
+    // 変数をちょうど１つ含むようなnode であることが確定している
     case ND_LVAR:
         gen_addr(node);
-        printf("    pop rax\n");
-        printf("    mov rax, [rax]\n");
-        printf("    push rax\n");
+        gen_cng_addr_to_imm(node);
         return;
     // *x 変数の保持している値をメモリであると解釈して積む
+    // PTR 型を指していることが確定している
     case ND_DEREF:
         gen_deref(node);
-        printf("    pop rax\n");
-        printf("    mov rax, [rax]\n");
-        printf("    push rax\n");
+        gen_cng_addr_to_imm(node);
         return;
+
     // &x 変数の割り当てられているアドレスを返す
     case ND_ADDR:
         gen_addr(node->lhs);
@@ -41,10 +39,7 @@ void gen(Node *node)
     case ND_ASSIGN:
         gen(node->lhs);
         gen_deref(node->rhs);
-        printf("    pop rax\n");
-        printf("    pop rdi\n");
-        printf("    mov [rax], rdi\n");
-        printf("    push rdi\n");
+        gen_mov_imm_to_addr(node->rhs);
         return;
 
     // 関数呼び出し
