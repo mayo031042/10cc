@@ -6,7 +6,7 @@ Node *create_node(NodeKind kind)
     node->lhs = NULL;
     node->rhs = NULL;
     node->kind = kind;
-    node->type=new_type(INT);
+    node->type = new_type(INT);
     return node;
 }
 
@@ -28,7 +28,7 @@ Node *new_node_num(int val)
 }
 
 // LVarを参照する
-Node *new_node_ident(LVar *lvar)
+Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
