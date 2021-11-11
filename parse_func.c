@@ -143,6 +143,7 @@ Node *new_node_ident(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
+    node->lvar = lvar;
     return node;
 }
 
@@ -316,7 +317,7 @@ LVar *new_lvar(Type *type)
     lvar->len = tokens[val_of_ident_pos()]->len;
 
     // 8 は自分の型に合わせて　変更
-    lvar->offset = culc_offset() + 8;
+    lvar->offset = culc_offset() + size_of(type);
 
     if (funcs[func_pos]->max_offset < lvar->offset)
     {
