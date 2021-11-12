@@ -37,7 +37,7 @@ echo "TEST func"
 assert 1 " int main(){ return 1;}"
 assert 1 " int main(){ int x; return 1;}"
 assert 1 " int main(){ int x; x=1; return x;}"
-assert 1 " int main(){ int i; for(i=0;i<10000;i+=1){ i; } return 1;}"
+assert 1 " int main(){ int i; for(i=0;i<10000;i+=1){ i; continue; } return 1;}"
 
 assert 42 "
 int foo()
@@ -279,7 +279,7 @@ int main()
     
     if(sizeof(1+2) != 4) return 7;
     if(sizeof(*p=0) != 4) return 8;
-    
+
     // sizeof の中身は実行されないので　ｘの値は変更されない
     if(x!=1) return 9;
 

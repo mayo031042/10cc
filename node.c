@@ -33,7 +33,7 @@ Node *new_node_lvar(LVar *lvar)
     Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
     node->lvar = lvar;
-    node->type = lvar->type;
+    // node->type = lvar->type;
     return node;
 }
 
@@ -233,6 +233,11 @@ int size_of_node(Node *node)
 // 四則演算やderef でもINTのままであるため　それらを変更する
 Type *type_of_node(Node *node)
 {
+    if (node == NULL)
+    {
+        return NULL;
+    }
+
     // 既にType が作成されている場合は探索済みである
     if (node->type)
     {
@@ -257,6 +262,7 @@ Type *type_of_node(Node *node)
     {
         // 代入先の変数の型が優先される
         node->type = type_of_node(node->rhs);
+        type_of_node(node->lhs);
     }
     else if (kind == ND_FUNC_CALL)
     {
@@ -285,6 +291,8 @@ Type *type_of_node(Node *node)
     else
     {
         node->type = new_type(INT);
+        type_of_node(node->lhs);
+        type_of_node(node->rhs);
     }
 
     return node->type;

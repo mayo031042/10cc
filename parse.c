@@ -265,7 +265,9 @@ Node *assign()
 // -> assign()
 Node *expr()
 {
-    return assign();
+    Node *node = assign();
+    node->type = type_of_node(node);
+    return node;
 }
 
 // 予約語,{} 変数宣言の解釈を行う
