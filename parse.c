@@ -81,6 +81,11 @@ Node *unary()
     {
         node = new_node(ND_ADDR, unary(), NULL);
     }
+    // : sizeof
+    else if (consume_keyword(TK_SIZEOF))
+    {
+        node = new_node_sizeof();
+    }
     else
     {
         node = primary();
@@ -318,11 +323,6 @@ Node *stmt()
         else if (consume_keyword(TK_BREAK))
         {
             node = create_node(ND_BREAK);
-        }
-        // : sizeof
-        else if (consume_keyword(TK_SIZEOF))
-        {
-            node = new_node_sizeof();
         }
         else
         {
