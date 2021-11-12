@@ -166,7 +166,7 @@ int foo(int x)
     return x;
 }"
 
-assert 19 "
+assert 0 "
 int hoge(int x);
 int fuga(int x)
 {
@@ -179,29 +179,30 @@ int hoge(int x)
 }
 int main()
 {
-    return hoge(0);
+    return hoge(0) != 19;
 }"
 
-assert 40 "
+assert 0 "
 int main()
 { 
-// return 42;
+// return 2;
 /*
-return 41;
+/*
+return 1;
 */
-return 40;
+return 0;
 }"
 
-assert 3 "
+assert 0 "
 int main()
 {
     int x;  x=1;
     int *y; y=&x;
-    *y=3;
+    *y=0;
     return x;
 }"
 
-assert 3 "
+assert 0 "
 int main()
 {
     int x; x=1;
@@ -210,12 +211,11 @@ int main()
             int *y; y=&x;
             *y=3;   
         }
-        return x;   
+        return x != 3;   
     }
 }"
 
-# 18
-assert 2 "
+assert 0 "
 int main()
 {
     int x;      x=1;
@@ -223,16 +223,16 @@ int main()
     int **pp;   pp=&p;
     int ***ppp; ppp=&pp;
 
-    ***ppp=2;
+    ***ppp=0;
     return x;
 }"
 
-assert 1 "
+assert 0 "
 int foo(int *p)
 {
     int x;    x=2;  p=&x;
     int **pp; pp=&p;
-    **pp=1;
+    **pp=0;
     return x;
 }
 int main()
@@ -241,27 +241,42 @@ int main()
     return foo(p);
 }"
 
+# 20
 assert 0 "
 int main()
 {
-    int x; x=1; 
-    int y; y=2;
-    int z; z=3;
+    int x;  x=1; 
+    int y;  y=2;
+    int z;  z=3;
     int *p; p=&y;
 
     *(p+1)=10;
+
     if(x!=10) return 1;
 
     *(p-1)=11;
-    if(z!=11) return 1;
+    if(z!=11) return 2;
 
     p=&z;
     p+=1; p+=1;
 
-    x=0; 
-    return *p;
+    return *p!=x;
 }"
 
-
+assert 0 "
+int main()
+{
+    if(sizeof(1)!=4) return 1;
+    
+    int x;
+    if(sizeof(x) != 4) return 2;
+    if(sizeof(&x) != 8) return 3;
+    
+    int *p;
+    if(sizeof(p) != 8) return 4;
+    if(sizeof(*p) != 4) return 5;
+    
+    return 0;
+}"
 
 echo -e "\n         You are a god-dammit genius !!\n"
