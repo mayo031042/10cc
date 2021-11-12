@@ -267,15 +267,20 @@ assert 0 "
 int main()
 {
     if(sizeof(1)!=4) return 1;
+    if(sizeof(sizeof(1)) != 4)  return 2;
     
-    int x;
-    if(sizeof(x) != 4) return 2;
-    if(sizeof(&x) != 8) return 3;
+    int x; x=1;
+    if(sizeof(x) != 4) return 3;
+    if(sizeof(&x) != 8) return 4;
     
-    int *p;
-    if(sizeof(p) != 8) return 4;
-    if(sizeof(*p) != 4) return 5;
+    int *p; p=&x;
+    if(sizeof(p) != 8) return 5;
+    if(sizeof(*p) != 4) return 6;
     
+    if(sizeof(1+2) != 4) return 7;
+    if(sizeof(*p=0) != 4) return 8;
+    if(x!=1) return 9;
+
     return 0;
 }"
 

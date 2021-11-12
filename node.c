@@ -187,3 +187,74 @@ Node *build_block()
     sub_block_nest();
     return node;
 }
+
+// node が担当するサイズを返す
+int size_of_node(Node *node)
+{
+    return size_of(type_of_node(node));
+}
+
+// node を基準に型を走査する　基本的にはINT なType を返すことになる
+// 四則演算では大きい型にキャストされるため　型を選択する
+// 変数や関数では登録された型を採用する
+// 代入式では最左の変数の型を返すことになるがパースされているのは右辺なのでrhs を返す
+// deref では再帰的に探索する　帰ってきた型をptr_to で参照し一つ進めたものの型が結果である
+// addr では再帰的に探索する　帰ってきた型にptr_to でつながる型を返す
+// 計算過程でnode のtype が変化することを暗黙的なキャストに対応させている
+// すべてのnode はcreate されたタイミングでINT型のType を割り当てられている
+// 四則演算やderef でもINTのままであるため　それらを変更する
+Type *type_of_node(Node *node)
+{
+    NodeKind kind = node->kind;
+
+    // if(node->type->kind!=INT)return node->type;
+
+    if (kind == ND_ADD || kind == ND_SUB || kind == ND_MUL || kind == ND_DIV || kind == ND_DIV_REM)
+    {
+        // 左右展開されるnode なのでキャストされる可能性がある
+        if (cmp_node_size(node) == -1)
+        {
+            node->type = node->rhs->type;
+        }
+        else
+        {
+            node->type = node->lhs->type;
+        }
+    }
+    else if (kind == ND_ASSIGN)
+    {
+        // 代入先の変数の型が優先される
+        node->type = type_of_node(node->rhs);
+    }
+    else if (kind == ND_FUNC_CALL)
+    {
+        node->type = funcs[node->func_num]->type;
+    }
+    else if (kind == ND_LVAR)
+    {
+        node->type = node->lvar->type;
+    }
+    else if (kind == ND_ADDR)
+    {
+        node->type->kind = PTR;
+        node->type->ptr_to = type_of_node(node->lhs);
+    }
+    else if (kind == ND_DEREF)
+    {
+        Type *deref = type_of_node(node->lhs);
+
+        if (deref->kind != PTR)
+        {
+            error("非ポインタ型を参照しています");
+        }
+
+        node->type = deref->ptr_to;
+    }
+    else
+    {
+        node->type = new_type(INT);
+    }
+
+    return node->type;
+}
+
