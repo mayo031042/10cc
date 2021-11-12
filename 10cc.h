@@ -102,8 +102,8 @@ struct Node
     NodeKind kind;
     Node *lhs;
     Node *rhs;
-    Node *next;   // ND_BLOCK でのみ使用　最後はNULL であるようにする
-    int offset;   // ND_LVAR でのみ使用
+    Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
+    int offset; // ND_LVAR でのみ使用
     Type *type;
     LVar *lvar;   // ND_LVAR でのみ使用
     int func_num; // ND_FUNC_CALL でのみ使用
@@ -114,7 +114,7 @@ struct Node
 typedef struct Func Func;
 struct Func
 {
-    Type *type;     // 関数の型  
+    Type *type;        // 関数の型
     LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
     Node *definition;  // 定義
     char name[100];    // 関数名
@@ -147,6 +147,9 @@ void sub_block_nest();
 
 void aaa();
 
+int cmp_node_size(Node *node);
+Type *new_type(TypeKind kind);
+Type *type_of_node(Node *node);
 int size_of_node(Node *node);
 int size_of(Type *type);
 char *char_of(Type *type);
