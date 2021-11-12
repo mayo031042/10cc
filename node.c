@@ -154,6 +154,7 @@ Node *new_node_do()
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 
 // sizeof に続くunary() をパースする　得られた結果のnode のサイズのnd_num を登録する
+// parce されたunary() はサイズ計算にのみ用いられて破棄されるため　gen() で実行されることはない
 Node *new_node_sizeof()
 {
     Node *node = unary();
