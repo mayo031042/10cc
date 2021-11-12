@@ -80,8 +80,6 @@ void gen(Node *node)
     gen(node->lhs);
     gen(node->rhs);
 
-    gen_cast(node);
-
     // raxが左辺　rdiが右辺
     printf("    pop rdi\n");
     printf("    pop rax\n");
@@ -97,6 +95,7 @@ void gen(Node *node)
         gen_sub(node);
         break;
     case ND_MUL:
+        gen_mul();
         break;
     case ND_DIV:
         gen_div();
