@@ -36,11 +36,13 @@ struct Token
     TokenKind kind;
     Token *next;
     int val;
-    char *str;
     int len;
+    char *str;
 };
 
-// LVar
+typedef struct Node Node;
+
+// Type
 typedef enum
 {
     CHAR, // 1
@@ -55,6 +57,7 @@ struct Type
     Type *ptr_to;
 };
 
+// LVar
 typedef struct LVar LVar;
 struct LVar
 {
@@ -63,6 +66,19 @@ struct LVar
     char *name;
     int len;
     int offset; // RBPからの距離
+};
+
+// Func
+typedef struct Func Func;
+struct Func
+{
+    Type *type;        // 関数の型
+    LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
+    Node *definition;  // 定義 block node のtop に等しい
+    int len;           // 名前の長さ
+    int max_offset;    // プロローグ時に下げるrsp の幅を決める
+    bool defined;      // すでに定義がされているか→definition がNULLかだけでは判定できない
+    char name[100];    // 関数名
 };
 
 // node
@@ -96,32 +112,22 @@ typedef enum
     ND_PUSH_1,    // push 1 のみ行う
 } NodeKind;
 
-typedef struct Node Node;
 struct Node
 {
     NodeKind kind;
+    Type *type;
     Node *lhs;
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
-    int offset; // ND_LVAR でのみ使用
-    Type *type;
-    LVar *lvar;   // ND_LVAR でのみ使用
+    LVar *lvar; // ND_LVAR でのみ使用
+
+    Func *func;
     int func_num; // ND_FUNC_CALL でのみ使用
+
+    int offset; // ND_LVAR でのみ使用
     int val;
 };
 
-// Func
-typedef struct Func Func;
-struct Func
-{
-    Type *type;        // 関数の型
-    LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
-    Node *definition;  // 定義
-    char name[100];    // 関数名
-    bool defined;      // すでに定義がされているか→definition がNULLかだけでは判定できない
-    int len;           // 名前の長さ
-    int max_offset;    // プロローグ時に下げるrsp の幅を決める
-};
 
 // tokenize のための関数 -> @ tokenize.c
 void *tokenize();
@@ -150,6 +156,7 @@ void aaa();
 int cmp_node_size(Node *node);
 Type *new_type(TypeKind kind);
 Type *type_of_node(Node *node);
+
 int size_of_node(Node *node);
 int size_of(Type *type);
 char *char_of(Type *type);
