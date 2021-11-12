@@ -28,14 +28,14 @@ Node *primary()
             // 関数なので　関数呼び出しである
             node = create_node(ND_FUNC_CALL);
 
-            node->func_num = find_func();
-            if (node->func_num == -1)
+            node->func = find_func();
+            if (node->func == NULL)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
 
             // node のtype をfunc のtype に揃える
-            node->type = funcs[node->func_num]->type;
+            node->type = node->func->type;
 
             // 引数を解釈する
             node->lhs = build_arg();
@@ -356,9 +356,9 @@ void *function()
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
-        int declared = find_func();
+        Func *declared = find_func();
 
-        if (declared == -1)
+        if (declared == NULL)
         {
             // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
             funcs[i] = new_func(tokens[val_of_ident_pos()], type);
@@ -370,7 +370,7 @@ void *function()
         else
         {
             // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
-            func_pos = declared;
+            func_pos = declared - funcs[0];
             consume_arg();
         }
 

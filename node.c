@@ -266,7 +266,7 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_FUNC_CALL)
     {
-        node->type = funcs[node->func_num]->type;
+        node->type = node->func->type;
     }
     else if (kind == ND_LVAR)
     {

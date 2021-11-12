@@ -2,17 +2,17 @@
 
 // 既出関数名から直前識別子名に一致するものを探す　
 // 既出ならそのfuncs[] のpos を返し　そうでないなら−１を返す
-int find_func()
+Func *find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
         if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
         {
-            return i;
+            return funcs[i];
         }
     }
 
-    return -1;
+    return NULL;
 }
 
 // 新しいfuncに len, max_offset, defined, name を設定

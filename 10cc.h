@@ -120,14 +120,11 @@ struct Node
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
     LVar *lvar; // ND_LVAR でのみ使用
-
-    Func *func;
-    int func_num; // ND_FUNC_CALL でのみ使用
+    Func *func; // ND_FUNC_CALL でのみ使用
 
     int offset; // ND_LVAR でのみ使用
     int val;
 };
-
 
 // tokenize のための関数 -> @ tokenize.c
 void *tokenize();

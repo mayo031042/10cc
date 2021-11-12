@@ -61,7 +61,7 @@ Node *declare_lvar();
 
 // func.c
 // 関数を解釈
-int find_func();
+Func *find_func();
 Func *new_func(Token *tok,Type *type);
 
 // 引数を解釈

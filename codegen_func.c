@@ -172,7 +172,7 @@ void gen_func_call(Node *node)
     push_regi(node->lhs);
 
     printf("    mov rax, 0\n");
-    printf("    call %s\n", funcs[node->func_num]->name);
+    printf("    call %s\n", node->func->name);
     printf("    pop rsp\n");
     printf("    push rax\n");
 }
