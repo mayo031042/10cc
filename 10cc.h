@@ -116,11 +116,13 @@ struct Node
 {
     NodeKind kind;
     Type *type;
+    
     Node *lhs;
     Node *rhs;
     Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
-    LVar *lvar; // ND_LVAR でのみ使用
+
     Func *func; // ND_FUNC_CALL でのみ使用
+    LVar *lvar; // ND_LVAR でのみ使用
 
     int offset; // ND_LVAR でのみ使用
     int val;
