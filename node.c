@@ -1,13 +1,12 @@
 #include "parse.h"
 
-// nodekind が引数であるようなnode をメモリ確保とint type 指定だけする
+// nodekind が引数通りであるようなnode をメモリ確保だけする
 Node *create_node(NodeKind kind)
 {
     Node *node = calloc(1, sizeof(Node));
     node->lhs = NULL;
     node->rhs = NULL;
     node->kind = kind;
-    node->type = new_type(INT);
     return node;
 }
 
@@ -150,8 +149,6 @@ Node *new_node_do()
 
     return new_node(ND_DO, lhs, rhs);
 }
-// : }が出現するまでnextつなぎにnode を登録していく　
-// 全体として繋がれたnode の先頭を返す 終端はNULL
 
 // sizeof に続くunary() をパースする　得られた結果のnode のサイズのnd_num を登録する
 // parce されたunary() はサイズ計算にのみ用いられて破棄されるため　gen() で実行されることはない
@@ -161,6 +158,9 @@ Node *new_node_sizeof()
     return new_node_num(size_of_node(node));
 }
 
+// : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　
+// 全体として繋がれたnode の先頭を返す 終端はNULL
+// 作成されたnode はtop から再帰的にそのType が計算される
 Node *new_node_block()
 {
     // 意味のある; はstmt() 内で処理をする
@@ -173,6 +173,7 @@ Node *new_node_block()
     }
 
     Node *node = stmt();
+    node->type = type_of_node(node);
     node->next = new_node_block();
     return node;
 }
@@ -186,6 +187,33 @@ Node *build_block()
 
     sub_block_nest();
     return node;
+}
+
+// 暗黙的なキャスト
+
+// 左右辺を持つnode に対してどちらのnode のサイズが大きいかを返す
+int cmp_node_size(Node *node)
+{
+    if (node->lhs == NULL || node->rhs == NULL)
+    {
+        error("終端node を展開しています");
+    }
+
+    int l_sz = size_of_node(node->lhs);
+    int r_sz = size_of_node(node->rhs);
+
+    if (l_sz < r_sz)
+    {
+        return -1;
+    }
+    else if (l_sz == r_sz)
+    {
+        return 0;
+    }
+    else if (l_sz > r_sz)
+    {
+        return 1;
+    }
 }
 
 // node が担当するサイズを返す
@@ -205,9 +233,13 @@ int size_of_node(Node *node)
 // 四則演算やderef でもINTのままであるため　それらを変更する
 Type *type_of_node(Node *node)
 {
-    NodeKind kind = node->kind;
+    // 既にType が作成されている場合は探索済みである
+    if (node->type)
+    {
+        return node->type;
+    }
 
-    // if(node->type->kind!=INT)return node->type;
+    NodeKind kind = node->kind;
 
     if (kind == ND_ADD || kind == ND_SUB || kind == ND_MUL || kind == ND_DIV || kind == ND_DIV_REM)
     {
@@ -236,7 +268,7 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_ADDR)
     {
-        node->type->kind = PTR;
+        node->type = new_type(PTR);
         node->type->ptr_to = type_of_node(node->lhs);
     }
     else if (kind == ND_DEREF)
@@ -257,4 +289,3 @@ Type *type_of_node(Node *node)
 
     return node->type;
 }
-

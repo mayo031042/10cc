@@ -268,7 +268,7 @@ int main()
 {
     if(sizeof(1)!=4) return 1;
     if(sizeof(sizeof(1)) != 4)  return 2;
-    
+
     int x; x=1;
     if(sizeof(x) != 4) return 3;
     if(sizeof(&x) != 8) return 4;
@@ -279,6 +279,8 @@ int main()
     
     if(sizeof(1+2) != 4) return 7;
     if(sizeof(*p=0) != 4) return 8;
+    
+    // sizeof の中身は実行されないので　ｘの値は変更されない
     if(x!=1) return 9;
 
     return 0;

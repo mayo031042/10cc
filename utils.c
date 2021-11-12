@@ -79,33 +79,6 @@ void sub_block_nest()
     block_nest--;
 }
 
-// 暗黙的なキャスト
-
-// 左右辺を持つnode に対してどちらのnode のサイズが大きいかを返す
-int cmp_node_size(Node *node)
-{
-    if (node->lhs == NULL || node->rhs == NULL)
-    {
-        error("終端node を展開しています");
-    }
-
-    int l_sz = size_of_node(node->lhs);
-    int r_sz = size_of_node(node->rhs);
-
-    if (l_sz < r_sz)
-    {
-        return -1;
-    }
-    else if (l_sz == r_sz)
-    {
-        return 0;
-    }
-    else if (l_sz > r_sz)
-    {
-        return 1;
-    }
-}
-
 int size_of(Type *type)
 {
     switch (type->kind)
