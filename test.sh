@@ -1,13 +1,17 @@
 #!/bin/bash
-# 制御構文まで
-count=0
+# all_files に含まれる要素に一致するような名前のファイルをtest/ から探して実行する　返り値が０であることを書くにして終了する
 
-test(){
-    ./bin/10cc "$count"
+all_files="culc vars"
+
+assert()
+{
+    file_name="$1"
+
+    ./bin/10cc "$file_name"
     gcc -o tmp/tmp tmp/tmp.s
     ./tmp/tmp
+
     actual="$?"
-    count=$((count += 1))
 
     if [ "$actual" = 0 ]; then
         echo " OK"
@@ -15,7 +19,9 @@ test(){
         echo "$input => $expected expected, but got $actual"
         exit 1
     fi
-}   
+}
 
-test
-test
+for file_name in $all_files
+    do
+        assert $file_name
+    done

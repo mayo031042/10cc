@@ -16,7 +16,7 @@ void compile()
     fprintf(stderr, "C");
 }
 
-// 指定されたファイルの内容を返す
+// 指定されたファイルの内容をuser_input に渡す
 void read_file(char *path)
 {
     fprintf(stderr, "%s: ", path);
@@ -52,12 +52,11 @@ int main(int argc, char **argv)
         error("引数の数が間違っています");
     }
 
-    int test_num = strtol(argv[1], &argv[1], 10);
-
     fp = fopen("tmp/tmp.s", "w");
 
-    char *files[] = {"test/culc.c", "test/vars.c"};
-    read_file(files[test_num]);
+    char file_name[100];
+    sprintf(file_name, "test/%s.c", argv[1]);
+    read_file(file_name);
 
     compile();
 
