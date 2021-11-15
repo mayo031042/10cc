@@ -31,8 +31,6 @@ assemble(){
     exit 0
 }
 
-echo "TEST func"
-
 # 0
 assert 1 " int main(){ return 1;}"
 assert 1 " int main(){ int x; return 1;}"

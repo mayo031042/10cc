@@ -7,6 +7,7 @@ TARDIR=./bin
 
 # カレントディレクトリ内から 末尾が.c であるようなすべてのファイルを配列で持つ？
 SRCS=$(wildcard *.c)
+
 # 上記のような配列のすべての要素に対して 共通の接頭語を据える
 OBJS=$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 HEADS=$(wildcard *.h)
@@ -27,7 +28,7 @@ HEADS=$(wildcard *.h)
 # 	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
 
 # 以下を変数等用いて書きたい
-10cc: obj/main.o obj/utils.o obj/tokenize.o obj/tokenize_func.o obj/parse.o obj/parse_func.o obj/node.o obj/lvar.o obj/func.o obj/type.o obj/codegen.o obj/codegen_func.o obj/test.o
+10cc: obj/main.o obj/utils.o obj/tokenize.o obj/tokenize_func.o obj/parse.o obj/parse_func.o obj/node.o obj/lvar.o obj/func.o obj/type.o obj/codegen.o obj/codegen_func.o
 	$(CC) -o $(TARDIR)/$@ $^ $(LDFLAGS)
 
 # 問題としては　obj/ の接頭語が正しく各単語に展開されない　
@@ -73,8 +74,8 @@ obj/codegen.o: codegen.c
 obj/codegen_func.o: codegen_func.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-obj/test.o: test.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+# obj/test.o: test.c
+# 	$(CC) -c $(CFLAGS) -o $@ $<
 
 test: 10cc 
 	./testsh/testType.sh
