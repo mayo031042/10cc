@@ -1,6 +1,6 @@
 #include "tokenize.h"
 
-#define MAX_TOKEN_SIZE 200
+#define MAX_TOKEN_SIZE 500
 
 Token *tokens[MAX_TOKEN_SIZE];
 int token_pos = 0;
