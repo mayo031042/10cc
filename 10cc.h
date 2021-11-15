@@ -170,3 +170,5 @@ extern char *user_input; // main関数の引数を保持すptr
 
 extern Token *tokens[];
 extern Func *funcs[];
+
+extern FILE *fp;
