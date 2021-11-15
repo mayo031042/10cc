@@ -3,55 +3,63 @@
 char *regi64[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 char *regi32[] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
+// my printf
+void pf(char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(fp, fmt, ap);
+}
+
 // スタックトップと引数をcmp する 条件分岐jmp 命令の直前に使用
 void cmp_rax(int val)
 {
-    printf("    pop rax\n");
-    printf("    cmp rax, %d\n", val);
+    pf("    pop rax\n");
+    pf("    cmp rax, %d\n", val);
 }
 
 // スタックトップをアドレスと解釈し　そのアドレスに入っている値に変更する
 // そのアドレスがどのサイズの型に対応しているかを判断し適切なアセンブリを出力する
 void gen_cng_addr_to_imm(Node *node)
 {
-    printf("    pop rax\n");
+    pf("    pop rax\n");
 
     switch (size_of_node(node))
     {
     case 1:
-        printf("    movsx rax, BYTE PTR [rax]\n");
+        pf("    movsx rax, BYTE PTR [rax]\n");
         break;
     case 4:
-        printf("    movsx rax, DWORD PTR [rax]\n");
+        pf("    movsx rax, DWORD PTR [rax]\n");
         break;
     case 8:
-        printf("    mov rax, [rax]\n");
+        pf("    mov rax, [rax]\n");
         break;
     }
 
-    printf("    push rax\n");
+    pf("    push rax\n");
 }
 
 // スタックから２つ取り出し　変数に対応した適切なサイズ分　メモリに移動する
 void gen_mov_imm_to_addr(Node *node)
 {
-    printf("    pop rax\n");
-    printf("    pop rdi\n");
+    pf("    pop rax\n");
+    pf("    pop rdi\n");
 
     switch (size_of_node(node))
     {
     case 1:
-        printf("    mov BYTE PTR [rax], di\n");
+        pf("    mov BYTE PTR [rax], di\n");
         break;
     case 4:
-        printf("    mov DWORD PTR [rax], edi\n");
+        pf("    mov DWORD PTR [rax], edi\n");
         break;
     case 8:
-        printf("    mov [rax], rdi\n");
+        pf("    mov [rax], rdi\n");
         break;
     }
 
-    printf("    push rdi\n");
+    pf("    push rdi\n");
 }
 
 // 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
@@ -60,8 +68,8 @@ void pop_regi()
     int i = 0;
     for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
     {
-        printf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
-        // printf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
+        pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
+        // pf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
         i++;
     }
 }
@@ -70,12 +78,12 @@ void pop_regi()
 // これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
 void gen_prologue()
 {
-    printf("    .globl %s\n", funcs[func_pos]->name);
-    printf("%s:\n", funcs[func_pos]->name);
+    pf("    .globl %s\n", funcs[func_pos]->name);
+    pf("%s:\n", funcs[func_pos]->name);
 
-    printf("    push rbp\n");
-    printf("    mov rbp, rsp\n");
-    printf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
+    pf("    push rbp\n");
+    pf("    mov rbp, rsp\n");
+    pf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
 
     pop_regi();
 }
@@ -83,9 +91,9 @@ void gen_prologue()
 // rbp, rsp をもとに関数呼び出し前に戻しreturn する
 void gen_epilogue()
 {
-    printf("    mov rsp, rbp\n");
-    printf("    pop rbp\n");
-    printf("    ret\n");
+    pf("    mov rsp, rbp\n");
+    pf("    pop rbp\n");
+    pf("    ret\n");
 }
 
 // nodeを左辺値とみなせた時　そのアドレスをスタックに積む
@@ -99,9 +107,9 @@ void gen_addr(Node *node)
     }
 
     // rbp とoffsset からアドレスを計算し積む
-    printf("    mov rax, rbp\n");
-    printf("    sub rax, %d\n", node->offset);
-    printf("    push rax\n");
+    pf("    mov rax, rbp\n");
+    pf("    sub rax, %d\n", node->offset);
+    pf("    push rax\n");
 }
 
 // unary() を計算する　結果をアドレスとして返す
@@ -143,7 +151,7 @@ void push_regi(Node *node)
     // スタックに値を積んだことにより順番が逆転し 先頭の引数から処理される
     for (n = node; n; n = n->next)
     {
-        printf("    pop %s\n", regi64[i]);
+        pf("    pop %s\n", regi64[i]);
         i++;
     }
 }
@@ -153,28 +161,28 @@ void push_regi(Node *node)
 void gen_func_call(Node *node)
 {
 
-    printf("    mov rax, rsp\n");
-    printf("    mov rdi, 16\n");
+    pf("    mov rax, rsp\n");
+    pf("    mov rdi, 16\n");
     gen_div();
     // rdx = rax % rdi(16);
 
-    printf("    mov rax, rsp\n");
+    pf("    mov rax, rsp\n");
 
     int cnt = count();
-    printf("    cmp rdx, 0\n");
-    printf("    jne .Lcall%d\n", cnt);
-    printf("    push rax\n");
+    pf("    cmp rdx, 0\n");
+    pf("    jne .Lcall%d\n", cnt);
+    pf("    push rax\n");
 
-    printf(".Lcall%d:\n", cnt);
-    printf("    push rax\n");
+    pf(".Lcall%d:\n", cnt);
+    pf("    push rax\n");
 
     // 引数を解釈して　レジスタにセットする
     push_regi(node->lhs);
 
-    printf("    mov rax, 0\n");
-    printf("    call %s\n", node->func->name);
-    printf("    pop rsp\n");
-    printf("    push rax\n");
+    pf("    mov rax, 0\n");
+    pf("    call %s\n", node->func->name);
+    pf("    pop rsp\n");
+    pf("    push rax\n");
 }
 
 // 条件式が偽のときのみ次の処理パートへjmp する
@@ -186,12 +194,12 @@ void gen_if(Node *node, int end_label)
 
     gen(node->lhs); // B
     cmp_rax(0);
-    printf("    je .Lifnext%d\n", next_label);
+    pf("    je .Lifnext%d\n", next_label);
 
     gen(node->rhs); // X
-    printf("    jmp .Lifend%d\n", end_label);
+    pf("    jmp .Lifend%d\n", end_label);
 
-    printf(".Lifnext%d:\n", next_label);
+    pf(".Lifnext%d:\n", next_label);
 }
 
 // 同一else 群のif 文を順次処理していく　
@@ -216,31 +224,31 @@ void gen_for_while(Node *node)
 
     // 初期化してから　条件式へjmp
     gen(node->lhs->lhs); // A
-    printf("    pop rax\n");
-    printf("    jmp .Lreq%d\n", stack_front());
+    pf("    pop rax\n");
+    pf("    jmp .Lreq%d\n", stack_front());
 
-    printf(".Lexe%d:\n", stack_front());
+    pf(".Lexe%d:\n", stack_front());
 
     // 実行文　ここでも必ず1push を保証する
     gen(node->rhs->lhs); // X
-    printf("    pop rax\n");
+    pf("    pop rax\n");
 
-    printf(".Lcont%d:\n", stack_front()); // continue先 → 変化式の前
+    pf(".Lcont%d:\n", stack_front()); // continue先 → 変化式の前
 
     gen(node->lhs->rhs); // C
-    printf("    pop rax\n");
+    pf("    pop rax\n");
 
-    printf(".Lreq%d:\n", stack_front());
+    pf(".Lreq%d:\n", stack_front());
 
     // 条件式を実行、評価して　実行文に移動するかを決める
     gen(node->rhs->rhs); // B
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", stack_front());
+    pf("    jne .Lexe%d\n", stack_front());
 
-    printf(".Lbrk%d:\n", stack_front());
+    pf(".Lbrk%d:\n", stack_front());
 
     // for, while 全体でも1push を保証
-    printf("    push rax\n");
+    pf("    push rax\n");
 
     stack_pop();
 }
@@ -249,19 +257,19 @@ void gen_do_while(Node *node)
 {
     stack_push(count());
 
-    printf(".Lexe%d:\n", stack_front());
-    gen(node->lhs);          // X
-    printf("    pop rax\n"); // x の揃えポップ　→　continue ではすでに揃っているのでスキップ
+    pf(".Lexe%d:\n", stack_front());
+    gen(node->lhs);      // X
+    pf("    pop rax\n"); // x の揃えポップ　→　continue ではすでに揃っているのでスキップ
 
-    printf(".Lcont%d:\n", stack_front()); // continue 先 contiの有無に関わらずスタックトップは揃っている
+    pf(".Lcont%d:\n", stack_front()); // continue 先 contiの有無に関わらずスタックトップは揃っている
 
     gen(node->rhs); // B
     cmp_rax(0);
-    printf("    jne .Lexe%d\n", stack_front());
+    pf("    jne .Lexe%d\n", stack_front());
 
-    printf(".Lbrk%d:\n", stack_front()); // break先　有無に関わらずスタックトップは揃っている
+    pf(".Lbrk%d:\n", stack_front()); // break先　有無に関わらずスタックトップは揃っている
 
-    printf("    push rax\n");
+    pf("    push rax\n");
 
     stack_pop();
 }
@@ -275,10 +283,10 @@ void gen_block(Node *node)
     for (; node; node = node->next)
     {
         gen(node);
-        printf("    pop rax\n");
+        pf("    pop rax\n");
     }
 
-    printf("    push rax\n");
+    pf("    push rax\n");
 
     sub_block_nest();
 }
@@ -294,7 +302,7 @@ void gen_mul_ptr_size(Node *node)
         if (node->rhs->type->kind == PTR)
         {
             // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
-            printf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
+            pf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
         }
     }
     else if (cmp == 0)
@@ -310,7 +318,7 @@ void gen_mul_ptr_size(Node *node)
         if (node->lhs->type->kind == PTR)
         {
             // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
-            printf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
+            pf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
         }
     }
 }
@@ -318,24 +326,24 @@ void gen_mul_ptr_size(Node *node)
 void gen_add(Node *node)
 {
     gen_mul_ptr_size(node);
-    printf("    add rax, rdi\n");
+    pf("    add rax, rdi\n");
 }
 
 void gen_sub(Node *node)
 {
     gen_mul_ptr_size(node);
-    printf("    sub rax, rdi\n");
+    pf("    sub rax, rdi\n");
 }
 
 void gen_mul()
 {
-    printf("    imul rax, rdi\n");
+    pf("    imul rax, rdi\n");
 }
 
 // rax = rax / rdi;
 // rdx = rax % rdi;
 void gen_div()
 {
-    printf("    cqo\n");
-    printf("    idiv rdi\n");
+    pf("    cqo\n");
+    pf("    idiv rdi\n");
 }

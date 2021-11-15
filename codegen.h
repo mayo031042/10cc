@@ -2,6 +2,7 @@
 // codegen を補助する関数
 
 void gen(Node *node);
+void pf(char *fmt, ...);
 
 void cmp_rax(int val);
 void gen_prologue();
