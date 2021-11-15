@@ -78,7 +78,7 @@ obj/codegen_func.o: codegen_func.c
 # 	$(CC) -c $(CFLAGS) -o $@ $<
 
 test: 10cc 
-	./testsh/testType.sh
+	./test.sh
 
 # 編集されたtmp.s を実行
 s: tmp.s

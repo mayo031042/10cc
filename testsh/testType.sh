@@ -2,6 +2,25 @@
 # 関数対応開始
 count=0
 
+test(){
+    ./bin/10cc 
+    gcc -o tmp/tmp tmp/tmp.s
+    ./tmp/tmp
+    actual="$?"
+
+    if [ "$actual" = 0 ]; then
+        echo " OK"
+    else
+        echo "$input => $expected expected, but got $actual"
+        exit 1
+    fi
+
+    echo "good"
+    exit 0
+}   
+
+test
+
 assert() {
     expected="$1"
     input="$2"
@@ -10,6 +29,7 @@ assert() {
     gcc -o tmp/tmp tmp/tmp.s
     ./tmp/tmp
     actual="$?"
+
 
     if [ "$actual" = "$expected" ]; then
         echo "  OK  $count"
