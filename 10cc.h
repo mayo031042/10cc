@@ -9,7 +9,7 @@
 typedef enum
 {
     TK_OPERATOR,        // 演算子,* ,&
-    TK_RESERVED,        // ==, !=, <, <= ,;()
+    TK_RESERVED,        // ==, !=, <, <= ,;()[]
     TK_ASSIGN_OPERATOR, // 代入演算子 +=,,,
     TK_IDENT,           // 変数
     TK_NUM,             // 数値

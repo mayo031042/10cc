@@ -125,7 +125,7 @@ void *tokenize()
             new_token(TK_OPERATOR, 1);
             continue;
         }
-        else if (strchr("()=<>,:;", *user_input_pos))
+        else if (strchr("()[]=<>,:;", *user_input_pos))
         {
             new_token(TK_RESERVED, 1);
             continue;
