@@ -13,6 +13,7 @@ void gen_sub(Node *node);
 void gen_mul();
 void gen_div();
 
+void gen_declare(Node *node);
 void gen_addr(Node *node);
 void gen_deref(Node *node);
 void gen_func_call(Node *node);

@@ -82,6 +82,9 @@ LVar *find_lvar()
 // funcs[]->locals[]にlvar を登録する 多重定義はエラー
 Node *declare_lvar()
 {
+    // 変数宣言専用のノードを作成
+    Node *node = create_node(ND_DECLARE);
+
     // 型宣言を処理
     Type *type = type_and_ptr();
     expect_ident();
@@ -98,5 +101,5 @@ Node *declare_lvar()
     // 変数宣言なので上位ブロック深度に 合致する変数が存在するしないに関わらず　必ず新規登録する
     new_lvar(type);
 
-    return create_node(ND_PUSH_0);
+    return node;
 }

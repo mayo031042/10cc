@@ -17,6 +17,9 @@ void gen(Node *node)
         pf("    push %d\n", node->val);
         return;
 
+    case ND_DECLARE:
+        gen_declare(node);
+        return;
     // 変数の保持している値を積む
     // 変数をちょうど１つ含むようなnode であることが確定している
     case ND_LVAR:
