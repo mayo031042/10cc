@@ -138,6 +138,8 @@ void *function();
 void code_gen();
 
 // 分類が半端な関数 -> @ utils
+void read_file(char *path);
+
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
 int count();
