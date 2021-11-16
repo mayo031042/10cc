@@ -48,6 +48,7 @@ typedef enum
     CHAR, // 1
     INT,  // 4
     PTR,  // 8
+    ARR,  // ?
 } TypeKind;
 
 typedef struct Type Type;
@@ -55,6 +56,7 @@ struct Type
 {
     TypeKind kind;
     Type *ptr_to;
+    int array_size;
 };
 
 // LVar
