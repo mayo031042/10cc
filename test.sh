@@ -41,7 +41,7 @@ for file_name in `\find $dir_name -maxdepth 1 -type f`;
         assert $file_name
     done
 
-if [ $flag_10cc+$flag_gcc = 0 ]; then
+if [ !$flag_10cc -a !$flag_gcc ]; then
     echo -e "\n         You are a god-dammit genius !!\n"
 else 
     echo 
