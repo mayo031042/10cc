@@ -1,13 +1,9 @@
 #!/bin/bash
-# all_files に含まれる要素に一致するような名前のファイルをtest/ から探して実行する　返り値が０であることを書くにして終了する
-
-all_files="culc vars func ptr_sizeof various"
+# test/ に含まれるtest file を実行する　返り値が０であることを確認して終了する
 
 assert()
 {
-    file_name="$1"
-
-    ./bin/10cc "$file_name"
+    ./bin/10cc "$1"
     gcc -o tmp/tmp tmp/tmp.s
     ./tmp/tmp
 
@@ -21,7 +17,9 @@ assert()
     fi
 }
 
-for file_name in $all_files
+dir_name="test/"
+
+for file_name in `\find $dir_name -maxdepth 1 -type f`; 
     do
         assert $file_name
     done

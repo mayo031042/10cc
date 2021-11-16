@@ -54,9 +54,7 @@ int main(int argc, char **argv)
 
     fp = fopen("tmp/tmp.s", "w");
 
-    char file_name[100];
-    sprintf(file_name, "test/%s.c", argv[1]);
-    read_file(file_name);
+    read_file(argv[1]);
 
     compile();
 
