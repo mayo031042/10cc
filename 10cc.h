@@ -45,10 +45,10 @@ typedef struct Node Node;
 // Type
 typedef enum
 {
-    CHAR, // 1
-    INT,  // 4
-    PTR,  // 8
-    ARR,  // ?
+    CHAR,  // 1
+    INT,   // 4
+    PTR,   // 8
+    ARRAY, // ?
 } TypeKind;
 
 typedef struct Type Type;
@@ -56,7 +56,7 @@ struct Type
 {
     TypeKind kind;
     Type *ptr_to;
-    int array_size;
+    size_t array_size;
 };
 
 // LVar
