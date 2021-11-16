@@ -1,7 +1,7 @@
 #!/bin/bash
 # all_files に含まれる要素に一致するような名前のファイルをtest/ から探して実行する　返り値が０であることを書くにして終了する
 
-all_files="culc vars"
+all_files="culc vars func"
 
 assert()
 {

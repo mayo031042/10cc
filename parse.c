@@ -28,11 +28,15 @@ Node *primary()
             // 関数なので　関数呼び出しである
             node = create_node(ND_FUNC_CALL);
 
-            node->func = find_func();
-            if (node->func == NULL)
+            // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
+            Func **addr = find_func();
+
+            if (addr == NULL)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
+
+            node->func = *addr;
 
             // node のtype をfunc のtype に揃える
             node->type = node->func->type;
@@ -40,7 +44,6 @@ Node *primary()
             // 引数を解釈する
             node->lhs = build_arg();
         }
-
         else
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
@@ -356,7 +359,7 @@ void *function()
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
-        Func *declared = find_func();
+        Func **declared = find_func();
 
         if (declared == NULL)
         {
@@ -370,7 +373,7 @@ void *function()
         else
         {
             // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
-            func_pos = declared - funcs[0];
+            func_pos = declared - &funcs[0]; // funcs == &funcs[0]
             consume_arg();
         }
 

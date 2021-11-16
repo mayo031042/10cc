@@ -61,8 +61,8 @@ Node *declare_lvar();
 
 // func.c
 // 関数を解釈
-Func *find_func();
-Func *new_func(Token *tok,Type *type);
+Func **find_func(); // 関数の実体へのポインタを保持する配列を探索し　適切な要素のアドレスを返す
+Func *new_func(Token *tok, Type *type);
 
 // 引数を解釈
 void declare_arg(); // 関数の定義時 引数表を登録する

@@ -1,14 +1,14 @@
 #include "parse.h"
 
 // 既出関数名から直前識別子名に一致するものを探す　
-// 既出ならそのfuncs[] のpos を返し　そうでないなら−１を返す
-Func *find_func()
+// 既出ならそのfuncs を指すポインタfuncs[i] のアドレス を返し　そうでないならNULLを返す
+Func **find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
         if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
         {
-            return funcs[i];
+            return &funcs[i];
         }
     }
 
