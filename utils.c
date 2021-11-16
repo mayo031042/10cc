@@ -89,6 +89,8 @@ int size_of(Type *type)
         return 4;
     case PTR:
         return 8;
+    case ARRAY:
+        return type->array_size * size_of(type->ptr_to);
     }
 }
 
