@@ -2,8 +2,8 @@
 # test/ に含まれるtest file を実行する　返り値が０であることを確認して終了する
 
 dir_name="test/"
-flag_10cc=0
-flag_gcc=0
+flag_10cc=1
+flag_gcc=1
 
 assert()
 {
@@ -20,7 +20,7 @@ assert()
         echo " OK"
     else
         echo -e "\n  10cc returned $actual...\n"
-        flag_10cc=1
+        flag_10cc=0
     fi
 
     # テストケースのテスト
@@ -31,7 +31,7 @@ assert()
 
     if [ "$actual" -ne 0 ]; then
         echo -e "  $file_name returned $actual...,\n  something is wrong in test case\n"
-        flag_gcc=1
+        flag_gcc=0
     fi
 }
 
@@ -41,15 +41,15 @@ for file_name in `\find $dir_name -maxdepth 1 -type f`;
         assert $file_name
     done
 
-if [ !$flag_10cc -a !$flag_gcc ]; then
-    echo -e "\n         You are a god-dammit genius !!\n"
+echo 
+if [ $flag_10cc = 1 -a $flag_gcc = 1 ]; then
+    echo -e "         You are a god-dammit genius !!\n"
 else 
-    echo 
 
-    if [ $flag_10cc -ne 0 ]; then
+    if [ $flag_10cc = 0 ]; then
         echo "10cc was wrong..."
     fi
-    if [ $flag_gcc -ne 0 ]; then
+    if [ $flag_gcc = 0 ]; then
         echo "test case was wrong..."
     fi
 fi
