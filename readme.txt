@@ -1,2 +1,1 @@
-sizeof のパースまだ
-キャストはパースで
+int などの型宣言はcurrent_token_is_type() で判定することにする

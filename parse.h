@@ -71,3 +71,4 @@ Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈�
 
 // type.c
 Type *new_type(TypeKind kind);
+Type *type_and_ptr();

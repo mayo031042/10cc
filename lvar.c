@@ -83,16 +83,7 @@ LVar *find_lvar()
 Node *declare_lvar()
 {
     // 型宣言を処理
-    Type *type = new_type(expect_vartype());
-
-    // * が続く限り処理する
-    while (consume(TK_OPERATOR, "*"))
-    {
-        Type *next = new_type(PTR);
-        next->ptr_to = type;
-        type = next;
-    }
-
+    Type *type = type_and_ptr();
     expect_ident();
 
     // 現在のスコープの中を探索する

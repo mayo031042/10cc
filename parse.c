@@ -355,7 +355,12 @@ void *function()
 
     while (!at_eof())
     {
-        Type *type = new_type(expect_vartype());
+        if (current_token_is_type() == false)
+        {
+            error("型宣言がありません -> 後に対応");
+        }
+
+        Type *type = type_and_ptr();
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
