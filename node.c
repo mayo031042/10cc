@@ -281,7 +281,7 @@ Type *type_of_node(Node *node)
     {
         Type *deref = type_of_node(node->lhs);
 
-        if (deref->kind != PTR)
+        if (deref->kind != PTR && deref->kind != ARRAY)
         {
             error("非ポインタ型を参照しています");
         }
