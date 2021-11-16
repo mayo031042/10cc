@@ -25,3 +25,5 @@ for file_name in $all_files
     do
         assert $file_name
     done
+
+echo -e "\n         You are a god-dammit genius !!\n"
