@@ -86,8 +86,10 @@ Node *declare_lvar()
     Node *node = create_node(ND_DECLARE);
 
     // 型宣言を処理
-    Type *type = type_and_ptr();
+    Type *type = new_type(expect_vartype());
+    type = add_type_ptr(type);
     expect_ident();
+    type = add_type_array(type);
 
     // 現在のスコープの中を探索する
     LVar *lvar = find_lvar_within_block(val_of_block_nest());
