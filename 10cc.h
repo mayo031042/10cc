@@ -121,12 +121,11 @@ struct Node
 
     Node *lhs;
     Node *rhs;
-    Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
 
+    Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
     Func *func; // ND_FUNC_CALL でのみ使用
     LVar *lvar; // ND_LVAR でのみ使用
 
-    int offset; // ND_LVAR でのみ使用
     int val;
 };
 

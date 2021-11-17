@@ -28,11 +28,9 @@ Node *new_node_num(int val)
 }
 
 // create_node(ND_LVAR) し対応する変数のポインタを登録する
-// 追加でオフセットも登録する
 Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
-    node->offset = lvar->offset;
     node->lvar = lvar;
     return node;
 }

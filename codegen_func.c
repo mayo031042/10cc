@@ -122,12 +122,12 @@ void gen_addr(Node *node)
 {
     if (node->kind != ND_LVAR)
     {
-        // error_at(tokens[token_pos]->str, "左辺値ではありません\n");
+        error_at(tokens[token_pos]->str, "左辺値ではありません\n");
     }
 
     // rbp とoffsset からアドレスを計算し積む
     pf("    mov rax, rbp\n");
-    pf("    add rax, %d\n", -node->offset);
+    pf("    add rax, %d\n", -(node->lvar->offset));
     pf("    push rax\n");
 }
 
