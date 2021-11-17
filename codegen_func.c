@@ -83,8 +83,8 @@ void pop_regi()
 // これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
 void gen_prologue()
 {
-    pf("    .globl %s\n", funcs[func_pos]->name);
-    pf("%s:\n", funcs[func_pos]->name);
+    pf("    .globl %s\n", funcs[func_pos]->label);
+    pf("%s:\n", funcs[func_pos]->label);
 
     pf("    push rbp\n");
     pf("    mov rbp, rsp\n");
@@ -199,7 +199,7 @@ void gen_func_call(Node *node)
     push_regi(node->lhs);
 
     pf("    mov rax, 0\n");
-    pf("    call %s\n", node->func->name);
+    pf("    call %s\n", node->func->label);
     pf("    pop rsp\n");
     pf("    push rax\n");
 }
