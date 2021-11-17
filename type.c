@@ -1,9 +1,18 @@
 #include "parse.h"
 
+// 引数をTypeKind として持つような新しいType を作成する
 Type *create_type(TypeKind kind)
 {
     Type *type = calloc(1, sizeof(type));
     type->kind = kind;
+    return type;
+}
+
+// 引数をptr_to としてもつような新しいTypeKind なType を作成する
+Type *new_type(TypeKind kind, Type *ptr_to)
+{
+    Type *type = create_type(kind);
+    type->ptr_to = ptr_to;
     return type;
 }
 
@@ -14,9 +23,7 @@ Type *add_type_ptr(Type *type)
     // * が続く限り処理する
     while (consume(TK_OPERATOR, "*"))
     {
-        Type *next = create_type(PTR);
-        next->ptr_to = type;
-        type = next;
+        type = new_type(PTR, type);
     }
 
     return type;
@@ -28,18 +35,16 @@ Type *add_type_ptr(Type *type)
 Type *add_type_array(Type *type)
 {
     // [] がないならそのままを返す
-    if (!consume(TK_RESERVED, "["))
+    if (consume(TK_RESERVED, "["))
     {
-        return type;
+        // 数値リテラル以外には未対応
+        // Node *node = expr();
+        int array_size = expect_number();
+        expect(TK_RESERVED, "]");
+
+        type = new_type(ARRAY, add_type_array(type));
+        type->array_size = array_size;
     }
 
-    Type *array = create_type(ARRAY);
-    // 数値リテラル以外には未対応
-    // Node *node = expr();
-    array->array_size = expect_number();
-    expect(TK_RESERVED, "]");
-
-    array->ptr_to = add_type_array(type);
-
-    return array;
+    return type;
 }

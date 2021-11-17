@@ -158,7 +158,6 @@ void sub_block_nest();
 void aaa();
 
 int cmp_node_size(Node *node);
-Type *new_type(TypeKind kind);
 Type *type_of_node(Node *node);
 
 int size_of_node(Node *node);
