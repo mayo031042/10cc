@@ -91,7 +91,7 @@ Node *declare_lvar()
     Node *node = create_node(ND_DECLARE);
 
     // 型宣言を処理
-    Type *type = new_type(expect_vartype());
+    Type *type = create_type(expect_vartype());
     type = add_type_ptr(type);
     expect_ident();
     type = add_type_array(type);

@@ -365,7 +365,7 @@ void *function()
             error("型宣言がありません -> 後に対応");
         }
 
-        Type *type = new_type(expect_vartype());
+        Type *type = create_type(expect_vartype());
         type = add_type_ptr(type);
         expect_ident();
 

@@ -70,6 +70,6 @@ void consume_arg(); // 関数の宣言時 引数表を読み飛ばす
 Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈して登録先のレジスタを割り当てる
 
 // type.c
-Type *new_type(TypeKind kind);
+Type *create_type(TypeKind kind);
 Type *add_type_ptr(Type *type);
 Type *add_type_array(Type *type);

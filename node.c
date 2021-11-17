@@ -281,7 +281,7 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_ADDR)
     {
-        node->type = new_type(PTR);
+        node->type = create_type(PTR);
         node->type->ptr_to = type_of_node(node->lhs);
     }
     else if (kind == ND_DEREF)
@@ -297,7 +297,7 @@ Type *type_of_node(Node *node)
     }
     else
     {
-        node->type = new_type(INT);
+        node->type = create_type(INT);
         type_of_node(node->lhs);
         type_of_node(node->rhs);
     }
