@@ -342,6 +342,7 @@ Node *stmt()
         expect(TK_RESERVED, ";");
     }
 
+    node->type = type_of_node(node);
     return node;
 }
 
