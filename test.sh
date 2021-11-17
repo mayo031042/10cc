@@ -33,6 +33,10 @@ assert()
         echo -e "  $file_name returned $actual...,\n  something is wrong in test case\n"
         flag_gcc=0
     fi
+
+    if [ $flag_10cc = 0 -o $flag_gcc = 0 ]; then
+        exit 1
+    fi
 }
 
 

@@ -22,6 +22,11 @@ void cmp_rax(int val)
 // そのアドレスがどのサイズの型に対応しているかを判断し適切なアセンブリを出力する
 void gen_cng_addr_to_imm(Node *node)
 {
+    if (node->type->kind == ARRAY)
+    {
+        return;
+    }
+
     pf("    pop rax\n");
 
     switch (size_of_node(node))
@@ -117,12 +122,12 @@ void gen_addr(Node *node)
 {
     if (node->kind != ND_LVAR)
     {
-        error_at(tokens[token_pos]->str, "左辺値ではありません\n");
+        // error_at(tokens[token_pos]->str, "左辺値ではありません\n");
     }
 
     // rbp とoffsset からアドレスを計算し積む
     pf("    mov rax, rbp\n");
-    pf("    sub rax, %d\n", node->offset);
+    pf("    add rax, %d\n", -node->offset);
     pf("    push rax\n");
 }
 
@@ -305,48 +310,80 @@ void gen_block(Node *node)
     sub_block_nest();
 }
 
+int has_ptr_to(Node *node)
+{
+    if (node->type->kind == PTR || node->type->kind == ARRAY)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 // 加減算を行う　一方がポインタの場合　もう一方をそのポインタが指しているサイズ分掛け算する　
 // 左右辺のどちらもポインタならエラー
-void gen_mul_ptr_size(Node *node)
+int gen_mul_ptr_size(Node *node)
 {
     int cmp = cmp_node_size(node);
 
     if (cmp == -1)
     {
-        if (node->rhs->type->kind == PTR)
+        if (has_ptr_to(node->rhs))
         {
             // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
             pf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
         }
     }
-    else if (cmp == 0)
+    // else if (cmp == 0)
+    // {
+    //     // 両方同じサイズの型なのでポインタ同士でなければ問題ない
+    //     if (node->lhs->type->kind == PTR)
+    //     {
+    //         error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
+    //     }
+    // }
+    else if (cmp == 1)
     {
-        // 両方同じサイズの型なのでポインタ同士でなければ問題ない
-        if (node->lhs->type->kind == PTR)
-        {
-            error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
-        }
-    }
-    else
-    {
-        if (node->lhs->type->kind == PTR)
+        if (has_ptr_to(node->lhs))
         {
             // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
             pf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
         }
     }
+
+    return cmp;
 }
 
 void gen_add(Node *node)
 {
-    gen_mul_ptr_size(node);
+    int cmp = gen_mul_ptr_size(node);
+    if (cmp == 0)
+    {
+        if (has_ptr_to(node->rhs))
+        {
+            error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
+        }
+    }
+
     pf("    add rax, rdi\n");
 }
 
 void gen_sub(Node *node)
 {
-    gen_mul_ptr_size(node);
+    int cmp = gen_mul_ptr_size(node);
     pf("    sub rax, rdi\n");
+
+    if (cmp == 0)
+    {
+        if (node->rhs->type == node->lhs->type)
+        {
+            if (has_ptr_to(node->rhs))
+            {
+                pf("    mov rdi, %d\n", size_of_node(node));
+                gen_div();
+            }
+        }
+    }
 }
 
 void gen_mul()
