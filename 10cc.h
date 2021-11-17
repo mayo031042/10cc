@@ -45,8 +45,10 @@ typedef struct Node Node;
 // Type
 typedef enum
 {
+    VOID,  // 1
     CHAR,  // 1
     INT,   // 4
+    BOOL,  // 4 int に直される
     PTR,   // 8
     ARRAY, // ?
 } TypeKind;

@@ -26,7 +26,12 @@ void *tokenize()
         }
 
         // 変数の型ゾーン
-        if (is_keyword("char"))
+        if (is_keyword("void"))
+        {
+            new_token(TK_TYPE, 4);
+            continue;
+        }
+        else if (is_keyword("char"))
         {
             new_token(TK_TYPE, 4);
             continue;
@@ -37,11 +42,6 @@ void *tokenize()
             continue;
         }
         else if (is_keyword("bool"))
-        {
-            new_token(TK_TYPE, 4);
-            continue;
-        }
-        else if (is_keyword("void"))
         {
             new_token(TK_TYPE, 4);
             continue;

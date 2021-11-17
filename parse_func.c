@@ -89,7 +89,19 @@ bool expect_ident()
 // 型宣言を処理し TypeKind で返す
 TypeKind expect_vartype()
 {
-    if (consume_keyword(TK_TYPE))
+    if (consume(TK_TYPE, "void"))
+    {
+        return VOID;
+    }
+    else if (consume(TK_TYPE, "char"))
+    {
+        return CHAR;
+    }
+    else if (consume(TK_TYPE, "int"))
+    {
+        return INT;
+    }
+    else if (consume(TK_TYPE, "bool"))
     {
         return INT;
     }
