@@ -164,8 +164,6 @@ int size_of_node(Node *node);
 int size_of(Type *type);
 char *char_of(Type *type);
 
-int test();
-
 // グローバル変数 -> 定義はmainにて
 extern int token_pos;    // 今見ているtokens の位置
 extern int func_pos;     // 今見ているfuncs の位置
