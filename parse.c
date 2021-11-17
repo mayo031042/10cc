@@ -4,6 +4,7 @@
 #define MAX_FUNC_SIZE 100
 
 Func *funcs[MAX_FUNC_SIZE];
+Func *func_pos_ptr;
 int func_pos = 0;
 
 // programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない -> ここでの宣言はありえない
@@ -378,6 +379,7 @@ void *function()
             // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
             funcs[i] = new_func(tokens[val_of_ident_pos()], type);
             funcs[i + 1] = NULL;
+            func_pos_ptr = funcs[i];
             func_pos = i;
             i++;
             declare_arg();
@@ -385,6 +387,7 @@ void *function()
         else
         {
             // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
+            func_pos_ptr = *declared;
             func_pos = declared - &funcs[0]; // funcs == &funcs[0]
             consume_arg();
         }
@@ -396,13 +399,16 @@ void *function()
         }
 
         // 定義がくるので　多重定義されていないか確認する
-        if (funcs[func_pos]->defined == true)
+        // if (funcs[func_pos]->defined == true)
+        if (func_pos_ptr->defined == true)
         {
             error_at(tokens[token_pos]->str, "関数が多重定義されています");
         }
 
-        funcs[func_pos]->defined = true;
-        funcs[func_pos]->definition = program();
+        func_pos_ptr->defined = true;
+        // funcs[func_pos]->defined = true;
+        func_pos_ptr->definition = program();
+        // funcs[func_pos]->definition = program();
     }
 
     // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
