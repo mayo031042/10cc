@@ -7,12 +7,6 @@ void gen(Node *node)
     // NOP か数値を積む
     case ND_NOP:
         return;
-    case ND_PUSH_1:
-        pf("    push 1\n");
-        return;
-    case ND_PUSH_0:
-        pf("    push 0\n");
-        return;
     case ND_NUM:
         pf("    push %d\n", node->val);
         return;

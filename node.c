@@ -38,12 +38,13 @@ Node *new_node_lvar(LVar *lvar)
 }
 
 // 空白を許すstmt に1push を保証する
-Node *create_or_stmt(NodeKind kind)
+// stmt 解釈をする　空白であるならば　０の省略と解釈する
+Node *create_or_stmt()
 {
     Node *node;
     if (consume(TK_RESERVED, ";"))
     {
-        node = create_node(kind);
+        node = new_node_num(0);
     }
     else
     {
@@ -63,7 +64,7 @@ Node *new_node_if()
     expect(TK_RESERVED, "(");
     node->lhs = expr();
     expect(TK_RESERVED, ")");
-    node->rhs = create_or_stmt(ND_PUSH_0);
+    node->rhs = create_or_stmt();
     return node;
 }
 
@@ -89,13 +90,13 @@ Node *new_node_else()
         // else {stmt}
         else
         {
-            node->rhs = create_or_stmt(ND_PUSH_0);
+            node->rhs = create_or_stmt();
         }
     }
     // [if()] -> 既に処理されている
     else
     {
-        node->rhs = create_node(ND_PUSH_0);
+        node->rhs = new_node_num(0);
     }
 
     return node;
@@ -120,7 +121,7 @@ Node *new_node_for()
     {
         if (current_token_is(TK_RESERVED, op[i]))
         {
-            nodes[i] = create_node(ND_PUSH_1);
+            nodes[i] = new_node_num(1);
         }
         else
         {
@@ -130,7 +131,7 @@ Node *new_node_for()
         expect(TK_RESERVED, op[i]);
     }
 
-    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], create_or_stmt(ND_PUSH_0), nodes[1]);
+    return new_grand_node(ND_FOR_WHILE, nodes[0], nodes[2], create_or_stmt(), nodes[1]);
 }
 
 Node *new_node_while()
@@ -139,13 +140,13 @@ Node *new_node_while()
     Node *node_B = expr(); // 空欄を許さない
     expect(TK_RESERVED, ")");
 
-    // A式, C式はfor の空欄時に従って　ND_PUSH_1 を入れておく
-    return new_grand_node(ND_FOR_WHILE, create_node(ND_PUSH_1), create_node(ND_PUSH_1), create_or_stmt(ND_PUSH_0), node_B);
+    // A式, C式はfor の空欄時に従って1　を入れておく
+    return new_grand_node(ND_FOR_WHILE, new_node_num(1), new_node_num(1), create_or_stmt(), node_B);
 }
 
 Node *new_node_do()
 {
-    Node *lhs = create_or_stmt(ND_PUSH_0);
+    Node *lhs = create_or_stmt();
 
     expect(TK_WHILE, "while");
     expect(TK_RESERVED, "(");
