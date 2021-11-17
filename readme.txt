@@ -12,13 +12,6 @@ f
 v
     tokens[]
     token_pos
-    
-bool current_token_is_type();
-f
-v
-    TokenKind
-    tokens[]
-    token_pos
 
 bool consume(TokenKind kind, char *op);
 f
@@ -271,7 +264,7 @@ f
     new_node_for()
     new_node_while()
     new_node_do()
-    current_token_is_type()
+    current_token_is()
     declare_lvar()
     new_node()
     expr()
@@ -288,7 +281,7 @@ v
 void *function()
 f
     at_eof()
-    current_token_is_type()
+    current_token_is()
     error()
     new_type()
     expect_vartype()
