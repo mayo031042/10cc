@@ -134,6 +134,7 @@ void *tokenize();
 
 // parse のための関数 -> @ parse.c
 void *function();
+int culc_offset();
 
 // codegen のための関数　-> @ codegen.c
 void code_gen();

@@ -16,8 +16,8 @@ int culc_offset()
 }
 
 // 有効変数列の中で最大のoffset から必要とするメモリサイズ分下げたoffset を登録したLVar を作成する
-// さらに該当関数のmax_offset も更新し　locals[] の最後尾を変更する
-// つまりfuncs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
+// locals[] の最後尾を作成した変数に変更する
+// つまりfuncs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している
 // name, len, offset, next が登録された変数を作成する
 // 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らない
 LVar *new_lvar(Type *type)
@@ -26,14 +26,7 @@ LVar *new_lvar(Type *type)
     lvar->type = type;
     lvar->name = tokens[val_of_ident_pos()]->str;
     lvar->len = tokens[val_of_ident_pos()]->len;
-
-    // 8 は自分の型に合わせて　変更
     lvar->offset = culc_offset() + size_of(type);
-
-    if (funcs[func_pos]->max_offset < lvar->offset)
-    {
-        funcs[func_pos]->max_offset = lvar->offset;
-    }
 
     lvar->next = funcs[func_pos]->locals[val_of_block_nest()];
     funcs[func_pos]->locals[val_of_block_nest()] = lvar;
