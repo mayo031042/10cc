@@ -27,7 +27,7 @@ bool current_token_is_type()
 }
 
 // 引数と一致したらtoken を読み進める consume 系
-// consume ,consume_keyword, consume_ident 
+// consume ,consume_keyword, consume_ident
 
 // 今見ているtoken と引数の文字列が一致していたならtrue を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
