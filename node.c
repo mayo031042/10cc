@@ -10,7 +10,7 @@ Node *create_node(NodeKind kind)
     return node;
 }
 
-// node に種類と それにつながる左辺、右辺を登録する
+// create_node し　それにつながる左辺、右辺を登録する
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = create_node(kind);
@@ -19,7 +19,7 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
     return node;
 }
 
-// 数値を指すnode を作成する　常に葉であるような終端記号になるので左右に辺は持たない
+// create_node(ND_NUM) し数値を登録する　常に終端記号になるので左右辺はない
 Node *new_node_num(int val)
 {
     Node *node = create_node(ND_NUM);
@@ -27,7 +27,8 @@ Node *new_node_num(int val)
     return node;
 }
 
-// LVarを参照する
+// create_node(ND_LVAR) し対応する変数のポインタを登録する
+// 追加でオフセットも登録する　タイプの登録は未定
 Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
@@ -37,7 +38,7 @@ Node *new_node_lvar(LVar *lvar)
     return node;
 }
 
-// stmt を期待する位置の直後に；が来ている場合　1push 保証の観点から 代わりにcreate_node() する
+// 空白を許すstmt に1push を保証する
 Node *create_or_stmt(NodeKind kind)
 {
     Node *node;
@@ -53,7 +54,10 @@ Node *create_or_stmt(NodeKind kind)
     return node;
 }
 
-// 完全に独立してif node を完成させる
+//       if
+// (expr)  {stmt}
+// else node とは独立してif node を完成させる
+// 先頭のif は読み進められた状態で呼ばれる
 Node *new_node_if()
 {
     Node *node = create_node(ND_IF);
@@ -64,29 +68,32 @@ Node *new_node_if()
     return node;
 }
 
-// if の時点で else を作る　else node　の左辺にif を配置 右辺にはNULLかstmt()
-// 条件分岐の終了はif かelse -> if で終了するときはelse 0; の省略と解釈する
+//   else
+// if    else/{stmt}
+// if の時点で else を作る　右辺にはelse かstmt()
+// 必要に応じてelse 0; を付加することで 常に丁度１つを実行し1push を保証する
+// つまりelse はif の連結である
 Node *new_node_else()
 {
     // 既にif があることがわかっていて消費されている
-    Node *node = create_node(ND_ELSE);
-    node->lhs = new_node_if();
+    Node *node = new_node(ND_ELSE, new_node_if(), NULL);
 
     // 条件分岐制御構文がまだ続くなら
+    // else if() / else {stmt}
     if (consume_keyword(TK_ELSE))
     {
-        // else if として続くなら
+        // else if()
         if (consume_keyword(TK_IF))
         {
             node->rhs = new_node_else();
         }
-        // else だけで終わるなら
+        // else {stmt}
         else
         {
             node->rhs = create_or_stmt(ND_PUSH_0);
         }
     }
-    // if で終了するならelse 0; の省略として処理
+    // [if()] -> 既に処理されている
     else
     {
         node->rhs = create_node(ND_PUSH_0);
@@ -103,6 +110,7 @@ Node *new_grand_node(NodeKind kind, Node *l_l, Node *l_r, Node *r_l, Node *r_r)
     return new_node(kind, lhs, rhs);
 }
 
+// 条件式の仕様に合わせて空白は1 の省略と解釈して1push を保証する
 Node *new_node_for()
 {
     expect(TK_RESERVED, "(");
@@ -113,7 +121,6 @@ Node *new_node_for()
     {
         if (current_token_is(TK_RESERVED, op[i]))
         {
-            // 条件式が空欄な時は恒真式なので　１が入っているとしてparseする
             nodes[i] = create_node(ND_PUSH_1);
         }
         else

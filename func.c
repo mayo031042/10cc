@@ -1,5 +1,13 @@
 #include "parse.h"
 
+// int my_memcmp(int i, LVar *lvar)
+// {
+//     if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(tokens[val_of_ident_pos()]->str, lvar->name, lvar->len))
+//         ;
+//     if (                                                !memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
+//         ;
+// }
+
 // 既出関数名から直前識別子名に一致するものを探す　
 // 既出ならそのfuncs を指すポインタfuncs[i] のアドレス を返し　そうでないならNULLを返す
 Func **find_func()
@@ -15,12 +23,11 @@ Func **find_func()
     return NULL;
 }
 
-// 新しいfuncに len, max_offset, defined, name を設定
-// 型の登録はとりあえずint のみ
+// 新しいfuncに len, max_offset, defined, name, typeを設定
 Func *new_func(Token *tok, Type *type)
 {
     Func *func = calloc(1, sizeof(Func));
-    func->type = type; // 要　変更
+    func->type = type;
     func->defined = false;
     func->len = tok->len;
     func->max_offset = 0;
@@ -35,10 +42,8 @@ int offset_arg(int func_pos)
     {
         return funcs[func_pos]->locals[0]->offset;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }
 
 // locals[0] に引数を登録する 登録された引数は関数呼び出しの際に　ブロック０で宣言された変数として振る舞う

@@ -5,6 +5,9 @@
 // 最後に確認した識別子のtoken_pos
 int ident_pos = 0;
 
+// token を読み進めずに判定のみ行う current 系
+// consume の縮小版と　変数の型を判定するものがある
+
 // 今見ているtoken と引数を比較し一致するならtrue
 bool current_token_is(TokenKind kind, char *op)
 {
@@ -22,6 +25,9 @@ bool current_token_is_type()
 
     return false;
 }
+
+// 引数と一致したらtoken を読み進める consume 系
+// consume ,consume_keyword, consume_ident 
 
 // 今見ているtoken と引数の文字列が一致していたならtrue を返しtoken を読み進める
 bool consume(TokenKind kind, char *op)
@@ -59,6 +65,9 @@ bool consume_ident()
     token_pos++;
     return true;
 }
+
+// consume できなければエラーを吐く expect 系
+// expect, ex_ident, ex_vartype, ex_number
 
 // consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
 bool expect(TokenKind kind, char *op)

@@ -15,12 +15,11 @@ int culc_offset()
     return 0;
 }
 
-// 有効変数列の中で最大のoofset から必要とするメモリサイズ分下げたoffset を登録したLVar を作成する
+// 有効変数列の中で最大のoffset から必要とするメモリサイズ分下げたoffset を登録したLVar を作成する
 // さらに該当関数のmax_offset も更新し　locals[] の最後尾を変更する
 // つまりfuncs[]->locals[] は常に　該当関数の該当ネスト部分で作成された最新の変数を保持している（offset がそのネストの中で最大）
 // name, len, offset, next が登録された変数を作成する
 // 関数のmax_offset が常に最新の登録変数のoffset を指しているとは限らない
-// 変数の型を登録　とりあえずINTのみ
 LVar *new_lvar(Type *type)
 {
     LVar *lvar = calloc(1, sizeof(LVar));
@@ -57,6 +56,12 @@ LVar *find_lvar_within_block(int depth)
     return NULL;
 }
 
+// 現在のブロックに限定して変数を探索する
+LVar *find_lvar_within_current_block()
+{
+    return find_lvar_within_block(val_of_block_nest());
+}
+
 // 既出変数から直前識別子名に一致するものを探す -> 変数呼び出しの際にのみ使用
 // 合致する変数が見つかればその変数を　なければerror
 LVar *find_lvar()
@@ -66,7 +71,7 @@ LVar *find_lvar()
     for (int depth = val_of_block_nest(); 0 <= depth; depth--)
     {
         lvar = find_lvar_within_block(depth);
-        // 変数が帰ってきた場合　条件に合致しているので返す
+        // 変数が帰ってきた場合　その変数は条件に合致しているので返す
         if (lvar)
         {
             return lvar;
@@ -92,15 +97,13 @@ Node *declare_lvar()
     type = add_type_array(type);
 
     // 現在のスコープの中を探索する
-    LVar *lvar = find_lvar_within_block(val_of_block_nest());
-
+    LVar *lvar = find_lvar_within_current_block();
     // 同一変数が見つかれば多重定義としてエラー
     if (lvar)
     {
         error_at(tokens[token_pos]->str, "既に宣言されている変数です");
     }
 
-    // 変数宣言なので上位ブロック深度に 合致する変数が存在するしないに関わらず　必ず新規登録する
     new_lvar(type);
 
     return node;
