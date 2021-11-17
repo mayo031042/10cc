@@ -14,7 +14,7 @@ Func **find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
-        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->label, funcs[i]->len))
+        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
         {
             return &funcs[i];
         }
@@ -28,8 +28,9 @@ Func *new_func(Token *tok, Type *type)
 {
     Func *func = calloc(1, sizeof(Func));
     func->type = type;
-    
+
     strncpy(func->label, tok->str, tok->len);
+    func->name = tok->str;
     func->len = tok->len;
     func->max_offset = 0;
     func->defined = false;
