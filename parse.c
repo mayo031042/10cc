@@ -237,7 +237,7 @@ Node *assign()
         node = new_node(ND_ASSIGN, assign(), node);
     }
 
-    else if (tokens[token_pos]->kind == TK_ASSIGN_OPERATOR)
+    else if (current_token_is(TK_ASSIGN_OPERATOR, NULL))
     {
         if (consume(TK_ASSIGN_OPERATOR, "+="))
         {
@@ -315,7 +315,7 @@ Node *stmt()
     {
         // 変数の宣言はcodegen() としては何も出力しない
         // : int
-        if (current_token_is_type())
+        if (current_token_is(TK_TYPE, NULL))
         {
             node = declare_lvar();
         }
@@ -360,7 +360,7 @@ void *function()
 
     while (!at_eof())
     {
-        if (current_token_is_type() == false)
+        if (current_token_is(TK_TYPE, NULL) == false)
         {
             error("型宣言がありません -> 後に対応");
         }

@@ -5,7 +5,6 @@
 // parce_func.c
 // token の判別だけを行いtoken_pos を進めない関数 -> current...
 bool current_token_is(TokenKind kind, char *op);
-bool current_token_is_type();
 
 // token の判別を行いtoken_pos を進める関数 -> consume...
 bool consume(TokenKind kind, char *op);

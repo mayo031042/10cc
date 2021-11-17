@@ -6,24 +6,19 @@
 int ident_pos = 0;
 
 // token を読み進めずに判定のみ行う current 系
-// consume の縮小版と　変数の型を判定するものがある
 
-// 今見ているtoken と引数を比較し一致するならtrue
+// op == NULL の時　種類が一致すればtrue
+// op != NULL の時　種類と文字列のどちらも一致すればtrue
 bool current_token_is(TokenKind kind, char *op)
 {
-    return (tokens[token_pos]->kind == kind && tokens[token_pos]->len == strlen(op) && !memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len));
-}
-
-// 今見ているtoken が変数の型ならtrue
-bool current_token_is_type()
-{
-    TokenKind kind = tokens[token_pos]->kind;
-    if (kind == TK_TYPE)
+    if (op == NULL)
     {
-        return true;
+        return (tokens[token_pos]->kind == kind);
     }
-
-    return false;
+    else
+    {
+        return (tokens[token_pos]->kind == kind && tokens[token_pos]->len == strlen(op) && !memcmp(tokens[token_pos]->str, op, tokens[token_pos]->len));
+    }
 }
 
 // 引数と一致したらtoken を読み進める consume 系
