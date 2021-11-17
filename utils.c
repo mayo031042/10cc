@@ -83,6 +83,8 @@ int size_of(Type *type)
 {
     switch (type->kind)
     {
+    case VOID:
+        return 1;
     case CHAR:
         return 1;
     case INT:
@@ -94,15 +96,18 @@ int size_of(Type *type)
     }
 }
 
+// ARRAY を引数にとるとバグるかも　ポインタみたいに扱えたらいいが？
 char *char_of(Type *type)
 {
-    switch (type->kind)
+    switch (size_of(type))
     {
-    case CHAR:
+    case 1:
         return "BYTE\0";
-    case INT:
+    case 2:
+        return "WORD\n";
+    case 4:
         return "DWORD\0";
-    case PTR:
+    case 8:
         return "QWORD\0";
     }
 }
