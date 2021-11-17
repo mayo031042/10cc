@@ -40,7 +40,7 @@ LVar *find_lvar_within_block(int depth)
     for (LVar *lvar = funcs[func_pos]->locals[depth]; lvar; lvar = lvar->next)
     {
         // 指定ブロック深度内に　条件に合致する変数を発見したときは その変数を返す
-        if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(lvar->name, tokens[val_of_ident_pos()]->str, lvar->len))
+        if (match_with(tokens[val_of_ident_pos()], lvar->name, lvar->len))
         {
             return lvar;
         }

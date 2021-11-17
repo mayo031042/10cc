@@ -60,6 +60,7 @@ Node *declare_lvar();
 
 // func.c
 // 関数を解釈
+bool match_with(Token *tok, char *name, int len);
 Func **find_func(); // 関数の実体へのポインタを保持する配列を探索し　適切な要素のアドレスを返す
 Func *new_func(Token *tok, Type *type);
 

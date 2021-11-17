@@ -1,12 +1,9 @@
 #include "parse.h"
 
-// int my_memcmp(int i, LVar *lvar)
-// {
-//     if (lvar->len == tokens[val_of_ident_pos()]->len && !memcmp(tokens[val_of_ident_pos()]->str, lvar->name, lvar->len))
-//         ;
-//     if (                                                !memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
-//         ;
-// }
+bool match_with(Token *tok, char *name, int len)
+{
+    return (tok->len == len && !memcmp(tok->str, name, len));
+}
 
 // 既出関数名から直前識別子名に一致するものを探す　
 // 既出ならそのfuncs を指すポインタfuncs[i] のアドレス を返し　そうでないならNULLを返す
@@ -14,7 +11,7 @@ Func **find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
-        if (!memcmp(tokens[val_of_ident_pos()]->str, funcs[i]->name, funcs[i]->len))
+        if (match_with(tokens[val_of_ident_pos()], funcs[i]->name, funcs[i]->len))
         {
             return &funcs[i];
         }
