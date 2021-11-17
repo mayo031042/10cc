@@ -28,10 +28,11 @@ Func *new_func(Token *tok, Type *type)
 {
     Func *func = calloc(1, sizeof(Func));
     func->type = type;
-    func->defined = false;
+    
+    strncpy(func->name, tok->str, tok->len);
     func->len = tok->len;
     func->max_offset = 0;
-    strncpy(func->name, tok->str, tok->len);
+    func->defined = false;
     return func;
 }
 
