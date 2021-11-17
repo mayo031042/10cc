@@ -28,13 +28,12 @@ Node *new_node_num(int val)
 }
 
 // create_node(ND_LVAR) し対応する変数のポインタを登録する
-// 追加でオフセットも登録する　タイプの登録は未定
+// 追加でオフセットも登録する
 Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
     node->offset = lvar->offset;
     node->lvar = lvar;
-    // node->type = lvar->type;
     return node;
 }
 
@@ -167,7 +166,6 @@ Node *new_node_sizeof()
 
 // : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　
 // 全体として繋がれたnode の先頭を返す 終端はNULL
-// 作成されたnode はtop から再帰的にそのType が計算される
 Node *new_node_block()
 {
     // 意味のある; はstmt() 内で処理をする
@@ -180,7 +178,6 @@ Node *new_node_block()
     }
 
     Node *node = stmt();
-    node->type = type_of_node(node);
     node->next = new_node_block();
     return node;
 }
@@ -229,27 +226,40 @@ int size_of_node(Node *node)
     return size_of(type_of_node(node));
 }
 
-// node を基準に型を走査する　基本的にはINT なType を返すことになる
+// 加減算の際　キャストだけでなく値の乗算も必要かどうかを判定する
+bool has_ptr_to(Type *type)
+{
+    if (type->kind == PTR || type->kind == ARRAY)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+// node->type はこの関数でのみ決定される
 // 四則演算では大きい型にキャストされるため　型を選択する
+// 比較演算子と数値node はINT 型を登録される
 // 変数や関数では登録された型を採用する
 // 代入式では最左の変数の型を返すことになるがパースされているのは右辺なのでrhs を返す
-// deref では再帰的に探索する　帰ってきた型をptr_to で参照し一つ進めたものの型が結果である
-// addr では再帰的に探索する　帰ってきた型にptr_to でつながる型を返す
-// 計算過程でnode のtype が変化することを暗黙的なキャストに対応させている
-// すべてのnode はcreate されたタイミングでINT型のType を割り当てられている
-// 四則演算やderef でもINTのままであるため　それらを変更する
+// deref のtype はnode->lhs のtype->ptr_to に等しい
+// addr のtype はnode->lhs をptr_to でつなぐtype に等しい
+// void 型はキャストされない
 Type *type_of_node(Node *node)
 {
+    // node がNULL であったり、既にtype が決定している場合は探索済みとする
     if (node == NULL)
     {
         return NULL;
     }
-
-    // 既にType が作成されている場合は探索済みである
-    if (node->type)
+    else if (node->type)
     {
         return node->type;
     }
+
+    // 左右辺に対してnode->type の決定を行う
+    type_of_node(node->lhs);
+    type_of_node(node->rhs);
 
     NodeKind kind = node->kind;
 
@@ -265,11 +275,13 @@ Type *type_of_node(Node *node)
             node->type = node->lhs->type;
         }
     }
+    else if (kind == ND_EQ || kind == ND_NE || kind == ND_LT || kind == ND_LE || kind == ND_NUM)
+    {
+        node->type = create_type(INT);
+    }
     else if (kind == ND_ASSIGN)
     {
-        // 代入先の変数の型が優先される
         node->type = type_of_node(node->rhs);
-        type_of_node(node->lhs);
     }
     else if (kind == ND_FUNC_CALL)
     {
@@ -281,14 +293,13 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_ADDR)
     {
-        node->type = create_type(PTR);
-        node->type->ptr_to = type_of_node(node->lhs);
+        node->type = new_type(PTR, type_of_node(node->lhs));
     }
     else if (kind == ND_DEREF)
     {
         Type *deref = type_of_node(node->lhs);
 
-        if (deref->kind != PTR && deref->kind != ARRAY)
+        if (has_ptr_to(deref) == false)
         {
             error("非ポインタ型を参照しています");
         }
@@ -297,9 +308,7 @@ Type *type_of_node(Node *node)
     }
     else
     {
-        node->type = create_type(INT);
-        type_of_node(node->lhs);
-        type_of_node(node->rhs);
+        node->type = NULL;
     }
 
     return node->type;

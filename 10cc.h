@@ -111,7 +111,7 @@ typedef enum
     ND_BREAK,     // break
     ND_BLOCK,     // ブロックノードの開始を意味する
     ND_DECLARE,   // 変数の宣言時にのみ使用
-    ND_NOP,       // node->next で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
+    ND_NOP,       // node->next 等で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
     ND_PUSH_0,    // push 0 のみ行う
     ND_PUSH_1,    // push 1 のみ行う
 } NodeKind;
@@ -159,6 +159,7 @@ void sub_block_nest();
 void aaa();
 
 int cmp_node_size(Node *node);
+bool has_ptr_to(Type *type);
 Type *type_of_node(Node *node);
 
 int size_of_node(Node *node);

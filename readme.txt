@@ -1,11 +1,9 @@
 一般のC compiler と異なる点
 {
 bool 型はint 型に直される
+配列の宣言時　数値以外を解釈できない→四則演算もだめ
 
 }
-
-int などの型宣言はcurrent_token_is_type() で判定することにする
-
 
 
 関数の依存関係を記述する
@@ -188,127 +186,6 @@ f
 v
 
 
-==parce.c==
-Node 構造体は全てに出現するので省略
-
-Node *primary();
-f
-    consume()
-    expr()
-    expect()
-    consume_ident()
-    current_token_is()
-    create_node()
-    find_func()
-    error_at()
-    val_of_ident_pos()
-    build_arg()
-    new_node_lvar()
-    find_lvar()
-    new_node()
-v
-    Func
-
-Node *unary();
-f
-    consume()
-    primary()
-    new_node()
-    new_node_num()
-    unary()
-    new_node_sizeof()
-v
-
-Node *mul();
-f
-    consume()
-    new_node()
-    unary()
-v
-
-Node *add();
-f
-    mul()
-    consume()
-    new_node()
-v
-
-Node *relational();
-f
-    add()
-    consume()
-    new_node()
-v
-
-Node *equality();
-f
-    relational()
-    consume()
-    new_node()
-v
-
-Node *assign();
-f
-    equality()
-    consume()
-    new_node()
-    assign()
-    error_at()
-v
-    tokens[]
-    token_pos
-
-Node *expr();
-f
-    assign()
-    type_of_node()
-v
-
-Node *stmt();
-f
-    consume_keyword()
-    build_block()
-    new_node_else()
-    new_node_for()
-    new_node_while()
-    new_node_do()
-    current_token_is()
-    declare_lvar()
-    new_node()
-    expr()
-    create_node()
-    expect()
-v
-
-Node *program();
-f
-    expect()
-    build_block()
-v
-
-void *function()
-f
-    at_eof()
-    current_token_is()
-    error()
-    new_type()
-    expect_vartype()
-    add_type_ptr()
-    expect_ident()
-    find_func()
-    new_func()
-    val_of_ident_pos()
-    declare_arg()
-    consume_arg()
-    error_at()
-    program()
-v
-    Type
-    Func
-    funcs[]
-    func_pos
-
-
 ==lvar.c==
 LVar 構造体は全てに出現するので省略
 
@@ -428,3 +305,124 @@ f
     expect()
     add_type_array()
 v
+
+
+==parce.c==
+Node 構造体は全てに出現するので省略
+
+Node *primary();
+f
+    consume()
+    expr()
+    expect()
+    consume_ident()
+    current_token_is()
+    create_node()
+    find_func()
+    error_at()
+    val_of_ident_pos()
+    build_arg()
+    new_node_lvar()
+    find_lvar()
+    new_node()
+v
+    Func
+
+Node *unary();
+f
+    consume()
+    primary()
+    new_node()
+    new_node_num()
+    unary()
+    new_node_sizeof()
+v
+
+Node *mul();
+f
+    consume()
+    new_node()
+    unary()
+v
+
+Node *add();
+f
+    mul()
+    consume()
+    new_node()
+v
+
+Node *relational();
+f
+    add()
+    consume()
+    new_node()
+v
+
+Node *equality();
+f
+    relational()
+    consume()
+    new_node()
+v
+
+Node *assign();
+f
+    equality()
+    consume()
+    new_node()
+    assign()
+    error_at()
+v
+    tokens[]
+    token_pos
+
+Node *expr();
+f
+    assign()
+    type_of_node()
+v
+
+Node *stmt();
+f
+    consume_keyword()
+    build_block()
+    new_node_else()
+    new_node_for()
+    new_node_while()
+    new_node_do()
+    current_token_is()
+    declare_lvar()
+    new_node()
+    expr()
+    create_node()
+    expect()
+v
+
+Node *program();
+f
+    expect()
+    build_block()
+v
+
+void *function()
+f
+    at_eof()
+    current_token_is()
+    error()
+    new_type()
+    expect_vartype()
+    add_type_ptr()
+    expect_ident()
+    find_func()
+    new_func()
+    val_of_ident_pos()
+    declare_arg()
+    consume_arg()
+    error_at()
+    program()
+v
+    Type
+    Func
+    funcs[]
+    func_pos

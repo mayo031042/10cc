@@ -310,16 +310,6 @@ void gen_block(Node *node)
     sub_block_nest();
 }
 
-int has_ptr_to(Node *node)
-{
-    if (node->type->kind == PTR || node->type->kind == ARRAY)
-    {
-        return true;
-    }
-
-    return false;
-}
-
 // 加減算を行う　一方がポインタの場合　もう一方をそのポインタが指しているサイズ分掛け算する　
 // 左右辺のどちらもポインタならエラー
 int gen_mul_ptr_size(Node *node)
@@ -328,7 +318,7 @@ int gen_mul_ptr_size(Node *node)
 
     if (cmp == -1)
     {
-        if (has_ptr_to(node->rhs))
+        if (has_ptr_to(node->rhs->type))
         {
             // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
             pf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
@@ -344,7 +334,7 @@ int gen_mul_ptr_size(Node *node)
     // }
     else if (cmp == 1)
     {
-        if (has_ptr_to(node->lhs))
+        if (has_ptr_to(node->lhs->type))
         {
             // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
             pf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
@@ -359,7 +349,7 @@ void gen_add(Node *node)
     int cmp = gen_mul_ptr_size(node);
     if (cmp == 0)
     {
-        if (has_ptr_to(node->rhs))
+        if (has_ptr_to(node->rhs->type))
         {
             error_at(tokens[token_pos]->str, "ポインタ同士の演算はできません");
         }
@@ -377,7 +367,7 @@ void gen_sub(Node *node)
     {
         if (node->rhs->type == node->lhs->type)
         {
-            if (has_ptr_to(node->rhs))
+            if (has_ptr_to(node->rhs->type))
             {
                 pf("    mov rdi, %d\n", size_of_node(node));
                 gen_div();
