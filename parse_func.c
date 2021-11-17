@@ -18,7 +18,7 @@ bool current_token_is(TokenKind kind, char *op)
 bool current_token_is_type()
 {
     TokenKind kind = tokens[token_pos]->kind;
-    if (kind == TK_INT)
+    if (kind == TK_TYPE)
     {
         return true;
     }
@@ -94,7 +94,7 @@ bool expect_ident()
 // 型宣言を処理し TypeKind で返す
 TypeKind expect_vartype()
 {
-    if (consume_keyword(TK_INT))
+    if (consume_keyword(TK_TYPE))
     {
         return INT;
     }

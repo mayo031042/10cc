@@ -14,7 +14,7 @@ typedef enum
     TK_IDENT,           // 変数
     TK_NUM,             // 数値
     TK_SIZEOF,          // sizeof
-    TK_INT,             // int型
+    TK_TYPE,            // 型
     TK_RETURN,          // return
     TK_SWITCH,          // switch
     TK_CASE,            // case
