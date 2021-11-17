@@ -112,8 +112,6 @@ typedef enum
     ND_BLOCK,     // ブロックノードの開始を意味する
     ND_DECLARE,   // 変数の宣言時にのみ使用
     ND_NOP,       // node->next 等で連結したいがNULLでもあってほしい時 → codegen() ではスルーされる
-    // ND_PUSH_0,
-    // ND_PUSH_1,
 } NodeKind;
 
 struct Node
