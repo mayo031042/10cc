@@ -380,7 +380,7 @@ void *function()
             funcs[i] = new_func(tokens[val_of_ident_pos()], type);
             funcs[i + 1] = NULL;
             func_pos_ptr = funcs[i];
-            func_pos = i;
+            // func_pos = i;
             i++;
             declare_arg();
         }
@@ -388,9 +388,10 @@ void *function()
         {
             // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
             func_pos_ptr = *declared;
-            func_pos = declared - &funcs[0]; // funcs == &funcs[0]
+            // func_pos = declared - &funcs[0]; // funcs == &funcs[0]
             consume_arg();
         }
+
 
         // 宣言のみなら　次の関数読み込みに移る
         if (consume(TK_RESERVED, ";"))

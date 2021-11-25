@@ -37,9 +37,11 @@ Func *new_func(Token *tok, Type *type)
 // func_pos で指定された関数の引数の最大offset を返す
 int offset_arg(int func_pos)
 {
-    if (funcs[func_pos]->locals[0])
+    if (func_pos_ptr->locals[0])
+    // if (funcs[func_pos]->locals[0])
     {
-        return funcs[func_pos]->locals[0]->offset;
+        return func_pos_ptr->locals[0]->offset;
+        // return funcs[func_pos]->locals[0]->offset;
     }
 
     return 0;

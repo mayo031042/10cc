@@ -71,7 +71,8 @@ void gen_mov_imm_to_addr(Node *node)
 void pop_regi()
 {
     int i = 0;
-    for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
+    // for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
+    for (LVar *lvar = func_pos_ptr->locals[0]; lvar; lvar = lvar->next)
     {
         pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
         // pf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
@@ -83,12 +84,12 @@ void pop_regi()
 // これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
 void gen_prologue()
 {
-    pf("    .globl %s\n", funcs[func_pos]->label);
-    pf("%s:\n", funcs[func_pos]->label);
+    pf("    .globl %s\n", func_pos_ptr->label);
+    pf("%s:\n", func_pos_ptr->label);
 
     pf("    push rbp\n");
     pf("    mov rbp, rsp\n");
-    pf("    sub rsp, %d\n", funcs[func_pos]->max_offset);
+    pf("    sub rsp, %d\n", func_pos_ptr->max_offset);
 
     pop_regi();
 }

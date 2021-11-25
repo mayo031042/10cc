@@ -135,9 +135,12 @@ void code_gen()
 
     for (func_pos = 0; funcs[func_pos]; func_pos++)
     {
+        func_pos_ptr = funcs[func_pos];
+
         gen_prologue();
 
-        gen(funcs[func_pos]->definition);
+        gen(func_pos_ptr->definition);
+        // gen(funcs[i]->definition);
         pf("    pop rax\n");
 
         gen_epilogue();

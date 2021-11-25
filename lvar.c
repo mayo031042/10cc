@@ -5,9 +5,11 @@ int culc_offset()
 {
     for (int depth = val_of_block_nest(); 0 <= depth; depth--)
     {
-        if (funcs[func_pos]->locals[depth])
+        if (func_pos_ptr->locals[depth])
+        // if (funcs[func_pos]->locals[depth])
         {
-            return funcs[func_pos]->locals[depth]->offset;
+            return func_pos_ptr->locals[depth]->offset;
+            // return funcs[func_pos]->locals[depth]->offset;
         }
         // locals[depth] がNULL なら上位のブロック深度を探索
     }
@@ -28,8 +30,10 @@ LVar *new_lvar(Type *type)
     lvar->len = tokens[val_of_ident_pos()]->len;
     lvar->offset = culc_offset() + size_of(type);
 
-    lvar->next = funcs[func_pos]->locals[val_of_block_nest()];
-    funcs[func_pos]->locals[val_of_block_nest()] = lvar;
+    lvar->next = func_pos_ptr->locals[val_of_block_nest()];
+    // lvar->next = funcs[func_pos]->locals[val_of_block_nest()];
+    func_pos_ptr->locals[val_of_block_nest()] = lvar;
+    // funcs[func_pos]->locals[val_of_block_nest()] = lvar;
 
     return lvar;
 }
@@ -37,7 +41,7 @@ LVar *new_lvar(Type *type)
 // func_pos を参照しつつ引数のブロック深度内のみから 直前識別子名に合致する変数を探す なければNULL
 LVar *find_lvar_within_block(int depth)
 {
-    for (LVar *lvar = funcs[func_pos]->locals[depth]; lvar; lvar = lvar->next)
+    for (LVar *lvar = func_pos_ptr->locals[depth]; lvar; lvar = lvar->next)
     {
         // 指定ブロック深度内に　条件に合致する変数を発見したときは その変数を返す
         if (match_with(tokens[val_of_ident_pos()], lvar->name, lvar->len))
