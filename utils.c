@@ -125,7 +125,7 @@ void read_file(char *path)
 
     FILE *test_file_ptr = fopen(path, "r");
 
-    if (test_file_ptr == NULL)
+    if (NULL == test_file_ptr)
         error("cannot open %s", path);
 
     // ファイルの長さを調べる

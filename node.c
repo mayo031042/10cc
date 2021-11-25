@@ -197,7 +197,7 @@ Node *build_block()
 // 左右辺を持つnode に対してどちらのnode のサイズが大きいかを返す
 int cmp_node_size(Node *node)
 {
-    if (node->lhs == NULL || node->rhs == NULL)
+    if (NULL == node->lhs || NULL == node->rhs)
     {
         error("終端node を展開しています");
     }
@@ -247,7 +247,7 @@ bool has_ptr_to(Type *type)
 Type *type_of_node(Node *node)
 {
     // node がNULL であったり、既にtype が決定している場合は探索済みとする
-    if (node == NULL)
+    if (NULL == node)
     {
         return NULL;
     }
@@ -298,7 +298,7 @@ Type *type_of_node(Node *node)
     {
         Type *deref = type_of_node(node->lhs);
 
-        if (has_ptr_to(deref) == false)
+        if (false == has_ptr_to(deref))
         {
             error("非ポインタ型を参照しています");
         }

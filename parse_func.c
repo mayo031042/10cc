@@ -11,7 +11,7 @@ int ident_pos = 0;
 // op != NULL の時　種類と文字列のどちらも一致すればtrue
 bool current_token_is(TokenKind kind, char *op)
 {
-    if (op == NULL)
+    if (NULL == op)
     {
         return (tokens[token_pos]->kind == kind);
     }

@@ -31,7 +31,7 @@ Node *primary()
             // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
             Func *addr = find_func();
 
-            if (addr == NULL)
+            if (NULL == addr)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
@@ -361,7 +361,7 @@ void *function()
 
     while (!at_eof())
     {
-        if (current_token_is(TK_TYPE, NULL) == false)
+        if (false == current_token_is(TK_TYPE, NULL))
         {
             error("型宣言がありません -> 後に対応");
         }
@@ -373,7 +373,7 @@ void *function()
         // 識別子から　今までに登録されている関数列を全探索する
         func_pos_ptr = find_func();
 
-        if (func_pos_ptr == NULL)
+        if (NULL == func_pos_ptr)
         {
             // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
             funcs[i] = new_func(tokens[val_of_ident_pos()], type);
@@ -395,7 +395,7 @@ void *function()
         }
 
         // 定義がくるので　多重定義されていないか確認する
-        if (func_pos_ptr->defined == true)
+        if (true == func_pos_ptr->defined)
         {
             error_at(tokens[token_pos]->str, "関数が多重定義されています");
         }
