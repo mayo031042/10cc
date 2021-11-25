@@ -22,9 +22,9 @@ int main(int argc, char **argv)
         error("引数の数が間違っています");
     }
 
-    fp = fopen("tmp/tmp.s", "w");
-
     read_file(argv[1]);
+
+    fp = fopen("tmp/tmp.s", "w");
 
     compile();
 
