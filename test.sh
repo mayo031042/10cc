@@ -35,6 +35,7 @@ assert()
     fi
 
     if [ $flag_10cc = 0 -o $flag_gcc = 0 ]; then
+        rm -f a
         exit 1
     fi
 }
