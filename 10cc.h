@@ -172,7 +172,6 @@ char *char_of(Type *type);
 // グローバル変数 -> 定義はmainにて
 extern int token_pos; // 今見ているtokens の位置
 
-extern int func_pos;       // 今見ているfuncs の位置
 extern Func *func_pos_ptr; // 今見ているfuncs の位置
 
 extern int block_nest;   // 今見ているコードの｛｝ネストの階層

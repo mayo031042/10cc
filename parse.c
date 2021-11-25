@@ -5,7 +5,6 @@
 
 Func *funcs[MAX_FUNC_SIZE];
 Func *func_pos_ptr;
-int func_pos = 0;
 
 // programの中の最小単位 (expr)か数値か変数、関数呼び出し しかありえない -> ここでの宣言はありえない
 // -> ND_LVAR, ND_FUNC_CALL, ND_NUM, expr()
@@ -30,14 +29,14 @@ Node *primary()
             node = create_node(ND_FUNC_CALL);
 
             // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
-            Func **addr = find_func();
+            Func *addr = find_func();
 
             if (addr == NULL)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
 
-            node->func = *addr;
+            node->func = addr;
 
             // node のtype をfunc のtype に揃える
             node->type = node->func->type;
@@ -372,26 +371,22 @@ void *function()
         expect_ident();
 
         // 識別子から　今までに登録されている関数列を全探索する
-        Func **declared = find_func();
+        func_pos_ptr = find_func();
 
-        if (declared == NULL)
+        if (func_pos_ptr == NULL)
         {
             // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
             funcs[i] = new_func(tokens[val_of_ident_pos()], type);
             funcs[i + 1] = NULL;
             func_pos_ptr = funcs[i];
-            // func_pos = i;
             i++;
             declare_arg();
         }
         else
         {
             // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
-            func_pos_ptr = *declared;
-            // func_pos = declared - &funcs[0]; // funcs == &funcs[0]
             consume_arg();
         }
-
 
         // 宣言のみなら　次の関数読み込みに移る
         if (consume(TK_RESERVED, ";"))
@@ -400,16 +395,13 @@ void *function()
         }
 
         // 定義がくるので　多重定義されていないか確認する
-        // if (funcs[func_pos]->defined == true)
         if (func_pos_ptr->defined == true)
         {
             error_at(tokens[token_pos]->str, "関数が多重定義されています");
         }
 
         func_pos_ptr->defined = true;
-        // funcs[func_pos]->defined = true;
         func_pos_ptr->definition = program();
-        // funcs[func_pos]->definition = program();
     }
 
     // 各関数のmax offset を、それを超えるような最小の16の倍数で改める

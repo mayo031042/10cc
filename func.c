@@ -7,13 +7,13 @@ bool match_with(Token *tok, char *name, int len)
 
 // 既出関数名から直前識別子名に一致するものを探す　
 // 既出ならそのfuncs を指すポインタfuncs[i] のアドレス を返し　そうでないならNULLを返す
-Func **find_func()
+Func *find_func()
 {
     for (int i = 0; funcs[i]; i++)
     {
         if (match_with(tokens[val_of_ident_pos()], funcs[i]->name, funcs[i]->len))
         {
-            return &funcs[i];
+            return funcs[i];
         }
     }
 
@@ -35,17 +35,17 @@ Func *new_func(Token *tok, Type *type)
 }
 
 // func_pos で指定された関数の引数の最大offset を返す
-int offset_arg(int func_pos)
-{
-    if (func_pos_ptr->locals[0])
-    // if (funcs[func_pos]->locals[0])
-    {
-        return func_pos_ptr->locals[0]->offset;
-        // return funcs[func_pos]->locals[0]->offset;
-    }
+// int offset_arg()
+// {
+//     if (func_pos_ptr->locals[0])
+//     // if (funcs[func_pos]->locals[0])
+//     {
+//         return func_pos_ptr->locals[0]->offset;
+//         // return funcs[func_pos]->locals[0]->offset;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 // locals[0] に引数を登録する 登録された引数は関数呼び出しの際に　ブロック０で宣言された変数として振る舞う
 // 関数宣言、定義の際　引数を解釈する　既に（　は消費されている

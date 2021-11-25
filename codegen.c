@@ -133,9 +133,9 @@ void code_gen()
 {
     pf(".intel_syntax noprefix\n");
 
-    for (func_pos = 0; funcs[func_pos]; func_pos++)
+    for (int i = 0; funcs[i]; i++)
     {
-        func_pos_ptr = funcs[func_pos];
+        func_pos_ptr = funcs[i];
 
         gen_prologue();
 
