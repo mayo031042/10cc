@@ -6,10 +6,8 @@ int culc_offset()
     for (int depth = val_of_block_nest(); 0 <= depth; depth--)
     {
         if (func_pos_ptr->locals[depth])
-        // if (funcs[func_pos]->locals[depth])
         {
             return func_pos_ptr->locals[depth]->offset;
-            // return funcs[func_pos]->locals[depth]->offset;
         }
         // locals[depth] がNULL なら上位のブロック深度を探索
     }
@@ -31,14 +29,12 @@ LVar *new_lvar(Type *type)
     lvar->offset = culc_offset() + size_of(type);
 
     lvar->next = func_pos_ptr->locals[val_of_block_nest()];
-    // lvar->next = funcs[func_pos]->locals[val_of_block_nest()];
     func_pos_ptr->locals[val_of_block_nest()] = lvar;
-    // funcs[func_pos]->locals[val_of_block_nest()] = lvar;
 
     return lvar;
 }
 
-// func_pos を参照しつつ引数のブロック深度内のみから 直前識別子名に合致する変数を探す なければNULL
+// func_pos_ptr を参照しつつ引数のブロック深度内のみから 直前識別子名に合致する変数を探す なければNULL
 LVar *find_lvar_within_block(int depth)
 {
     for (LVar *lvar = func_pos_ptr->locals[depth]; lvar; lvar = lvar->next)

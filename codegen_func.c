@@ -71,7 +71,6 @@ void gen_mov_imm_to_addr(Node *node)
 void pop_regi()
 {
     int i = 0;
-    // for (LVar *lvar = funcs[func_pos]->locals[0]; lvar; lvar = lvar->next)
     for (LVar *lvar = func_pos_ptr->locals[0]; lvar; lvar = lvar->next)
     {
         pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);

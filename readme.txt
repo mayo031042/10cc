@@ -254,12 +254,6 @@ f
 v
     Token
 
-int offset_arg(int func_pos);
-f
-v
-    funcs[]
-    func_pos
-
 void declare_arg();
 f
     expect()

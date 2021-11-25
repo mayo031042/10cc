@@ -402,11 +402,8 @@ void *function()
 
         func_pos_ptr->defined = true;
         func_pos_ptr->definition = program();
-    }
 
-    // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
-    for (i--; 0 <= i; i--)
-    {
-        funcs[i]->max_offset = (funcs[i]->max_offset + 16 - 1) / 16 * 16;
+        // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
+        func_pos_ptr->max_offset = (func_pos_ptr->max_offset + 16 - 1) / 16 * 16;
     }
 }

@@ -38,10 +38,8 @@ Func *new_func(Token *tok, Type *type)
 // int offset_arg()
 // {
 //     if (func_pos_ptr->locals[0])
-//     // if (funcs[func_pos]->locals[0])
 //     {
 //         return func_pos_ptr->locals[0]->offset;
-//         // return funcs[func_pos]->locals[0]->offset;
 //     }
 
 //     return 0;

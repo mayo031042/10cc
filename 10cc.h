@@ -169,13 +169,13 @@ int size_of_node(Node *node);
 int size_of(Type *type);
 char *char_of(Type *type);
 
-// グローバル変数 -> 定義はmainにて
+// グローバル変数
 extern int token_pos; // 今見ているtokens の位置
 
 extern Func *func_pos_ptr; // 今見ているfuncs の位置
 
 extern int block_nest;   // 今見ているコードの｛｝ネストの階層
-extern char *user_input; // main関数の引数を保持すptr
+extern char *user_input; // コマンドライン引数を保持するptr
 
 extern Token *tokens[];
 extern Func *funcs[];
