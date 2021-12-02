@@ -127,7 +127,7 @@ void gen_addr(Node *node)
 
     // rbp とoffsset からアドレスを計算し積む
     pf("    mov rax, rbp\n");
-    pf("    add rax, %d\n", -(node->lvar->offset));
+    pf("    sub rax, %d\n", node->lvar->offset);
     pf("    push rax\n");
 }
 
