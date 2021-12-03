@@ -18,33 +18,6 @@ void cmp_rax(int val)
     pf("    cmp rax, %d\n", val);
 }
 
-// スタックトップをアドレスと解釈し　そのアドレスに入っている値に変更する
-// そのアドレスがどのサイズの型に対応しているかを判断し適切なアセンブリを出力する
-void gen_cng_addr_to_imm(Node *node)
-{
-    if (node->type->kind == ARRAY)
-    {
-        return;
-    }
-
-    pf("    pop rax\n");
-
-    switch (size_of_node(node))
-    {
-    case 1:
-        pf("    movsx rax, BYTE PTR [rax]\n");
-        break;
-    case 4:
-        pf("    movsx rax, DWORD PTR [rax]\n");
-        break;
-    case 8:
-        pf("    mov rax, [rax]\n");
-        break;
-    }
-
-    pf("    push rax\n");
-}
-
 // スタックから２つ取り出し　変数に対応した適切なサイズ分　メモリに移動する
 void gen_mov_imm_to_addr(Node *node)
 {
@@ -136,7 +109,7 @@ void gen_deref_(Node *node)
 {
     pf("    pop rax\n");
 
-    switch (size_of_node(node->lhs))
+    switch (size_of_node(node))
     {
     case 1:
         pf("    movsx rax, BYTE PTR [rax]\n");

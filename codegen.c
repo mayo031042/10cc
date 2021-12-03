@@ -18,13 +18,17 @@ void gen(Node *node)
     // 変数をちょうど１つ含むようなnode であることが確定している
     case ND_LVAR:
         gen_addr(node);
-        gen_cng_addr_to_imm(node);
+        if (node->lvar->type->kind != ARRAY)
+        {
+            gen_deref_(node);
+        }
+
         return;
     // *x 変数の保持している値をメモリであると解釈して積む
     // PTR 型を指していることが確定している
     case ND_DEREF:
         gen_deref(node);
-        gen_cng_addr_to_imm(node);
+        gen_deref_(node);
         return;
 
     // &x 変数の割り当てられているアドレスを返す
