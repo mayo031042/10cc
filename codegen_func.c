@@ -115,19 +115,40 @@ void gen_declare(Node *node)
 
     pf("    push 0\n");
 }
-// nodeを左辺値とみなせた時　そのアドレスをスタックに積む
-// addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
-// addr は変数として割り当てられている領域のみを対象とする点で異なる
+
+// nodeを左辺値とみなせた時　rbp-offset をスタックに積む
+// addr は変数のみをオペランドとして持つ
 void gen_addr(Node *node)
 {
     if (node->kind != ND_LVAR)
     {
-        error_at(tokens[token_pos]->str, "左辺値ではありません\n");
+        error_at(tokens[token_pos]->str, "左辺値ではありません gen_addr\n");
     }
 
     // rbp とoffsset からアドレスを計算し積む
     pf("    mov rax, rbp\n");
     pf("    sub rax, %d\n", node->lvar->offset);
+    pf("    push rax\n");
+}
+
+// スタックトップを参照する　積まれた数値をアドレスとして解釈し それに入っている値に交換する
+void gen_deref_(Node *node)
+{
+    pf("    pop rax\n");
+
+    switch (size_of_node(node->lhs))
+    {
+    case 1:
+        pf("    movsx rax, BYTE PTR [rax]\n");
+        break;
+    case 4:
+        pf("    movsx rax, DWORD PTR [rax]\n");
+        break;
+    case 8:
+        pf("    mov rax, [rax]\n");
+        break;
+    }
+
     pf("    push rax\n");
 }
 
@@ -137,6 +158,7 @@ void gen_addr(Node *node)
 // deref は変数として割り当てられていないようなアドレスも積むことができる
 // assign で参照外しとアドレス積みのどちらにも対応する必要があるので両対応で実装
 void gen_deref(Node *node)
+
 {
     // 参照が外れきったら変数のアドレスを積む
     if (node->kind == ND_LVAR)
