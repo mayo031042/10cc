@@ -11,6 +11,7 @@ void pf(char *fmt, ...)
     vfprintf(fp, fmt, ap);
 }
 
+// default 条件を追加　配列などは1,2,4,8 以外のサイズを取りうるがPTR と同等に扱うので８として分類する
 char *byte_size_string(int size, char *p)
 {
     if (p == NULL)
@@ -23,7 +24,7 @@ char *byte_size_string(int size, char *p)
             return "WORD PTR\0";
         case 4:
             return "DWORD PTR\0";
-        case 8:
+        default:
             return "QWORD PTR\0";
         }
     }
@@ -37,7 +38,7 @@ char *byte_size_string(int size, char *p)
             return "ax\0";
         case 4:
             return "eax\0";
-        case 8:
+        default:
             return "rax\0";
         }
     }
@@ -51,7 +52,7 @@ char *byte_size_string(int size, char *p)
             return "di\0";
         case 4:
             return "edi\0";
-        case 8:
+        default:
             return "rdi\0";
         }
     }
@@ -60,10 +61,12 @@ char *byte_size_string(int size, char *p)
     {
         switch (size)
         {
-        case 8:
-            return "mov\0";
-        default:
+        case 1:
+        case 2:
+        case 4:
             return "movsx\0";
+        default:
+            return "mov\0";
         }
     }
 
