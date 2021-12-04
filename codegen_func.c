@@ -21,6 +21,7 @@ void cmp_rax(int val)
 // スタックから２つ取り出し　変数に対応した適切なサイズ分　メモリに移動する
 void gen_mov_imm_to_addr(Node *node)
 {
+    node = node->lhs;
     pf("    pop rax\n");
     pf("    pop rdi\n");
 

@@ -282,7 +282,8 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_ASSIGN)
     {
-        node->type = type_of_node(node->rhs);
+        // assign の右辺にはND_ADDR であるため　更にその左辺を参照する
+        node->type = type_of_node(node->rhs->lhs);
     }
     else if (kind == ND_FUNC_CALL)
     {

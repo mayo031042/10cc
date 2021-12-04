@@ -81,9 +81,9 @@ test: 10cc
 	./test.sh
 
 # 編集されたtmp.s を実行
-s: tmp.s
-	gcc -o tmp tmp.s
-	./tmp
+s: tmp/tmp.s
+	gcc -o tmp/tmp tmp/tmp.s
+	./tmp/tmp
 
 clean:
 	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/*

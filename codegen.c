@@ -34,7 +34,8 @@ void gen(Node *node)
     // 代入 適切なアドレスに保持されている値を書き換え結果を積む
     case ND_ASSIGN:
         gen(node->lhs);
-        gen_deref(node->rhs);
+        gen_addr(node->rhs);
+        // gen_deref(node->rhs);
         gen_mov_imm_to_addr(node->rhs);
         return;
 

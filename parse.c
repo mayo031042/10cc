@@ -226,7 +226,7 @@ Node *equality()
 
 Node *new_node_assign(Node *lhs, Node *rhs)
 {
-    return new_node(ND_ASSIGN, lhs, rhs);
+    // return new_node(ND_ASSIGN, lhs, rhs);
     return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
 }
 
