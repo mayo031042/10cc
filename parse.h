@@ -51,6 +51,8 @@ Node *new_node_sizeof();
 
 Node *build_block();
 
+Node *try_node_func_call();
+
 // lvar.c
 // 変数を解釈
 LVar *new_lvar();

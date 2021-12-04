@@ -194,6 +194,33 @@ Node *build_block()
     return node;
 }
 
+Node *try_node_func_call()
+{
+    if (false == current_token_is(TK_RESERVED, "("))
+    {
+        return NULL;
+    }
+
+    // 関数なので　関数呼び出しである
+    Node *node = create_node(ND_FUNC_CALL);
+
+    // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
+    node->func = find_func();
+
+    if (NULL == node->func)
+    {
+        error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
+    }
+
+    // node のtype をfunc のtype に揃える
+    node->type = node->func->type;
+
+    // 引数を解釈する
+    node->lhs = build_arg();
+
+    return node;
+}
+
 // 暗黙的なキャスト
 
 // 左右辺を持つnode に対してどちらのnode のサイズが大きいかを返す

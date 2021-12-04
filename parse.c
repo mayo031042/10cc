@@ -22,27 +22,9 @@ Node *primary()
     // 変数,関数
     else if (consume_ident())
     {
-        // 関数かチェック
-        if (current_token_is(TK_RESERVED, "("))
-        {
-            // 関数なので　関数呼び出しである
-            node = create_node(ND_FUNC_CALL);
+        node = try_node_func_call();
 
-            // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
-            node->func = find_func();
-
-            if (NULL == node->func)
-            {
-                error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
-            }
-
-            // node のtype をfunc のtype に揃える
-            node->type = node->func->type;
-
-            // 引数を解釈する
-            node->lhs = build_arg();
-        }
-        else
+        if (NULL == node)
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_lvar(find_lvar());
