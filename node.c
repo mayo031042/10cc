@@ -193,6 +193,13 @@ Node *new_node_deref(Node *node)
     return new_node(ND_DEREF, node, NULL);
 }
 
+// lhs を左辺に、[rhs を左辺に持つようなND_ADDR] を右辺にもつようなND_ASSIGN node を作成する
+Node *new_node_assign(Node *lhs, Node *rhs)
+{
+    // return new_node(ND_ASSIGN, lhs, rhs);
+    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
+}
+
 // : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()
@@ -220,13 +227,6 @@ Node *build_block()
 
     sub_block_nest();
     return node;
-}
-
-// lhs を左辺に、[rhs を左辺に持つようなND_ADDR] を右辺にもつようなND_ASSIGN node を作成する
-Node *new_node_assign(Node *lhs, Node *rhs)
-{
-    // return new_node(ND_ASSIGN, lhs, rhs);
-    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
 }
 
 // 関数呼び出しnode を作成する　関数出ない買った場合NULL を返す
