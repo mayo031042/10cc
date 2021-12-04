@@ -206,12 +206,6 @@ Node *equality()
     return node;
 }
 
-Node *new_node_assign(Node *lhs, Node *rhs)
-{
-    // return new_node(ND_ASSIGN, lhs, rhs);
-    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
-}
-
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
 // -> equality(), ND_ASSIGN
 Node *assign()
@@ -246,6 +240,7 @@ Node *assign()
         {
             node = new_node_assign(new_node(ND_DIV_REM, node, assign()), node);
         }
+
         else
         {
             error_at(tokens[token_pos]->str, "代入演算子ではありません\n");

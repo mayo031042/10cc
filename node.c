@@ -194,6 +194,14 @@ Node *build_block()
     return node;
 }
 
+// lhs を左辺に、[rhs を左辺に持つようなND_ADDR] を右辺にもつようなND_ASSIGN node を作成する
+Node *new_node_assign(Node *lhs, Node *rhs)
+{
+    // return new_node(ND_ASSIGN, lhs, rhs);
+    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
+}
+
+// 関数呼び出しnode を作成する　関数出ない買った場合NULL を返す
 Node *try_node_func_call()
 {
     if (false == current_token_is(TK_RESERVED, "("))

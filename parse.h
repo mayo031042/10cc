@@ -51,6 +51,7 @@ Node *new_node_sizeof();
 
 Node *build_block();
 
+Node *new_node_assign(Node *lhs, Node *rhs);
 Node *try_node_func_call();
 
 // lvar.c
