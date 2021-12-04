@@ -32,8 +32,8 @@ Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
     node->lvar = lvar;
-    node = new_node(ND_ADDR, node, NULL);
-    node = new_node(ND_DEREF, node, NULL);
+    node = new_node_addr(node);
+    node = new_node_deref(node);
     return node;
 }
 
@@ -171,12 +171,12 @@ Node *new_node_addr(Node *node)
 {
     if (ND_DEREF == node->kind)
     {
-        return node->lhs;
+        // return node->lhs;
     }
 
     if (ND_LVAR != node->kind)
     {
-        error("非変数のアドレスを計算しています");
+        // error("非変数のアドレスを計算しています");
     }
 
     return new_node(ND_ADDR, node, NULL);
@@ -196,8 +196,7 @@ Node *new_node_deref(Node *node)
 // lhs を左辺に、[rhs を左辺に持つようなND_ADDR] を右辺にもつようなND_ASSIGN node を作成する
 Node *new_node_assign(Node *lhs, Node *rhs)
 {
-    // return new_node(ND_ASSIGN, lhs, rhs);
-    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
+    return new_node(ND_ASSIGN, lhs, new_node_addr(rhs));
 }
 
 // : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　

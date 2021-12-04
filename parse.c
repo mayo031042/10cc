@@ -31,7 +31,7 @@ Node *primary()
 
             if (type_of_node(node)->kind == ARRAY)
             {
-                // node = new_node(ND_ADDR, node, NULL);
+                // node = new_node_addr(node);
             }
 
             if (consume(TK_RESERVED, "["))
@@ -39,7 +39,7 @@ Node *primary()
                 // node = new_node(ND_ADD, node, expr());
                 node->lhs = new_node(ND_ADD, node->lhs, expr());
 
-                node = new_node(ND_DEREF, node, NULL);
+                node = new_node_deref(node);
                 expect(TK_RESERVED, "]");
             }
         }
@@ -72,11 +72,11 @@ Node *unary()
     }
     else if (consume(TK_OPERATOR, "*"))
     {
-        node = new_node(ND_DEREF, unary(), NULL);
+        node = new_node_deref(unary());
     }
     else if (consume(TK_OPERATOR, "&"))
     {
-        node = new_node(ND_ADDR, unary(), NULL);
+        node = new_node_addr(unary());
     }
     // : sizeof
     else if (consume_keyword(TK_SIZEOF))

@@ -99,7 +99,7 @@ void gen_addr(Node *node)
     if (node)
     {
         // &* は打ち消す
-        if (node->lhs && ND_DEREF == node->kind)
+        if (ND_DEREF == node->kind)
         {
             gen(node->lhs);
             return;
@@ -108,7 +108,7 @@ void gen_addr(Node *node)
 
     if (node->kind != ND_LVAR)
     {
-        error_at(tokens[token_pos]->str, "左辺値ではありません gen_addr\n");
+        error_at(tokens[token_pos]->str, "左辺値ではありません gen_addr()\n");
     }
 
     // rbp とoffsset からアドレスを計算し積む
