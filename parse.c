@@ -224,10 +224,10 @@ Node *equality()
     return node;
 }
 
-Node *new_node_assign(NodeKind kind, Node *node)
+Node *new_node_assign(Node *lhs, Node *rhs)
 {
-    return new_node(ND_ASSIGN, new_node(kind, node, assign()), node);
-    return new_node(ND_ASSIGN, new_node(kind, node, assign()), new_node(ND_ADDR, node, NULL));
+    return new_node(ND_ASSIGN, lhs, rhs);
+    return new_node(ND_ASSIGN, lhs, new_node(ND_ADDR, rhs, NULL));
 }
 
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
@@ -248,32 +248,32 @@ Node *assign()
         if (consume(TK_ASSIGN_OPERATOR, "+="))
         {
 
-            node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
-            // node = new_node_assign(ND_ADD, node);
+            // node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
+            node = new_node_assign(new_node(ND_ADD, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "-="))
         {
 
-            node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
-            // node = new_node_assign(ND_SUB, node);
+            // node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
+            node = new_node_assign(new_node(ND_SUB, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "*="))
         {
 
-            node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
-            // node = new_node_assign(ND_MUL, node);
+            // node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
+            node = new_node_assign(new_node(ND_MUL, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "/="))
         {
 
-            node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
-            // node = new_node_assign(ND_DIV, node);
+            // node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
+            node = new_node_assign(new_node(ND_DIV, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "%="))
         {
 
-            node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
-            // node = new_node_assign(ND_DIV_REM, node);
+            // node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
+            node = new_node_assign(new_node(ND_DIV_REM, node, assign()), node);
         }
         else
         {
