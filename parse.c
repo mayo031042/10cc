@@ -29,14 +29,12 @@ Node *primary()
             node = create_node(ND_FUNC_CALL);
 
             // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
-            Func *addr = find_func();
+            node->func = find_func();
 
-            if (NULL == addr)
+            if (NULL == node->func)
             {
                 error_at(tokens[val_of_ident_pos()]->str, "未定義な関数です");
             }
-
-            node->func = addr;
 
             // node のtype をfunc のtype に揃える
             node->type = node->func->type;
@@ -48,11 +46,12 @@ Node *primary()
         {
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_lvar(find_lvar());
-            if (consume(TK_RESERVED, "["))
-            {
-                node = new_node(ND_DEREF, new_node(ND_ADD, node, expr()), NULL);
-                expect(TK_RESERVED, "]");
-            }
+
+            // if (consume(TK_RESERVED, "["))
+            // {
+            //     node = new_node(ND_DEREF, new_node(ND_ADD, node, expr()), NULL);
+            //     expect(TK_RESERVED, "]");
+            // }
         }
     }
 
@@ -225,6 +224,12 @@ Node *equality()
     return node;
 }
 
+Node *new_node_assign(NodeKind kind, Node *node)
+{
+    return new_node(ND_ASSIGN, new_node(kind, node, assign()), node);
+    return new_node(ND_ASSIGN, new_node(kind, node, assign()), new_node(ND_ADDR, node, NULL));
+}
+
 // 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
 // -> equality(), ND_ASSIGN
 Node *assign()
@@ -235,29 +240,40 @@ Node *assign()
     if (consume(TK_RESERVED, "="))
     {
         node = new_node(ND_ASSIGN, assign(), node);
+        // node = new_node(ND_ASSIGN, assign(), new_node(ND_ADDR, node, NULL));
     }
 
     else if (current_token_is(TK_ASSIGN_OPERATOR, NULL))
     {
         if (consume(TK_ASSIGN_OPERATOR, "+="))
         {
+
             node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
+            // node = new_node_assign(ND_ADD, node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "-="))
         {
+
             node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
+            // node = new_node_assign(ND_SUB, node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "*="))
         {
+
             node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
+            // node = new_node_assign(ND_MUL, node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "/="))
         {
+
             node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
+            // node = new_node_assign(ND_DIV, node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "%="))
         {
+
             node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
+            // node = new_node_assign(ND_DIV_REM, node);
         }
         else
         {

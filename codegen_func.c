@@ -93,6 +93,18 @@ void gen_declare(Node *node)
 // addr は変数のみをオペランドとして持つ
 void gen_addr(Node *node)
 {
+    node = node->lhs;
+
+    if (node)
+    {
+        // &* は打ち消す
+        if (node->lhs && ND_DEREF == node->kind)
+        {
+            gen(node->lhs);
+            return;
+        }
+    }
+
     if (node->kind != ND_LVAR)
     {
         error_at(tokens[token_pos]->str, "左辺値ではありません gen_addr\n");
@@ -107,6 +119,7 @@ void gen_addr(Node *node)
 // スタックトップを参照する　積まれた数値をアドレスとして解釈し それに入っている値に交換する
 void gen_deref_(Node *node)
 {
+    gen(node->lhs);
     pf("    pop rax\n");
 
     switch (size_of_node(node))

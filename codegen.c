@@ -7,6 +7,11 @@ void gen(Node *node)
     // NOP か数値を積む
     case ND_NOP:
         return;
+
+    case ND_LVAR:
+        error("ND_ADDR 以外からND_LVAR をgen しようとしています");
+        return;
+
     case ND_NUM:
         pf("    push %d\n", node->val);
         return;
@@ -14,26 +19,16 @@ void gen(Node *node)
     case ND_DECLARE:
         gen_declare(node);
         return;
-    // 変数の保持している値を積む
-    // 変数をちょうど１つ含むようなnode であることが確定している
-    case ND_LVAR:
-        gen_addr(node);
-        if (node->lvar->type->kind != ARRAY)
-        {
-            gen_deref_(node);
-        }
 
-        return;
-    // *x 変数の保持している値をメモリであると解釈して積む
-    // PTR 型を指していることが確定している
+    // 左辺の計算結果をアドレスとして解釈し　そのアドレスに積まれている値に変更する
     case ND_DEREF:
-        gen_deref(node);
         gen_deref_(node);
         return;
 
-    // &x 変数の割り当てられているアドレスを返す
+    // 左辺にND_LVAR を持ち　そこで登録されている変数のアドレスをスタックに積む
+    // &* の列が出現した場合は読み飛ばし* の左辺をgen() する
     case ND_ADDR:
-        gen_addr(node->lhs);
+        gen_addr(node);
         return;
 
     // 代入 適切なアドレスに保持されている値を書き換え結果を積む

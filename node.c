@@ -32,6 +32,8 @@ Node *new_node_lvar(LVar *lvar)
 {
     Node *node = create_node(ND_LVAR);
     node->lvar = lvar;
+    node = new_node(ND_ADDR, node, NULL);
+    node = new_node(ND_DEREF, node, NULL);
     return node;
 }
 
