@@ -4,10 +4,7 @@ void gen(Node *node)
 {
     switch (node->kind)
     {
-    // NOP か数値を積む
-    case ND_NOP:
-        return;
-
+    // 数値、変数
     case ND_LVAR:
         error("ND_ADDR 以外からND_LVAR をgen しようとしています");
         return;
@@ -24,7 +21,6 @@ void gen(Node *node)
     case ND_DEREF:
         gen_deref(node);
         return;
-
     // 左辺にND_LVAR を持ち　そこで登録されている変数のアドレスをスタックに積む
     // &* の列が出現した場合は読み飛ばし* の左辺をgen() する
     case ND_ADDR:
@@ -38,17 +34,27 @@ void gen(Node *node)
         gen_mov_imm_to_addr(node->rhs);
         return;
 
-    // 関数呼び出し
+    // 関数
     case ND_FUNC_CALL:
         gen_func_call(node);
         return;
+    case ND_RETURN:
+        gen(node->lhs);
+        pf("    pop rax\n");
+        gen_epilogue();
+        return;
 
-    // ループ
+    // 制御構文
     case ND_FOR_WHILE:
         gen_for_while(node);
         return;
     case ND_DO:
         gen_do_while(node);
+        return;
+    case ND_ELSE:
+        int end_label = count();
+        gen_else(node, end_label);
+        pf(".Lifend%d:\n", end_label);
         return;
     case ND_CONTINUE:
         pf("    jmp .Lcont%d\n", stack_front());
@@ -57,17 +63,9 @@ void gen(Node *node)
         pf("    jmp .Lbrk%d\n", stack_front());
         return;
 
-    // その他
-    case ND_RETURN:
-        gen(node->lhs);
-        pf("    pop rax\n");
-        gen_epilogue();
+    case ND_NOP:
         return;
-    case ND_ELSE:
-        int end_label = count();
-        gen_else(node, end_label);
-        pf(".Lifend%d:\n", end_label);
-        return;
+
     case ND_BLOCK:
         gen_block(node->lhs);
         return;
@@ -139,7 +137,6 @@ void code_gen()
         gen_prologue();
 
         gen(func_pos_ptr->definition);
-        // gen(funcs[i]->definition);
         pf("    pop rax\n");
 
         gen_epilogue();
