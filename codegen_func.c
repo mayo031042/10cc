@@ -305,7 +305,7 @@ int gen_mul_ptr_size(Node *node)
         if (has_ptr_to(node->rhs->type))
         {
             // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
-            pf("    imul rax, %d\n", size_of(node->rhs->type->ptr_to));
+            pf("    imul rax, %d\n", size_of(node->rhs->lhs->type->ptr_to));
         }
     }
     // else if (cmp == 0)
@@ -321,7 +321,7 @@ int gen_mul_ptr_size(Node *node)
         if (has_ptr_to(node->lhs->type))
         {
             // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
-            pf("    imul rdi, %d\n", size_of(node->lhs->type->ptr_to));
+            pf("    imul rdi, %d\n", size_of(node->lhs->lhs->type->ptr_to));
         }
     }
 

@@ -29,11 +29,13 @@ Node *primary()
             // 変数なので 一番近いブロック深度の中から合致する変数を探す なければエラー
             node = new_node_lvar(find_lvar());
 
-            // if (consume(TK_RESERVED, "["))
-            // {
-            //     node = new_node(ND_DEREF, new_node(ND_ADD, node, expr()), NULL);
-            //     expect(TK_RESERVED, "]");
-            // }
+            if (consume(TK_RESERVED, "["))
+            {
+                node->lhs = new_node(ND_ADD, node->lhs, expr());
+                node = new_node(ND_DEREF, node, NULL);
+                // node = new_node(ND_DEREF, new_node(ND_ADD, node, expr()), NULL);
+                expect(TK_RESERVED, "]");
+            }
         }
     }
 
