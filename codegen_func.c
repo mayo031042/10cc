@@ -11,9 +11,8 @@ void pf(char *fmt, ...)
     vfprintf(fp, fmt, ap);
 }
 
-char *byte_size(Type *type, char *p)
+char *byte_size_string(int size, char *p)
 {
-    int size = size_of(type);
     if (p == NULL)
     {
         switch (size)
@@ -56,11 +55,25 @@ char *byte_size(Type *type, char *p)
             return "rdi\0";
         }
     }
+    // rax に8バイト未満のものを移動させる際のゼロクリアに対応する
+    else if (p == "mov")
+    {
+        switch (size)
+        {
+        case 8:
+            return "mov\0";
+        default:
+            return "movsx\0";
+        }
+    }
 
     else
     {
-        error("引数の文字列が何れのパターンにもマッチしません byte_size()");
+        error("引数の文字列が何れのパターンにもマッチしません byte_size_string()");
     }
+
+    printf("%d\n\n", size);
+    error("引数のサイズが不正な値を取っています byte_size_string()");
 }
 
 // スタックトップと引数をcmp する 条件分岐jmp 命令の直前に使用
@@ -77,18 +90,8 @@ void gen_mov_imm_to_addr(Node *node)
     pf("    pop rax\n");
     pf("    pop rdi\n");
 
-    switch (size_of_node(node))
-    {
-    case 1:
-        pf("    mov BYTE PTR [rax], di\n");
-        break;
-    case 4:
-        pf("    mov DWORD PTR [rax], edi\n");
-        break;
-    case 8:
-        pf("    mov [rax], rdi\n");
-        break;
-    }
+    int size = size_of_node(node);
+    pf("    mov %s [rax], %s\n", byte_size_string(size, NULL), byte_size_string(size, "rdi"));
 
     pf("    push rdi\n");
 }
@@ -106,13 +109,9 @@ void pop_regi()
             error("６つ以上の引数には未対応です,,,!!");
         }
 
-        int size = size_of(lvar->type);
-        total_offset += size;
+        total_offset += size_of(lvar->type);
 
-        pf("    mov %s -%d[rbp], %s\n", byte_size(lvar->type, NULL), total_offset, regi32[i]);
-        // pf("    mov DWORD PTR -%d[rbp], %s\n", total_offset, regi32[i]);
-        // pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
-        // pf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
+        pf("    mov %s -%d[rbp], %s\n", byte_size_string(size_of(lvar->type), NULL), total_offset, regi32[i]);
         i++;
     }
 }
@@ -187,7 +186,10 @@ void gen_deref(Node *node)
     gen(node->lhs);
     pf("    pop rax\n");
 
-    switch (size_of_node(node))
+    int size = size_of_node(node);
+    // pf("    %s rax, %s [rax]\n", byte_size_string(size, "mov"), byte_size_string(size, NULL));
+
+    switch (size)
     {
     case 1:
         pf("    movsx rax, BYTE PTR [rax]\n");
