@@ -256,13 +256,12 @@ Node *assign()
 Node *expr()
 {
     Node *node = assign();
-    node->type = type_of_node(node);
     return node;
 }
 
 // 予約語,{} 変数宣言の解釈を行う
 // -> expr(), ND_RETURN, ND_ELSE, ND_FOR_WHILE, ND_DO, ND_CONTINUE, ND_BREAK, ND_BLOCK
-// 非終端node のType 定義(暗黙的なキャスト) はここで行う
+// 非終端node のType 定義(暗黙的なキャスト) はここで行う -> これ以下のnode はすべて左右辺でのみ結合される
 Node *stmt()
 {
     Node *node;
