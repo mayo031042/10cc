@@ -165,6 +165,34 @@ Node *new_node_sizeof()
     return new_node_num(size_of_node(node));
 }
 
+// ND_ADDR, ND_DEREF を作成する際にはこれらの関数をかならず使用する　右辺にNULL が来ることを保証する
+// 引数のnode がderef 型だった場合　そのnode の左辺を返す そうでない時はND_LVAR である必要がある
+Node *new_node_addr(Node *node)
+{
+    if (ND_DEREF == node->kind)
+    {
+        return node->lhs;
+    }
+
+    if (ND_LVAR != node->kind)
+    {
+        error("非変数のアドレスを計算しています");
+    }
+
+    return new_node(ND_ADDR, node, NULL);
+}
+
+// 参照先のType を見て左辺として適切かを判定
+Node *new_node_deref(Node *node)
+{
+    if (false == has_ptr_to(type_of_node(node)))
+    {
+        error("非ポインタ型を参照しています");
+    }
+
+    return new_node(ND_DEREF, node, NULL);
+}
+
 // : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()

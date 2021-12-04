@@ -47,6 +47,9 @@ Node *new_node_for();
 Node *new_node_while();
 Node *new_node_do();
 
+Node *new_node_addr(Node *node);
+Node *new_node_deref(Node *node);
+
 Node *new_node_sizeof();
 
 Node *build_block();
