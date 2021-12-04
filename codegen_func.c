@@ -45,9 +45,20 @@ void gen_mov_imm_to_addr(Node *node)
 void pop_regi()
 {
     int i = 0;
+    int total_offset = 0;
+
     for (LVar *lvar = func_pos_ptr->locals[0]; lvar; lvar = lvar->next)
     {
-        pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
+        if (6 <= i)
+        {
+            error("６つ以上の引数には未対応です,,,!!");
+        }
+
+        int size = size_of(lvar->type);
+        total_offset += size;
+
+        pf("    mov DWORD PTR -%d[rbp], %s\n", total_offset, regi32[i]);
+        // pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
         // pf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
         i++;
     }
