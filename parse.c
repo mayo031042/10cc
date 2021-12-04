@@ -369,22 +369,6 @@ void *function()
             consume_arg();
         }
 
-        // 宣言のみなら　次の関数読み込みに移る
-        if (consume(TK_RESERVED, ";"))
-        {
-            continue;
-        }
-
-        // 定義がくるので　多重定義されていないか確認する
-        if (true == func_pos_ptr->defined)
-        {
-            error_at(tokens[token_pos]->str, "関数が多重定義されています");
-        }
-
-        func_pos_ptr->defined = true;
-        func_pos_ptr->definition = program();
-
-        // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
-        func_pos_ptr->max_offset = (func_pos_ptr->max_offset + 16 - 1) / 16 * 16;
+        try_build_definition();
     }
 }

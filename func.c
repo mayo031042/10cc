@@ -109,3 +109,25 @@ Node *build_arg()
 
     return node;
 }
+
+// 関数の定義部分完成をtry する
+// 宣言のみの場合はそのままreturn
+void try_build_definition()
+{
+    if (consume(TK_RESERVED, ";"))
+    {
+        return;
+    }
+
+    // 定義がくるので　多重定義されていないか確認する
+    if (true == func_pos_ptr->defined)
+    {
+        error_at(tokens[token_pos]->str, "関数が多重定義されています");
+    }
+
+    func_pos_ptr->defined = true;
+    func_pos_ptr->definition = program();
+
+    // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
+    func_pos_ptr->max_offset = (func_pos_ptr->max_offset + 16 - 1) / 16 * 16;
+}
