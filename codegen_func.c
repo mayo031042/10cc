@@ -41,6 +41,21 @@ void gen_mov_imm_to_addr(Node *node)
     pf("    push rdi\n");
 }
 
+char *byte_size(Type *type)
+{
+    switch (size_of(type))
+    {
+    case 1:
+        return "BYTE PTR\0";
+    case 2:
+        return "WORD PTR\0";
+    case 4:
+        return "DWORD PTR\0";
+    case 8:
+        return "QWORD PTR\0";
+    }
+}
+
 // 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
 void pop_regi()
 {
@@ -57,7 +72,8 @@ void pop_regi()
         int size = size_of(lvar->type);
         total_offset += size;
 
-        pf("    mov DWORD PTR -%d[rbp], %s\n", total_offset, regi32[i]);
+        pf("    mov %s -%d[rbp], %s\n", byte_size(lvar->type), total_offset, regi32[i]);
+        // pf("    mov DWORD PTR -%d[rbp], %s\n", total_offset, regi32[i]);
         // pf("    mov DWORD PTR -%d[rbp], %s\n", 4 * (i + 1), regi32[i]);
         // pf("    mov QWORD PTR -%d[rbp], %s\n", 8 * (i + 1), regi64[i]);
         i++;
