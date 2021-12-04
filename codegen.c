@@ -22,7 +22,7 @@ void gen(Node *node)
 
     // 左辺の計算結果をアドレスとして解釈し　そのアドレスに積まれている値に変更する
     case ND_DEREF:
-        gen_deref_(node);
+        gen_deref(node);
         return;
 
     // 左辺にND_LVAR を持ち　そこで登録されている変数のアドレスをスタックに積む
@@ -35,7 +35,6 @@ void gen(Node *node)
     case ND_ASSIGN:
         gen(node->lhs);
         gen_addr(node->rhs);
-        // gen_deref(node->rhs);
         gen_mov_imm_to_addr(node->rhs);
         return;
 

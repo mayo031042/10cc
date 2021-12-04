@@ -118,7 +118,7 @@ void gen_addr(Node *node)
 }
 
 // スタックトップを参照する　積まれた数値をアドレスとして解釈し それに入っている値に交換する
-void gen_deref_(Node *node)
+void gen_deref(Node *node)
 {
     gen(node->lhs);
     pf("    pop rax\n");
@@ -137,31 +137,6 @@ void gen_deref_(Node *node)
     }
 
     pf("    push rax\n");
-}
-
-// unary() を計算する　結果をアドレスとして返す
-// 呼び出しの際　呼び出しもとで参照は外されない（ND_DEREFのまま引数に渡される）
-// addr, deref もある変数からアドレスを計算して　アドレスのまま積むという点では同じ
-// deref は変数として割り当てられていないようなアドレスも積むことができる
-// assign で参照外しとアドレス積みのどちらにも対応する必要があるので両対応で実装
-void gen_deref(Node *node)
-
-{
-    // 参照が外れきったら変数のアドレスを積む
-    if (node->kind == ND_LVAR)
-    {
-        gen_addr(node);
-        return;
-    }
-
-    // 変数でないなら参照であるはずである
-    if (node->kind != ND_DEREF)
-    {
-        error_at(tokens[token_pos]->str, "参照が正しくありません");
-    }
-
-    // 参照を１つ外す　まだ参照が続くならばgen() 内でまたgen_deref() が呼ばれる
-    gen(node->lhs);
 }
 
 // rsp は変化しない
