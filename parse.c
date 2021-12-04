@@ -239,40 +239,29 @@ Node *assign()
 
     if (consume(TK_RESERVED, "="))
     {
-        node = new_node(ND_ASSIGN, assign(), node);
-        // node = new_node(ND_ASSIGN, assign(), new_node(ND_ADDR, node, NULL));
+        node = new_node_assign(assign(), node);
     }
 
     else if (current_token_is(TK_ASSIGN_OPERATOR, NULL))
     {
         if (consume(TK_ASSIGN_OPERATOR, "+="))
         {
-
-            // node = new_node(ND_ASSIGN, new_node(ND_ADD, node, assign()), node);
             node = new_node_assign(new_node(ND_ADD, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "-="))
         {
-
-            // node = new_node(ND_ASSIGN, new_node(ND_SUB, node, assign()), node);
             node = new_node_assign(new_node(ND_SUB, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "*="))
         {
-
-            // node = new_node(ND_ASSIGN, new_node(ND_MUL, node, assign()), node);
             node = new_node_assign(new_node(ND_MUL, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "/="))
         {
-
-            // node = new_node(ND_ASSIGN, new_node(ND_DIV, node, assign()), node);
             node = new_node_assign(new_node(ND_DIV, node, assign()), node);
         }
         else if (consume(TK_ASSIGN_OPERATOR, "%="))
         {
-
-            // node = new_node(ND_ASSIGN, new_node(ND_DIV_REM, node, assign()), node);
             node = new_node_assign(new_node(ND_DIV_REM, node, assign()), node);
         }
         else
