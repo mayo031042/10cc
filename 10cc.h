@@ -138,7 +138,7 @@ struct Node
 void *tokenize();
 
 // parse のための関数 -> @ parse.c
-void *function();
+void *parse();
 int culc_offset();
 
 // codegen のための関数　-> @ codegen.c

@@ -344,7 +344,7 @@ Node *program()
 }
 
 // 関数の宣言か定義のみを扱う
-void *function()
+void *parse()
 {
     int i = 0;
 
@@ -352,7 +352,6 @@ void *function()
     {
         if (current_token_is(TK_TYPE, NULL))
         {
-
             // 関数判定はident の次の() の有無のみを参照する
             if (look_ahead_function())
             {

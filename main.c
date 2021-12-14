@@ -8,7 +8,7 @@ void compile()
     tokenize();
     fprintf(stderr, "T");
 
-    function();
+    parse();
     fprintf(stderr, "P");
 
     code_gen();
