@@ -35,6 +35,7 @@ Node *stmt();
 Node *program();
 
 // RDP 補助関数
+Node *function();
 
 // node.c
 Node *create_node(NodeKind kind);

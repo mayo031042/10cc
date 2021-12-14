@@ -131,3 +131,32 @@ void try_build_definition()
     // 各関数のmax offset を、それを超えるような最小の16の倍数で改める
     func_pos_ptr->max_offset = (func_pos_ptr->max_offset + 16 - 1) / 16 * 16;
 }
+
+Node *function()
+{
+    static int i = 0;
+
+    Type *type = create_type(expect_vartype());
+    type = add_type_ptr(type);
+    expect_ident();
+
+    // 識別子から　今までに登録されている関数列を全探索する
+    func_pos_ptr = find_func();
+
+    if (NULL == func_pos_ptr)
+    {
+        // 関数がはじめて宣言、定義されるので　funcs[] と引数リストの登録を行う
+        funcs[i] = new_func(tokens[val_of_ident_pos()], type);
+        funcs[i + 1] = NULL;
+        func_pos_ptr = funcs[i];
+        i++;
+        declare_arg();
+    }
+    else
+    {
+        // 既に登録済みの関数なので　func_pos のセットだけ行い　引数リストは読み飛ばす
+        consume_arg();
+    }
+
+    try_build_definition();
+}
