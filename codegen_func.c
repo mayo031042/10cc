@@ -11,8 +11,8 @@ void pf(char *fmt, ...)
     vfprintf(fp, fmt, ap);
 }
 
-// default 条件を追加　配列などは1,2,4,8 以外のサイズを取りうるがPTR と同等に扱うので８として分類する
-char *byte_size_string(int size, char *p)
+// サイズに対して適切な文字列をか
+char *sz_to_str(int size, char *p)
 {
     if (p == NULL)
     {
@@ -24,7 +24,7 @@ char *byte_size_string(int size, char *p)
             return "WORD PTR\0";
         case 4:
             return "DWORD PTR\0";
-        default:
+        case 8:
             return "QWORD PTR\0";
         }
     }
@@ -38,7 +38,7 @@ char *byte_size_string(int size, char *p)
             return "ax\0";
         case 4:
             return "eax\0";
-        default:
+        case 8:
             return "rax\0";
         }
     }
@@ -52,7 +52,7 @@ char *byte_size_string(int size, char *p)
             return "di\0";
         case 4:
             return "edi\0";
-        default:
+        case 8:
             return "rdi\0";
         }
     }
@@ -65,18 +65,17 @@ char *byte_size_string(int size, char *p)
         case 2:
         case 4:
             return "movsx\0";
-        default:
+        case 8:
             return "mov\0";
         }
     }
 
     else
     {
-        error("引数の文字列が何れのパターンにもマッチしません byte_size_string()");
+        error("引数の文字列が何れのパターンにもマッチしません sz_to_str()");
     }
 
-    printf("%d\n\n", size);
-    error("引数のサイズが不正な値を取っています byte_size_string()");
+    error("%d\n引数のサイズが不正な値を取っています sz_to_str()", size);
 }
 
 // スタックトップと引数をcmp する 条件分岐jmp 命令の直前に使用
@@ -94,7 +93,7 @@ void gen_mov_imm_to_addr(Node *node)
     pf("    pop rdi\n");
 
     int size = size_of_node(node);
-    pf("    mov %s [rax], %s\n", byte_size_string(size, NULL), byte_size_string(size, "rdi"));
+    pf("    mov %s [rax], %s\n", sz_to_str(size, NULL), sz_to_str(size, "rdi"));
 
     pf("    push rdi\n");
 }
@@ -114,7 +113,7 @@ void pop_regi()
 
         total_offset += size_of(lvar->type);
 
-        pf("    mov %s -%d[rbp], %s\n", byte_size_string(size_of(lvar->type), NULL), total_offset, regi32[i]);
+        pf("    mov %s -%d[rbp], %s\n", sz_to_str(size_of(lvar->type), NULL), total_offset, regi32[i]);
         i++;
     }
 }
@@ -196,7 +195,7 @@ void gen_deref(Node *node)
     int size = size_of_node(node);
 
     pf("    pop rax\n");
-    pf("    %s rax, %s [rax]\n", byte_size_string(size, "mov"), byte_size_string(size, NULL));
+    pf("    %s rax, %s [rax]\n", sz_to_str(size, "mov"), sz_to_str(size, NULL));
     pf("    push rax\n");
 }
 
