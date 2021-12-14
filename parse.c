@@ -318,11 +318,12 @@ Node *stmt()
         {
             node = create_node(ND_CONTINUE);
         }
-        // : break;
+        // : break
         else if (consume_keyword(TK_BREAK))
         {
             node = create_node(ND_BREAK);
         }
+        // : expr()
         else
         {
             node = expr();
@@ -354,6 +355,11 @@ void *parse()
             if (look_ahead_function())
             {
                 new_function();
+            }
+
+            else
+            {
+                // グローバル変数の解釈は未実装
             }
         }
 
