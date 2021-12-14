@@ -353,7 +353,7 @@ void *parse()
             // 関数判定はident の次の() の有無のみを参照する
             if (look_ahead_function())
             {
-                function();
+                new_function();
             }
         }
 

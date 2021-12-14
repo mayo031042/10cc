@@ -35,7 +35,7 @@ Node *stmt();
 Node *program();
 
 // RDP 補助関数
-Node *function();
+Node *new_function();
 
 // node.c
 Node *create_node(NodeKind kind);
@@ -71,12 +71,8 @@ Node *declare_lvar();
 // 関数を解釈
 bool match_with(Token *tok, char *name, int len);
 Func *find_func(); // 関数の実体へのポインタを保持する配列を探索し　適切な要素のアドレスを返す
-Func *new_func(Token *tok, Type *type);
-void try_build_definition();
 
 // 引数を解釈
-void declare_arg(); // 関数の定義時 引数表を登録する
-void consume_arg(); // 関数の宣言時 引数表を読み飛ばす
 Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈して登録先のレジスタを割り当てる
 
 // type.c

@@ -132,7 +132,7 @@ void try_build_definition()
     func_pos_ptr->max_offset = (func_pos_ptr->max_offset + 16 - 1) / 16 * 16;
 }
 
-Node *function()
+Node *new_function()
 {
     static int i = 0;
 
