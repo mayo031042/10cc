@@ -102,22 +102,6 @@ int size_of(Type *type)
     }
 }
 
-// ARRAY を引数にとるとバグるかも　ポインタみたいに扱えたらいいが？
-char *char_of(Type *type)
-{
-    switch (size_of(type))
-    {
-    case 1:
-        return "BYTE\0";
-    case 2:
-        return "WORD\n";
-    case 4:
-        return "DWORD\0";
-    case 8:
-        return "QWORD\0";
-    }
-}
-
 // 指定されたファイルの内容をuser_input に渡す
 void read_file(char *path)
 {
