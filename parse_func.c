@@ -112,14 +112,14 @@ TypeKind expect_vartype()
 // expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
 int expect_number()
 {
-    if (tokens[token_pos]->kind != TK_NUM)
+    if (tokens[token_pos]->kind == TK_NUM)
     {
-        error_at(tokens[token_pos]->str, "数値ではありません\n");
+        int val = tokens[token_pos]->val;
+        token_pos++;
+        return val;
     }
 
-    int val = tokens[token_pos]->val;
-    token_pos++;
-    return val;
+    error_at(tokens[token_pos]->str, "数値ではありません\n");
 }
 
 // token 列の最後尾の次だったらtrue
@@ -138,7 +138,7 @@ int val_of_ident_pos()
 Token *look_ahead(TokenKind kind)
 {
     int now_pos = token_pos;
-    
+
     while (TK_EOF != tokens[now_pos]->kind)
     {
         if (kind == tokens[now_pos]->kind)
