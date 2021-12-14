@@ -132,3 +132,30 @@ int val_of_ident_pos()
 {
     return ident_pos;
 }
+
+// 引数のKind であるようなToken が出現するまで読み進める
+// TK_EOF が引数に渡されたり at_eof() までToken が見つからなかったときはerror
+Token *look_ahead(TokenKind kind)
+{
+    int now_pos = token_pos;
+    
+    while (TK_EOF != tokens[now_pos]->kind)
+    {
+        if (kind == tokens[now_pos]->kind)
+        {
+            return tokens[now_pos + 1];
+        }
+
+        now_pos++;
+    }
+
+    // 引数がEOF か見つからないKind の場合error
+    error("無効な引数です -> look_ahead()");
+}
+
+bool look_ahead_function()
+{
+    Token *tok = look_ahead(TK_IDENT);
+    // tok は関数の識別子の次のToken を指している
+    return (TK_RESERVED == tok->kind && tok->len == 1 && !memcmp(tok->str, "(", 1));
+}

@@ -20,6 +20,8 @@ int expect_number();
 bool at_eof();
 int val_of_ident_pos();
 
+bool look_ahead_function();
+
 // RDP 関数
 Node *primary();
 Node *unary();
