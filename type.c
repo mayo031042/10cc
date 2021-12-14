@@ -87,7 +87,7 @@ Type *type_of_node(Node *node)
             node->type = node->lhs->type;
         }
     }
-    else if (kind == ND_EQ || kind == ND_NE || kind == ND_LT || kind == ND_LE || kind == ND_NUM)
+    else if (kind == ND_NUM || kind == ND_EQ || kind == ND_NE || kind == ND_LT || kind == ND_LE)
     {
         node->type = create_type(INT);
     }

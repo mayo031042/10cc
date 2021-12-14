@@ -187,24 +187,16 @@ void gen_addr(Node *node)
 void gen_deref(Node *node)
 {
     gen(node->lhs);
-    pf("    pop rax\n");
 
-    int size = size_of_node(node);
-    // pf("    %s rax, %s [rax]\n", byte_size_string(size, "mov"), byte_size_string(size, NULL));
-
-    switch (size)
+    if (type_of_node(node)->kind == ARRAY)
     {
-    case 1:
-        pf("    movsx rax, BYTE PTR [rax]\n");
-        break;
-    case 4:
-        pf("    movsx rax, DWORD PTR [rax]\n");
-        break;
-    case 8:
-        pf("    mov rax, [rax]\n");
-        break;
+        return;
     }
 
+    int size = size_of_node(node);
+
+    pf("    pop rax\n");
+    pf("    %s rax, %s [rax]\n", byte_size_string(size, "mov"), byte_size_string(size, NULL));
     pf("    push rax\n");
 }
 
