@@ -90,7 +90,6 @@ int size_of(Type *type)
     switch (type->kind)
     {
     case VOID:
-        return 1;
     case CHAR:
         return 1;
     case INT:
