@@ -1,9 +1,7 @@
-*~
 *.o
-tmp*
-a.out
-10cc
-obj/*
+tmp/
+obj/
 ex/
+bin/
 .vscode
 test/sort/sort.c

@@ -10,7 +10,7 @@ using ll = long long int;
 #define rep(i, s, n) for (ll i = (s); i < (ll)(n); i++)
 #define all(v) v.begin(), v.end()
 
-int siz = 100;
+int siz = 10000;
 
 int main()
 {
