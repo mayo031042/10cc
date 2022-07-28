@@ -85,7 +85,7 @@ void cmp_rax(int val)
     pf("    cmp rax, %d\n", val);
 }
 
-// スタックから２つ取り出し　変数に対応した適切なサイズ分　メモリに移動する
+// スタックから２つ取り出し 変数に対応した適切なサイズ分 メモリに移動する
 void gen_mov_imm_to_addr(Node *node)
 {
     node = node->lhs;
@@ -98,7 +98,7 @@ void gen_mov_imm_to_addr(Node *node)
     pf("    push rdi\n");
 }
 
-// 適切にレジスタへ解釈された引数が渡されている前提のうえで　レジスタからメモリに値を移す
+// 適切にレジスタへ解釈された引数が渡されている前提のうえで レジスタからメモリに値を移す
 void pop_regi()
 {
     int i = 0;
@@ -119,7 +119,7 @@ void pop_regi()
 }
 
 // rbp, rsp を準備する
-// これが実行されるときは必ず関数の先頭にあるので　func_pos を参照して良い
+// これが実行されるときは必ず関数の先頭にあるので func_pos を参照して良い
 void gen_prologue()
 {
     pf("    .globl %s\n", func_pos_ptr->label);
@@ -140,11 +140,11 @@ void gen_epilogue()
     pf("    ret\n");
 }
 
-// 変数宣言に対応　配列の場合はサイズを計算する
+// 変数宣言に対応 配列の場合はサイズを計算する
 // 基本的にはpush 0 のみ行う
 void gen_declare(Node *node)
 {
-    // 配列の場合　サイズを計算したい
+    // 配列の場合 サイズを計算したい
     if (node->lhs)
     {
         gen(node->lhs);
@@ -155,7 +155,7 @@ void gen_declare(Node *node)
     pf("    push 0\n");
 }
 
-// nodeを左辺値とみなせた時　rbp-offset をスタックに積む
+// nodeを左辺値とみなせた時 rbp-offset をスタックに積む
 // addr は変数のみをオペランドとして持つ
 void gen_addr(Node *node)
 {
@@ -182,7 +182,7 @@ void gen_addr(Node *node)
     pf("    push rax\n");
 }
 
-// スタックトップを参照する　積まれた数値をアドレスとして解釈し それに入っている値に交換する
+// スタックトップを参照する 積まれた数値をアドレスとして解釈し それに入っている値に交換する
 void gen_deref(Node *node)
 {
     gen(node->lhs);
@@ -239,7 +239,7 @@ void gen_func_call(Node *node)
     pf(".Lcall%d:\n", cnt);
     pf("    push rax\n");
 
-    // 引数を解釈して　レジスタにセットする
+    // 引数を解釈して レジスタにセットする
     push_regi(node->lhs);
 
     pf("    mov rax, 0\n");
@@ -249,7 +249,7 @@ void gen_func_call(Node *node)
 }
 
 // 条件式が偽のときのみ次の処理パートへjmp する
-// 同一else 群の中で１つでもif 実行文が実行されたときは　else 群の末尾の次にjmp する
+// 同一else 群の中で１つでもif 実行文が実行されたときは else 群の末尾の次にjmp する
 // １つのif 内で1push 保証される
 void gen_if(Node *node, int end_label)
 {
@@ -265,7 +265,7 @@ void gen_if(Node *node, int end_label)
     pf(".Lifnext%d:\n", next_label);
 }
 
-// 同一else 群のif 文を順次処理していく　
+// 同一else 群のif 文を順次処理していく
 // else 終了後で1push 保証されている
 void gen_else(Node *node, int end_label)
 {
@@ -285,14 +285,14 @@ void gen_for_while(Node *node)
 {
     stack_push(count());
 
-    // 初期化してから　条件式へjmp
+    // 初期化してから 条件式へjmp
     gen(node->lhs->lhs); // A
     pf("    pop rax\n");
     pf("    jmp .Lreq%d\n", stack_front());
 
     pf(".Lexe%d:\n", stack_front());
 
-    // 実行文　ここでも必ず1push を保証する
+    // 実行文 ここでも必ず1push を保証する
     gen(node->rhs->lhs); // X
     pf("    pop rax\n");
 
@@ -303,7 +303,7 @@ void gen_for_while(Node *node)
 
     pf(".Lreq%d:\n", stack_front());
 
-    // 条件式を実行、評価して　実行文に移動するかを決める
+    // 条件式を実行、評価して 実行文に移動するかを決める
     gen(node->rhs->rhs); // B
     cmp_rax(0);
     pf("    jne .Lexe%d\n", stack_front());
@@ -322,7 +322,7 @@ void gen_do_while(Node *node)
 
     pf(".Lexe%d:\n", stack_front());
     gen(node->lhs);      // X
-    pf("    pop rax\n"); // x の揃えポップ　→　continue ではすでに揃っているのでスキップ
+    pf("    pop rax\n"); // x の揃えポップ → continue ではすでに揃っているのでスキップ
 
     pf(".Lcont%d:\n", stack_front()); // continue 先 contiの有無に関わらずスタックトップは揃っている
 
@@ -330,7 +330,7 @@ void gen_do_while(Node *node)
     cmp_rax(0);
     pf("    jne .Lexe%d\n", stack_front());
 
-    pf(".Lbrk%d:\n", stack_front()); // break先　有無に関わらずスタックトップは揃っている
+    pf(".Lbrk%d:\n", stack_front()); // break先 有無に関わらずスタックトップは揃っている
 
     pf("    push rax\n");
 
@@ -354,7 +354,7 @@ void gen_block(Node *node)
     sub_block_nest();
 }
 
-// 加減算を行う　一方がポインタの場合　もう一方をそのポインタが指しているサイズ分掛け算する　
+// 加減算を行う 一方がポインタの場合 もう一方をそのポインタが指しているサイズ分掛け算する
 // 左右辺のどちらもポインタならエラー
 int gen_mul_ptr_size(Node *node)
 {
@@ -364,7 +364,7 @@ int gen_mul_ptr_size(Node *node)
     {
         if (has_ptr_to(node->rhs->type))
         {
-            // 右辺がポインタなので　左辺を右辺が参照しているサイズ分掛け算する
+            // 右辺がポインタなので 左辺を右辺が参照しているサイズ分掛け算する
             pf("    imul rax, %d\n", size_of(node->rhs->lhs->type->ptr_to));
         }
     }
@@ -380,7 +380,7 @@ int gen_mul_ptr_size(Node *node)
     {
         if (has_ptr_to(node->lhs->type))
         {
-            // 左辺がポインタなので　右辺を左辺が参照しているサイズ分掛け算する
+            // 左辺がポインタなので 右辺を左辺が参照しているサイズ分掛け算する
             pf("    imul rdi, %d\n", size_of(node->lhs->lhs->type->ptr_to));
         }
     }

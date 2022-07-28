@@ -22,7 +22,7 @@ HEADS=$(wildcard *.h)
 # 	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
 
 
-# # ディレクトリ名と拡張子を取り除いて.c 拡張子を新しくつける　他にもやり方はあるはず、、、
+# # ディレクトリ名と拡張子を取り除いて.c 拡張子を新しくつける 他にもやり方はあるはず、、、
 # %.o: $(addsuffix .c,$(basename $(notdir )))
 # 	echo $^
 # 	$(CC) -c $(CFLAGS) -o $@ $(addsuffix .c,$(basename $(notdir $@))) 
@@ -31,10 +31,10 @@ HEADS=$(wildcard *.h)
 10cc: obj/main.o obj/utils.o obj/tokenize.o obj/tokenize_func.o obj/parse.o obj/parse_func.o obj/node.o obj/lvar.o obj/func.o obj/type.o obj/codegen.o obj/codegen_func.o
 	$(CC) -o $(TARDIR)/$@ $^ $(LDFLAGS)
 
-# 問題としては　obj/ の接頭語が正しく各単語に展開されない　
-# 接頭語付きで展開されたものを　別の接頭語を付けて依存ファイルを指定したい　
+# 問題としては obj/ の接頭語が正しく各単語に展開されない 
+# 接頭語付きで展開されたものを 別の接頭語を付けて依存ファイルを指定したい 
 # フォルダが３つ位できるので結局いちいち書くほうが簡単になりそうな。。。？
-# 依存ファイルを配列で渡すと　１つ書き換えるとすべて再生製され　分割の意味がない 
+# 依存ファイルを配列で渡すと １つ書き換えるとすべて再生製され 分割の意味がない 
 
 $(OBJS): $(HEADS)
 

@@ -74,7 +74,7 @@ void add_block_nest()
     block_nest++;
 }
 
-// ブロックを抜ける　該当関数のmax_offset を更新
+// ブロックを抜ける 該当関数のmax_offset を更新
 void sub_block_nest()
 {
     if (func_pos_ptr->max_offset < culc_offset())

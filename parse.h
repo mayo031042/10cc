@@ -70,10 +70,10 @@ Node *declare_lvar();
 // func.c
 // 関数を解釈
 bool match_with(Token *tok, char *name, int len);
-Func *find_func(); // 関数の実体へのポインタを保持する配列を探索し　適切な要素のアドレスを返す
+Func *find_func(); // 関数の実体へのポインタを保持する配列を探索し 適切な要素のアドレスを返す
 
 // 引数を解釈
-Node *build_arg();  // 関数呼び出しのときに　引数をexpr() 解釈して登録先のレジスタを割り当てる
+Node *build_arg(); // 関数呼び出しのときに 引数をexpr() 解釈して登録先のレジスタを割り当てる
 
 // type.c
 Type *create_type(TypeKind kind);

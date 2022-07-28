@@ -10,7 +10,7 @@ Node *create_node(NodeKind kind)
     return node;
 }
 
-// create_node し　それにつながる左辺、右辺を登録する
+// create_node し それにつながる左辺、右辺を登録する
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = create_node(kind);
@@ -19,7 +19,7 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
     return node;
 }
 
-// create_node(ND_NUM) し数値を登録する　常に終端記号になるので左右辺はない
+// create_node(ND_NUM) し数値を登録する 常に終端記号になるので左右辺はない
 Node *new_node_num(int val)
 {
     Node *node = create_node(ND_NUM);
@@ -38,7 +38,7 @@ Node *new_node_lvar(LVar *lvar)
 }
 
 // 空白を許すstmt に1push を保証する
-// stmt 解釈をする　空白であるならば　０の省略と解釈する
+// stmt 解釈をする 空白であるならば ０の省略と解釈する
 Node *create_or_stmt()
 {
     Node *node;
@@ -70,7 +70,7 @@ Node *new_node_if()
 
 //   else
 // if    else/{stmt}
-// if の時点で else を作る　右辺にはelse かstmt()
+// if の時点で else を作る 右辺にはelse かstmt()
 // 必要に応じてelse 0; を付加することで 常に丁度１つを実行し1push を保証する
 // つまりelse はif の連結である
 Node *new_node_else()
@@ -140,7 +140,7 @@ Node *new_node_while()
     Node *node_B = expr(); // 空欄を許さない
     expect(TK_RESERVED, ")");
 
-    // A式, C式はfor の空欄時に従って1　を入れておく
+    // A式, C式はfor の空欄時に従って1 を入れておく
     return new_grand_node(ND_FOR_WHILE, new_node_num(1), new_node_num(1), create_or_stmt(), node_B);
 }
 
@@ -157,16 +157,16 @@ Node *new_node_do()
     return new_node(ND_DO, lhs, rhs);
 }
 
-// sizeof に続くunary() をパースする　得られた結果のnode のサイズのnd_num を登録する
-// parce されたunary() はサイズ計算にのみ用いられて破棄されるため　gen() で実行されることはない
+// sizeof に続くunary() をパースする 得られた結果のnode のサイズのnd_num を登録する
+// parce されたunary() はサイズ計算にのみ用いられて破棄されるため gen() で実行されることはない
 Node *new_node_sizeof()
 {
     Node *node = unary();
     return new_node_num(size_of_node(node));
 }
 
-// ND_ADDR, ND_DEREF を作成する際にはこれらの関数をかならず使用する　右辺にNULL が来ることを保証する
-// 引数のnode がderef 型だった場合　そのnode の左辺を返す そうでない時はND_LVAR である必要がある
+// ND_ADDR, ND_DEREF を作成する際にはこれらの関数をかならず使用する 右辺にNULL が来ることを保証する
+// 引数のnode がderef 型だった場合 そのnode の左辺を返す そうでない時はND_LVAR である必要がある
 Node *new_node_addr(Node *node)
 {
     if (ND_DEREF == node->kind)
@@ -199,7 +199,7 @@ Node *new_node_assign(Node *lhs, Node *rhs)
     return new_node(ND_ASSIGN, lhs, new_node_addr(rhs));
 }
 
-// : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく　
+// : }が出現するまでnext つなぎに ; で区切られた１文ずつを解釈しnode を登録していく
 // 全体として繋がれたnode の先頭を返す 終端はNULL
 Node *new_node_block()
 {
@@ -228,7 +228,7 @@ Node *build_block()
     return node;
 }
 
-// 関数呼び出しnode を作成する　関数出ない買った場合NULL を返す
+// 関数呼び出しnode を作成する 関数出ない買った場合NULL を返す
 Node *try_node_func_call()
 {
     if (false == current_token_is(TK_RESERVED, "("))
@@ -236,7 +236,7 @@ Node *try_node_func_call()
         return NULL;
     }
 
-    // 関数なので　関数呼び出しである
+    // 関数なので 関数呼び出しである
     Node *node = create_node(ND_FUNC_CALL);
 
     // 既存の関数であれば関数実体へのポインタを保持する配列の要素のアドレスが返る
@@ -289,7 +289,7 @@ int size_of_node(Node *node)
     return size_of(type_of_node(node));
 }
 
-// 加減算の際　キャストだけでなく値の乗算も必要かどうかを判定する
+// 加減算の際 キャストだけでなく値の乗算も必要かどうかを判定する
 bool has_ptr_to(Type *type)
 {
     if (type->kind == PTR || type->kind == ARRAY)

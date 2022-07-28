@@ -18,11 +18,11 @@ void gen(Node *node)
         gen_declare(node);
         return;
 
-    // 左辺の計算結果をアドレスとして解釈し　そのアドレスに積まれている値に変更する
+    // 左辺の計算結果をアドレスとして解釈し そのアドレスに積まれている値に変更する
     case ND_DEREF:
         gen_deref(node);
         return;
-    // 左辺にND_LVAR を持ち　そこで登録されている変数のアドレスをスタックに積む
+    // 左辺にND_LVAR を持ち そこで登録されている変数のアドレスをスタックに積む
     // &* の列が出現した場合は読み飛ばし* の左辺をgen() する
     case ND_ADDR:
         gen_addr(node);
@@ -75,7 +75,7 @@ void gen(Node *node)
     gen(node->lhs);
     gen(node->rhs);
 
-    // raxが左辺　rdiが右辺
+    // raxが左辺 rdiが右辺
     pf("    pop rdi\n");
     pf("    pop rax\n");
 

@@ -7,8 +7,8 @@ int ident_pos = 0;
 
 // token を読み進めずに判定のみ行う current 系
 
-// op == NULL の時　種類が一致すればtrue
-// op != NULL の時　種類と文字列のどちらも一致すればtrue
+// op == NULL の時 種類が一致すればtrue
+// op != NULL の時 種類と文字列のどちらも一致すればtrue
 bool current_token_is(TokenKind kind, char *op)
 {
     if (NULL == op)
@@ -36,7 +36,7 @@ bool consume(TokenKind kind, char *op)
     return true;
 }
 
-// 今のtoken が引数通りなら読み進める　更に識別子のときはident_pos を更新する
+// 今のtoken が引数通りなら読み進める 更に識別子のときはident_pos を更新する
 bool consume_keyword(TokenKind kind)
 {
     if (tokens[token_pos]->kind != kind)
@@ -48,7 +48,7 @@ bool consume_keyword(TokenKind kind)
     return true;
 }
 
-// 識別子専用の関数　consume と同時にident_pos のセットも行う
+// 識別子専用の関数 consume と同時にident_pos のセットも行う
 bool consume_ident()
 {
     if (tokens[token_pos]->kind != TK_IDENT)
@@ -64,7 +64,7 @@ bool consume_ident()
 // consume できなければエラーを吐く expect 系
 // expect, ex_ident, ex_vartype, ex_number
 
-// consumeと同じ判定をするが　falseが返る場合は代わりにerror を吐く
+// consumeと同じ判定をするが falseが返る場合は代わりにerror を吐く
 bool expect(TokenKind kind, char *op)
 {
     if (consume(kind, op))
@@ -85,7 +85,7 @@ bool expect_ident()
     error_at(tokens[token_pos]->str, "識別子ではありません");
 }
 
-// int 型宣言を期待　拡張可能
+// int 型宣言を期待 拡張可能
 // 型宣言を処理し TypeKind で返す
 TypeKind expect_vartype()
 {
@@ -109,7 +109,7 @@ TypeKind expect_vartype()
     error_at(tokens[token_pos]->str, "型宣言がありません");
 }
 
-// expectと同様にflase ならerrorを吐く　true ならtoken に数値を登録し読み進める
+// expectと同様にflase ならerrorを吐く true ならtoken に数値を登録し読み進める
 int expect_number()
 {
     if (tokens[token_pos]->kind == TK_NUM)

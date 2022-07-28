@@ -16,7 +16,7 @@ Type *new_type(TypeKind kind, Type *ptr_to)
     return type;
 }
 
-// 型宣言のみ終了している段階で行う　
+// 型宣言のみ終了している段階で行う
 // 0こ以上の* を解釈する
 Type *add_type_ptr(Type *type)
 {
@@ -29,7 +29,7 @@ Type *add_type_ptr(Type *type)
     return type;
 }
 
-// [] があれば解釈して引数に付加する　なければそのままを返す
+// [] があれば解釈して引数に付加する なければそのままを返す
 // 最後尾の配列（a[x][y][z] なら[z] ）がポインタを含む型宣言を直接つなぐので再帰的に探索する
 // 引数のtype はいじらずに次の関数呼び出しに渡す
 Type *add_type_array(Type *type)
@@ -50,7 +50,7 @@ Type *add_type_array(Type *type)
 }
 
 // node->type はこの関数でのみ決定される
-// 四則演算では大きい型にキャストされるため　型を選択する
+// 四則演算では大きい型にキャストされるため 型を選択する
 // 比較演算子と数値node はINT 型を登録される
 // 変数や関数では登録された型を採用する
 // 代入式では最左の変数の型を返すことになるがパースされているのは右辺なのでrhs を返す
@@ -93,7 +93,7 @@ Type *type_of_node(Node *node)
     }
     else if (kind == ND_ASSIGN)
     {
-        // assign の右辺にはND_ADDR であるため　更にその左辺を参照する
+        // assign の右辺にはND_ADDR であるため 更にその左辺を参照する
         node->type = type_of_node(node->rhs->lhs);
     }
     else if (kind == ND_FUNC_CALL)

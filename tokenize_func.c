@@ -1,14 +1,14 @@
 #include "tokenize.h"
 
-// uip とstr を比較して　uipがkeyword　と判定できたらtrue
+// uip とstr を比較して uipがkeyword と判定できたらtrue
 bool is_keyword(char *str)
 {
     int num = strlen(str);
     return (!strncmp(user_input_pos, str, num) && !is_alnum(user_input_pos[num]));
 }
 
-// 新しいtoken に{種類、文字列ptr、長さ} を登録し　uipを進める
-// tokenの作成はここだけでしか行われないので　token_pos の移動はここでのみおこなう
+// 新しいtoken に{種類、文字列ptr、長さ} を登録し uipを進める
+// tokenの作成はここだけでしか行われないので token_pos の移動はここでのみおこなう
 void new_token(TokenKind kind, int len)
 {
     tokens[token_pos] = calloc(1, sizeof(Token));
@@ -42,10 +42,10 @@ bool commentout()
         return true;
     }
 
-    /* 終端記号が出るまでtknz しない　*/
+    /* 終端記号が出るまでtknz しない */
     else if (strncmp(user_input_pos, "/*", 2) == 0)
     {
-        // 開始記号の次から探しはじめて　発見した終端記号の先頭のポインタｗｐ返す
+        // 開始記号の次から探しはじめて 発見した終端記号の先頭のポインタｗｐ返す
         char *p = strstr(user_input_pos + 2, "*/");
         // 終端記号が見つからないとNULL が返る
         if (!p)

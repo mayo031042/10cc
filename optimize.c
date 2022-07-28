@@ -110,7 +110,7 @@ void *tokenize()
                 }
 
 
-        // 数値、変数、関数名 解釈ゾーン　
+        // 数値、変数、関数名 解釈ゾーン
         if (isdigit(*user_input_pos))
         {
             new_token(TK_NUM, 0);

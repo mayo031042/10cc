@@ -188,7 +188,7 @@ Node *relational()
     return node;
 }
 
-// 等号　等号否定で区切る　
+// 等号 等号否定で区切る
 // -> relational(), ND_EQ, ND_NE
 Node *equality()
 {
@@ -214,7 +214,7 @@ Node *equality()
     return node;
 }
 
-// 計算式を代入式　代入演算子で区切る -> 区切られた後は代入式等は出現しない
+// 計算式を代入式 代入演算子で区切る -> 区切られた後は代入式等は出現しない
 // -> equality(), ND_ASSIGN
 Node *assign()
 {
@@ -259,7 +259,7 @@ Node *assign()
 }
 
 // 予約語のない純粋な計算式として解釈する 三項間演算子もここ？
-// void と四則演算しない　など計算結果が整数であることを保証したい
+// void と四則演算しない など計算結果が整数であることを保証したい
 // -> assign()
 Node *expr()
 {
@@ -336,7 +336,7 @@ Node *stmt()
     return node;
 }
 
-// code全体を　;　で区切る
+// code全体を ; で区切る
 // -> ND_BLOCK
 Node *program()
 {

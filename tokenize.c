@@ -119,7 +119,7 @@ void *tokenize()
         // 2文字演算子ゾーン
         if (strchr("+-", *user_input_pos) && *user_input_pos == *(user_input_pos + 1))
         {
-            // インクリメント　の実装
+            // インクリメント の実装
         }
         else if (strchr("+-*/%!=<>", *user_input_pos) && *(user_input_pos + 1) == '=')
         {
@@ -146,7 +146,7 @@ void *tokenize()
             continue;
         }
 
-        // 数値、変数、関数名 解釈ゾーン　
+        // 数値、変数、関数名 解釈ゾーン
         if (isdigit(*user_input_pos))
         {
             new_token(TK_NUM, 0);
