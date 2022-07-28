@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// token　
+// token
 typedef enum
 {
     TK_OPERATOR,        // 演算子,* ,&
@@ -78,7 +78,7 @@ typedef struct Func Func;
 struct Func
 {
     Type *type;        // 関数の型
-    LVar *locals[100]; // ブロック深度ごとの変数列　locals[0] と関数の引数　が常に一致するよう実装
+    LVar *locals[100]; // ブロック深度ごとの変数列 locals[0] と関数の引数 が常に一致するよう実装
     Node *definition;  // 定義 block node のtop に等しい
 
     char label[100]; // 関数の名前をpf() に渡す際に使用する配列
@@ -127,7 +127,7 @@ struct Node
     Node *lhs;
     Node *rhs;
 
-    Node *next; // ND_BLOCK でのみ使用　最後はNULL であるようにする
+    Node *next; // ND_BLOCK でのみ使用 最後はNULL であるようにする
     Func *func; // ND_FUNC_CALL でのみ使用
     LVar *lvar; // ND_LVAR でのみ使用
 
@@ -141,7 +141,7 @@ void *tokenize();
 void *parse();
 int culc_offset();
 
-// codegen のための関数　-> @ codegen.c
+// codegen のための関数 -> @ codegen.c
 void code_gen();
 
 // 分類が半端な関数 -> @ utils

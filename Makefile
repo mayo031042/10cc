@@ -1,4 +1,4 @@
-CC = cc
+CC = gcc
 CFLAGS=-std=c11 -g -static
 
 # ディレクトリを指定
@@ -82,8 +82,12 @@ test: 10cc
 
 # 編集されたtmp.s を実行
 s: tmp/tmp.s
-	gcc -o tmp/tmp tmp/tmp.s
+	gcc tmp/tmp.s -o tmp/tmp
 	./tmp/tmp
+
+opt: optimize.c 
+	gcc -c $(CFLAGS) -o $@ $<
+	./$@
 
 clean:
 	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/*
