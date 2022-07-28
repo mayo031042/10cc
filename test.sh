@@ -1,5 +1,5 @@
 #!/bin/bash
-# test/ に含まれるtest file を実行する　返り値が０であることを確認して終了する
+# test/ に含まれるtest file を実行する 返り値が０であることを確認して終了する
 
 dir_name="test/"
 flag_10cc=1
