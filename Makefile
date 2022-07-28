@@ -85,9 +85,8 @@ s: tmp/tmp.s
 	gcc tmp/tmp.s -o tmp/tmp
 	./tmp/tmp
 
-opt: optimize.c 
-	gcc -c $(CFLAGS) -o $@ $<
-	./$@
+obj/opt: optimize.c 
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
 	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/*
