@@ -2,6 +2,7 @@
 
 void gen(Node *node)
 {
+    int end_label;
     switch (node->kind)
     {
     // 数値、変数
@@ -52,7 +53,7 @@ void gen(Node *node)
         gen_do_while(node);
         return;
     case ND_ELSE:
-        int end_label = count();
+        end_label = count();
         gen_else(node, end_label);
         pf(".Lifend%d:\n", end_label);
         return;

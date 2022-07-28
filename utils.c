@@ -1,6 +1,6 @@
 #include "10cc.h"
 
-#define MAX_STACK_SIZE 100
+#define MAX_STACK_SIZE 1000
 
 int Stack[MAX_STACK_SIZE];
 int StackTop = 0;

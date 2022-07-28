@@ -1,7 +1,7 @@
 #include "parse.h"
 // RDP 関数のみ
 
-#define MAX_FUNC_SIZE 100
+#define MAX_FUNC_SIZE 1000
 
 Func *funcs[MAX_FUNC_SIZE];
 Func *func_pos_ptr;
