@@ -6,3 +6,4 @@ a.out
 obj/*
 ex/
 .vscode
+test/sort/sort.c
