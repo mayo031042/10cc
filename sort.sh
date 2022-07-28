@@ -29,6 +29,7 @@ assert()
 create_file
 time assert $file_name
 
+make opt
 
 time assert $file_name
 

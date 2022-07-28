@@ -85,8 +85,8 @@ s: tmp/tmp.s
 	gcc tmp/tmp.s -o tmp/tmp
 	./tmp/tmp
 
-obj/opt: optimize.c 
-	$(CC) -c $(CFLAGS) -o $@ $<
+opt: optimize.c 
+	$(CC) -c $(CFLAGS) -o obj/opt $<
 
 srt: create_sort.cpp
 	g++ -o bin/srt create_sort.cpp
