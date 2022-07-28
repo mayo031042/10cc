@@ -5,15 +5,13 @@ file_name="test/sort/sort.c"
 
 create_file()
 {
-    g++ -o srt create_sort.cpp
-    ./srt
-    rm -f srt
+    make srt
+    ./bin/10cc "$file_name"
 }
 
 assert()
 {
     # 10cc のテスト
-    ./bin/10cc "$file_name"
     gcc -o tmp/tmp tmp/tmp.s
     ./tmp/tmp
 
@@ -29,6 +27,9 @@ assert()
 
 
 create_file
-assert $file_name
+time assert $file_name
+
+
+time assert $file_name
 
 rm -f a

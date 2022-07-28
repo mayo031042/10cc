@@ -88,7 +88,11 @@ s: tmp/tmp.s
 obj/opt: optimize.c 
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+srt: create_sort.cpp
+	g++ -o bin/srt create_sort.cpp
+	./bin/srt
+
 clean:
-	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/*
+	rm -f ./bin/10cc *.o *~ tmp/* optimize ./obj/* srt
 
 .PHONY: test clean
