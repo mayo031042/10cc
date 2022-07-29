@@ -64,6 +64,12 @@ void jdg(const ss &s1)
     cds.clear();
     ss s = s1;
     clr(s);
+    if (s[0] != 'p')
+    {
+        prg.push_back({"x", "x"});
+        return;
+    }
+
     ss buf;
     rep(i, 0, s.size())
     {
@@ -82,7 +88,7 @@ void jdg(const ss &s1)
         add(buf);
     }
 
-    prg.push_back(cds);
+    prg.push_back(move(cds));
 }
 
 void lnspb(ss rg, ss im)
@@ -151,8 +157,3 @@ int main()
 
     eor();
 }
-
-/*
-.Lifend1:
-
-*/
