@@ -86,7 +86,7 @@ s: tmp/tmp.s
 	./tmp/tmp
 
 opt: optimize.cpp
-	g++ -o obj/opt $<
+	g++ -o bin/opt $<
 	./bin/opt
 
 srt: create_sort.cpp

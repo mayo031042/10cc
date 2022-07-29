@@ -1,18 +1,19 @@
 #!/bin/bash
 # test/ に含まれるtest file を実行する 返り値が０であることを確認して終了する
 
-file_name="test/sort/sort.c"
+sort_file="test/sort/sort.c"
+tmp_file="tmp/tmp.s"
 
 create_file()
 {
     make srt
-    ./bin/10cc "$file_name"
+    ./bin/10cc "$sort_file"
 }
 
 assert()
 {
     # 10cc のテスト
-    gcc -o tmp/tmp tmp/tmp.s
+    gcc -o tmp/tmp "$tmp_file"
     ./tmp/tmp
 
     actual="$?"
@@ -27,10 +28,10 @@ assert()
 
 
 create_file
-time assert $file_name
+time assert
 
 make opt
-
-time assert $file_name
+tmp_file="tmp/tmp_opt.s"
+time assert
 
 rm -f a
