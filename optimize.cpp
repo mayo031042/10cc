@@ -1,137 +1,158 @@
-#include "optimize.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <bitset>
+#include <set>
+#include <string>
+#include <cmath>
+#include <random>
+using namespace std;
+using ll = long long int;
+using ss = string;
+#define rep(i, s, n) for (ll i = (s); i < (ll)(n); i++)
+#define all(v) v.begin(), v.end()
 
-// アセンブリに対して最適化を行う
-// ラベルごとに四則演算の簡略化とMOV の簡略化を行う
+ifstream ifs;
+ofstream ofs;
 
-#define MAX_TOKEN_SIZE 500
-
-Token *tokens[MAX_TOKEN_SIZE];
-int token_pos = 0;
-char *user_input_pos;
-char *user_input;
-
-void *tokenize()
+void sor()
 {
-    read_file("tmp/tmp.s");
+    ifs.open("tmp/tmp.s", ios::out);
+    ofs.open("tmp/tmp_opt.s", ios::out);
 
-    while (*user_input_pos)
+    if (!ifs or !ofs)
     {
-        user_input_pos++;
-        /*
-                // 変数の型ゾーン
-                if (is_keyword("push"))
-                {
-                    new_token(TK_PUSH, 4);
-                    continue;
-                }
-                else if (is_keyword("pop"))
-                {
-                    new_token(TK_POP, 3);
-                    continue;
-                }
-                else if (is_keyword("int"))
-                {
-                    new_token(TK_TYPE, 3);
-                    continue;
-                }
-                else if (is_keyword("bool"))
-                {
-                    new_token(TK_TYPE, 4);
-                    continue;
-                }
+        cout << "cannot open" << endl;
+        return;
+    }
+}
 
-                // 予約語ゾーン
-                if (is_keyword("return"))
-                {
-                    new_token(TK_RETURN, 6);
-                    continue;
-                }
-                else if (is_keyword("if"))
-                {
-                    new_token(TK_IF, 2);
-                    continue;
-                }
-                else if (is_keyword("else"))
-                {
-                    new_token(TK_ELSE, 4);
-                    continue;
-                }
-                else if (is_keyword("while"))
-                {
-                    new_token(TK_WHILE, 5);
-                    continue;
-                }
-                else if (is_keyword("for"))
-                {
-                    new_token(TK_FOR, 3);
-                    continue;
-                }
-                else if (is_keyword("do"))
-                {
-                    new_token(TK_DO, 2);
-                    continue;
-                }
-                else if (is_keyword("continue"))
-                {
-                    new_token(TK_CONTINUE, 8);
-                    continue;
-                }
-                else if (is_keyword("break"))
-                {
-                    new_token(TK_BREAK, 5);
-                    continue;
-                }
-                else if (is_keyword("sizeof"))
-                {
-                    new_token(TK_SIZEOF, 6);
-                    continue;
-                }
-                else if (is_keyword("switch"))
-                {
-                    new_token(TK_SWITCH, 6);
-                    continue;
-                }
-                else if (is_keyword("case"))
-                {
-                    new_token(TK_CASE, 4);
-                    continue;
-                }
+void eor()
+{
+    ifs.close();
+    ofs.close();
+}
 
-                // : { }
-                if (*user_input_pos == '{')
-                {
-                    new_token(TK_BLOCK_FRONT, 1);
-                    continue;
-                }
-                else if (*user_input_pos == '}')
-                {
-                    new_token(TK_BLOCK_END, 1);
-                    continue;
-                }
+vector<ss> cds;
 
-
-        // 数値、変数、関数名 解釈ゾーン
-        if (isdigit(*user_input_pos))
+void clr(ss &s)
+{
+    int n = s.size();
+    rep(i, 0, n)
+    {
+        if (s[i] != ' ')
         {
-            new_token(TK_NUM, 0);
-            tokens[token_pos - 1]->val = strtol(user_input_pos, &user_input_pos, 10);
-            continue;
+            s = s.substr(i, n - i);
+            return;
         }
-        else if (is_alnum(*user_input_pos))
-        {
-            char *p;
-            for (p = user_input_pos; is_alnum(*p); p++)
-                ;
-            new_token(TK_IDENT, p - user_input_pos);
-            continue;
-        }
+    }
+}
 
-        error_at(tokens[token_pos]->str, "tokenizeできません\n");
-        */
+void add(ss &s)
+{
+    cds.push_back(s);
+    s = "";
+}
+
+vector<vector<ss>> prg;
+vector<ss> lns;
+
+void jdg(const ss &s1)
+{
+    lns.push_back(s1);
+    cds.clear();
+    ss s = s1;
+    clr(s);
+    ss buf;
+    rep(i, 0, s.size())
+    {
+        if (s[i] == ' ' or s[i] == ',')
+        {
+            add(buf);
+        }
+        else
+        {
+            buf += s[i];
+        }
     }
 
-    // new_token(TK_EOF, 0);
-    token_pos = 0;
+    if (buf != "")
+    {
+        add(buf);
+    }
 
-    printf("comp\n");
+    prg.push_back(cds);
 }
+
+void lnspb(ss rg, ss im)
+{
+    if (rg != im)
+    {
+        lns.push_back("    mov " + rg + ", " + im);
+    }
+}
+
+void write()
+{
+    int n = prg.size();
+    ss fst = prg[n - 1][0];
+
+    if (n <= 2 and fst == "push")
+    {
+        return;
+    }
+    else if (n >= 2 and fst == "pop")
+    {
+        if (n == 2)
+        {
+            lns.clear();
+            ss im = prg[0][1];
+            ss rg = prg[1][1];
+
+            lnspb(rg, im);
+        }
+        else if (n == 4)
+        {
+            lns.clear();
+            ss im1 = prg[0][1];
+            ss im2 = prg[1][1];
+            ss rg2 = prg[2][1];
+            ss rg1 = prg[3][1];
+            lnspb(rg1, im1);
+            lnspb(rg2, im2);
+        }
+    }
+
+    for (auto &x : lns)
+    {
+        ofs << x << endl;
+    }
+    lns.clear();
+    prg.clear();
+}
+
+int main()
+{
+    sor();
+
+    ss s;
+    rep(i, 0, 3)
+    {
+        getline(ifs, s);
+        ofs << s << endl;
+    }
+
+    while (getline(ifs, s))
+    {
+        jdg(s);
+        write();
+    }
+
+    eor();
+}
+
+/*
+.Lifend1:
+
+*/
